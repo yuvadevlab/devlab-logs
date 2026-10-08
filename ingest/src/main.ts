@@ -12,6 +12,7 @@ import dotenv from "dotenv";
 import { IngestLogEventSchema } from "./types.js";
 import { SqlBatcher } from "./batcher/sql_batcher.js";
 import { OllamaEmbedder } from "./embedder/ollama_embedder.js";
+import { TelemetryKafkaConsumer } from "./consumers/kafka_consumer.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -54,6 +55,20 @@ function broadcast(log: unknown): void {
     }
   }
 }
+
+// Kafka Consumer Initialization
+const kafkaBrokers = process.env.KAFKA_BROKERS ? process.env.KAFKA_BROKERS.split(",").map(b => b.trim()) : [];
+const kafkaConsumer = new TelemetryKafkaConsumer(
+  {
+    brokers: kafkaBrokers,
+    groupId: process.env.KAFKA_GROUP_ID || "devlab-logs-consumer-group",
+    topic: process.env.KAFKA_TOPIC || "devlab.telemetry.logs",
+    broadcastFn: broadcast,
+  },
+  sqlBatcher,
+  embedder
+);
+void kafkaConsumer.start();
 
 // Ingestion endpoint: Receives bulk events from devlab-log-agent
 app.post("/api/v1/logs/batch", async (req, res) => {
@@ -134,6 +149,7 @@ server.listen(port, () => {
 // Graceful termination handling
 const shutdown = async () => {
   console.log("[IngestServer] Gracefully shutting down...");
+  await kafkaConsumer.stop();
   wss.close();
   server.close();
   await sqlBatcher.close();
