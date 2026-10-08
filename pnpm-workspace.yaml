@@ -1,0 +1,5 @@
+packages:
+  - "ingest"
+  - "web"
+allowBuilds:
+  esbuild: true

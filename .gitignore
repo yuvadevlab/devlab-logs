@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js & Turborepo
+.next/
+.turbo/
+out/
+
+# Build artifacts
+dist/
+agent/bin/
+
+# Environment variables
+.env
+.env.local
+*.env
+
+# System & IDE
+.DS_Store
+Thumbs.db
+*.log
+test-logs/
