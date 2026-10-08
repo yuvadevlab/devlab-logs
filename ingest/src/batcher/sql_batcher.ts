@@ -39,7 +39,7 @@ export class SqlBatcher {
    * @returns Array of persisted system log records and execution duration
    */
   async insertBatch(
-    logs: IngestLogEvent[]
+    logs: IngestLogEvent[],
   ): Promise<{ records: SystemLogRecord[]; latencyMs: number }> {
     if (logs.length === 0) {
       return { records: [], latencyMs: 0 };
@@ -53,7 +53,7 @@ export class SqlBatcher {
     logs.forEach((log, rowIndex) => {
       const offset = rowIndex * 7;
       rowPlaceholders.push(
-        `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7})`
+        `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7})`,
       );
 
       // Normalize level to strict lowercase snake_case
@@ -68,7 +68,7 @@ export class SqlBatcher {
         log.tenantId || null,
         log.message,
         JSON.stringify(log.metadata || {}),
-        timestampVal
+        timestampVal,
       );
     });
 

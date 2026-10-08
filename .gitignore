@@ -1,15 +1,20 @@
 # Dependencies
 node_modules/
+**/node_modules/
 .pnpm-store/
 
 # Next.js & Turborepo
 .next/
+**/.next/
 .turbo/
+**/.turbo/
 out/
 
 # Build artifacts
 dist/
+**/dist/
 agent/bin/
+*.tsbuildinfo
 
 # Environment variables
 .env
@@ -21,3 +26,4 @@ agent/bin/
 Thumbs.db
 *.log
 test-logs/
+sandboxes/

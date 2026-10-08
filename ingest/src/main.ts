@@ -57,7 +57,9 @@ function broadcast(log: unknown): void {
 }
 
 // Kafka Consumer Initialization
-const kafkaBrokers = process.env.KAFKA_BROKERS ? process.env.KAFKA_BROKERS.split(",").map(b => b.trim()) : [];
+const kafkaBrokers = process.env.KAFKA_BROKERS
+  ? process.env.KAFKA_BROKERS.split(",").map((b) => b.trim())
+  : [];
 const kafkaConsumer = new TelemetryKafkaConsumer(
   {
     brokers: kafkaBrokers,
@@ -66,7 +68,7 @@ const kafkaConsumer = new TelemetryKafkaConsumer(
     broadcastFn: broadcast,
   },
   sqlBatcher,
-  embedder
+  embedder,
 );
 void kafkaConsumer.start();
 

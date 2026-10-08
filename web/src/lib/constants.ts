@@ -2,11 +2,9 @@
  * Global configuration constants, endpoints, and style tokens for DevLab Studio.
  */
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3020";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3020";
 
-export const WS_STREAM_URL =
-  process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:3020/stream";
+export const WS_STREAM_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:3020/stream";
 
 export const SERVICE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   finai: {

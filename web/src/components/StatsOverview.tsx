@@ -13,9 +13,7 @@ interface StatsOverviewProps {
  */
 export const StatsOverview: React.FC<StatsOverviewProps> = ({ metrics }) => {
   const errorPercentage =
-    metrics.totalCount > 0
-      ? ((metrics.errorCount / metrics.totalCount) * 100).toFixed(1)
-      : "0.0";
+    metrics.totalCount > 0 ? ((metrics.errorCount / metrics.totalCount) * 100).toFixed(1) : "0.0";
 
   return (
     <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -37,7 +35,9 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ metrics }) => {
       <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 backdrop-blur-sm">
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium text-slate-400">Error Frequency</span>
-          <AlertTriangle className={`h-4 w-4 ${metrics.errorCount > 0 ? "text-rose-400" : "text-emerald-400"}`} />
+          <AlertTriangle
+            className={`h-4 w-4 ${metrics.errorCount > 0 ? "text-rose-400" : "text-emerald-400"}`}
+          />
         </div>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="text-2xl font-bold tracking-tight text-white">{errorPercentage}%</span>
@@ -54,7 +54,9 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ metrics }) => {
           <Layers className="h-4 w-4 text-emerald-400" />
         </div>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-bold tracking-tight text-white">{metrics.activeStreams}</span>
+          <span className="text-2xl font-bold tracking-tight text-white">
+            {metrics.activeStreams}
+          </span>
           <span className="text-xs text-slate-500">monitored</span>
         </div>
       </div>

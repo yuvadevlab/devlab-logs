@@ -15,12 +15,12 @@ import (
 
 // BatchProducer accumulates telemetry events and executes bulk HTTP or message queue flushes.
 type BatchProducer struct {
-	ingestURL    string
-	batchSize    int
+	ingestURL     string
+	batchSize     int
 	flushInterval time.Duration
-	buffer       []*normalizer.LogEvent
-	mu           sync.Mutex
-	httpClient   *http.Client
+	buffer        []*normalizer.LogEvent
+	mu            sync.Mutex
+	httpClient    *http.Client
 }
 
 // NewBatchProducer instantiates a new backpressure batcher.

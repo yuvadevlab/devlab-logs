@@ -70,7 +70,7 @@ export class OllamaEmbedder {
         log.level === "warn" ||
         log.message.toLowerCase().includes("error") ||
         log.message.toLowerCase().includes("failed") ||
-        log.message.toLowerCase().includes("timeout")
+        log.message.toLowerCase().includes("timeout"),
     );
 
     if (candidateLogs.length === 0) {

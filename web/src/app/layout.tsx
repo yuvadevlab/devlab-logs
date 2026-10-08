@@ -3,7 +3,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "DevLab Telemetry Studio | Distributed Observability",
-  description: "Enterprise Real-Time Multi-Stream Observability, Waterfall Logs & AI Log-RAG Platform",
+  description:
+    "Enterprise Real-Time Multi-Stream Observability, Waterfall Logs & AI Log-RAG Platform",
 };
 
 /**

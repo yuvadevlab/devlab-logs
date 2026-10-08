@@ -122,7 +122,9 @@ export const RagSearchDrawer: React.FC<RagSearchDrawerProps> = ({ isOpen, onClos
           {matches.length === 0 && !isLoading && !error && (
             <div className="flex h-40 flex-col items-center justify-center text-center text-slate-500 text-xs">
               <Bot className="h-8 w-8 text-slate-700 mb-2" />
-              <span>Enter a natural language inquiry or select a preset to search error traces.</span>
+              <span>
+                Enter a natural language inquiry or select a preset to search error traces.
+              </span>
             </div>
           )}
 

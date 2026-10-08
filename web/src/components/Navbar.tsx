@@ -29,7 +29,9 @@ export const Navbar: React.FC<NavbarProps> = ({ isConnected, onOpenRag }) => {
                 Studio v1.0
               </span>
             </div>
-            <p className="text-xs text-slate-400">Distributed Multi-Stream Observability & Log-RAG</p>
+            <p className="text-xs text-slate-400">
+              Distributed Multi-Stream Observability & Log-RAG
+            </p>
           </div>
         </div>
 

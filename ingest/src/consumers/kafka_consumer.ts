@@ -45,12 +45,14 @@ export class TelemetryKafkaConsumer {
 
     // Check if brokers are configured
     if (!this.config.brokers || this.config.brokers.length === 0 || !this.config.brokers[0]) {
-      console.log("[KafkaConsumer] No Kafka brokers specified. Telemetry running in HTTP-direct mode.");
+      console.log(
+        "[KafkaConsumer] No Kafka brokers specified. Telemetry running in HTTP-direct mode.",
+      );
       return;
     }
 
     console.log(
-      `[KafkaConsumer] Connected to Kafka brokers [${this.config.brokers.join(", ")}] subscribing to topic '${this.config.topic}'`
+      `[KafkaConsumer] Connected to Kafka brokers [${this.config.brokers.join(", ")}] subscribing to topic '${this.config.topic}'`,
     );
   }
 
@@ -64,7 +66,9 @@ export class TelemetryKafkaConsumer {
 
     try {
       const { records, latencyMs } = await this.batcher.insertBatch(rawEvents);
-      console.log(`[KafkaConsumer] Persisted Kafka batch of ${records.length} logs (${latencyMs}ms)`);
+      console.log(
+        `[KafkaConsumer] Persisted Kafka batch of ${records.length} logs (${latencyMs}ms)`,
+      );
 
       // Fan-out to connected browser WebSocket clients
       if (this.config.broadcastFn) {
