@@ -35,7 +35,7 @@ In distributed AI agent systems and financial platforms, logging cannot be an af
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                   DEVLAB LOGS DISTRIBUTED TOPOLOGY                                     │
 └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-    [OrchestrAI (:4001, :4003)]    [FinAI (:4000)]    [Portal (:3010)]    [Go Daemon Collector]
+    [OrchestrAI (:4001, :4003)]    [FinAI (:4000)]    [Portal (:3015)]    [Go Daemon Collector]
                  │                        │                  │                      │
                  └────────────────────────┼──────────────────┼──────────────────────┘
                                           ▼
