@@ -22,7 +22,7 @@ export class SqlBatcher {
       connectionString ||
       process.env.TELEMETRY_DATABASE_URL ||
       process.env.DATABASE_URL ||
-      "postgresql://yuvarajpattabi:Yuva1213@localhost:5432/devlab_telemetry";
+      "postgresql://yuvarajpattabi:Yuva1213@localhost:5432/devlab_telemetry_dev";
 
     this.pool = new Pool({
       connectionString: connStr,
