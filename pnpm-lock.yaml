@@ -191,7 +191,7 @@ importers:
         specifier: ^5.8.2
         version: 5.9.3
 
-  ingest:
+  apps/ingest:
     dependencies:
       '@yuva-devlab/logger':
         specifier: ^1.2.0
@@ -231,7 +231,7 @@ importers:
         specifier: ^5.8.2
         version: 5.9.3
 
-  web:
+  apps/web:
     dependencies:
       '@yuva-devlab/logger':
         specifier: ^1.2.0

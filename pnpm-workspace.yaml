@@ -1,6 +1,5 @@
 packages:
-  - "ingest"
-  - "web"
+  - "apps/*"
 allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:

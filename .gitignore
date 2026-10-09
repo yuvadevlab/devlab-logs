@@ -13,7 +13,8 @@ out/
 # Build artifacts
 dist/
 **/dist/
-agent/bin/
+apps/agent/bin/
+**/bin/
 *.tsbuildinfo
 
 # Environment variables
