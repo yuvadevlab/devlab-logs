@@ -110,7 +110,7 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
               <pre
                 ref={preRef}
                 aria-hidden
-                className="pointer-events-none absolute inset-0 m-0 overflow-hidden p-3 font-mono text-xs leading-5 break-words whitespace-pre-wrap"
+                className="pointer-events-none absolute inset-0 m-0 overflow-hidden p-3 font-mono text-xs leading-5 wrap-break-word whitespace-pre-wrap"
                 dangerouslySetInnerHTML={{ __html: highlightSql(sql) + "\n" }}
               />
               <textarea
@@ -123,7 +123,7 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
                 onKeyDown={(e) => {
                   if ((e.metaKey || e.ctrlKey) && e.key === "Enter") run();
                 }}
-                className="caret-primary absolute inset-0 resize-none bg-transparent p-3 font-mono text-xs leading-5 break-words whitespace-pre-wrap text-transparent outline-none"
+                className="caret-primary absolute inset-0 resize-none bg-transparent p-3 font-mono text-xs leading-5 wrap-break-word whitespace-pre-wrap text-transparent outline-none"
               />
             </div>
             <div className="flex items-center gap-2">
