@@ -4,3 +4,7 @@ allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:
   - "@yuva-devlab/logger@1.2.0"
+overrides:
+  "@yuva-devlab/tokens": link:../devlab-shared/packages/tokens
+  "@yuva-devlab/ui": link:../devlab-shared/packages/ui
+  "@yuva-devlab/auth-client": link:../devlab-shared/packages/auth-client

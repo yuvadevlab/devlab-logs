@@ -116,7 +116,7 @@ export class SqlBatcher {
       values.push(params.tenantId);
     }
     if (params.search) {
-      conditions.push(`message ILIKE $${idx++}`);
+      conditions.push(`message ILIKE ${idx}`);
       values.push(`%${params.search}%`);
     }
 
