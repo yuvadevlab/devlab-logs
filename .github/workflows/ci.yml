@@ -30,11 +30,11 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "stable"
-          cache-dependency-path: agent/go.sum
+          cache-dependency-path: apps/agent/go.sum
 
       - name: 🔎 Go Vet & Build
         run: |
-          cd agent
+          cd apps/agent
           go vet ./...
           go build -o /tmp/devlab-agent ./cmd/main.go
 

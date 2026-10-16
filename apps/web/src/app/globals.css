@@ -1,0 +1,141 @@
+@import "tailwindcss";
+@source "../**";
+@source "../../node_modules/@yuva-devlab/ui";
+@source "../../node_modules/@yuva-devlab/auth-client";
+@import "@yuva-devlab/tokens/preset.css";
+@import "@yuva-devlab/tokens/themes/logs.css";
+@import "@yuva-devlab/ui/styles.css";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fatal: var(--fatal);
+  --color-error: var(--error);
+  --color-warn: var(--warn);
+  --color-info: var(--info);
+  --color-debug: var(--debug);
+  --color-ai: var(--ai);
+  --color-syn-key: var(--syn-key);
+  --color-syn-str: var(--syn-str);
+  --color-syn-num: var(--syn-num);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    color-scheme: dark;
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+  body {
+    background-color: var(--background);
+    background-image: var(--grid-bg);
+    background-size: 22px 22px;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 8px;
+  }
+}
+
+@utility panel {
+  background: color-mix(in oklab, var(--surface) 82%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+@utility glow {
+  box-shadow: var(--glow-primary);
+}
+
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.3rem;
+  padding: 0.05rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1.1rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+@utility lvl-fatal {
+  color: var(--fatal);
+  background: color-mix(in oklab, var(--fatal) 16%, transparent);
+  border-color: color-mix(in oklab, var(--fatal) 40%, transparent);
+}
+
+@utility lvl-error {
+  color: var(--error);
+  background: color-mix(in oklab, var(--error) 14%, transparent);
+  border-color: color-mix(in oklab, var(--error) 38%, transparent);
+}
+
+@utility lvl-warn {
+  color: var(--warn);
+  background: color-mix(in oklab, var(--warn) 12%, transparent);
+  border-color: color-mix(in oklab, var(--warn) 34%, transparent);
+}
+
+@utility lvl-info {
+  color: var(--info);
+  background: color-mix(in oklab, var(--info) 12%, transparent);
+  border-color: color-mix(in oklab, var(--info) 30%, transparent);
+}
+
+@utility lvl-debug {
+  color: var(--debug);
+  background: color-mix(in oklab, var(--debug) 12%, transparent);
+  border-color: color-mix(in oklab, var(--debug) 30%, transparent);
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 60%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 7px transparent;
+  }
+}
+
+@utility pulse-dot {
+  animation: pulse-ring 1.4s ease-out infinite;
+}
+
+@keyframes row-in {
+  from {
+    background: color-mix(in oklab, var(--primary) 12%, transparent);
+  }
+  to {
+    background: transparent;
+  }
+}
+
+@utility row-new {
+  animation: row-in 1.2s ease-out;
+}
+
+mark {
+  background: color-mix(in oklab, var(--warn) 35%, transparent);
+  color: var(--foreground);
+  border-radius: 2px;
+  padding: 0 1px;
+}

@@ -18,18 +18,18 @@
 ```mermaid
 graph LR
     subgraph Edge Collection
-        A[Go Agent Daemon<br/>agent/cmd/main.go] -->|Batch HTTP / gRPC| B[Ingest Gateway<br/>Node.js / Express]
+        A[Go Agent Daemon<br/>apps/agent/cmd/main.go] -->|Batch HTTP / gRPC| B[Ingest Gateway<br/>Node.js / Express]
         App[Apps / Containers] -->|Direct HTTP| B
     end
 
     subgraph Buffering & Ingestion
         B -->|Producer| C[(Apache Kafka / Local Buffer)]
-        C -->|Consumer Group| D[Kafka Consumer Service<br/>ingest/src/consumers]
+        C -->|Consumer Group| D[Kafka Consumer Service<br/>apps/ingest/src/consumers]
     end
 
     subgraph Analytical Storage & UI
         D -->|Vectorized Inserts| E[(DuckDB Columnar Store)]
-        E -->|Fast SQL Queries| F[Next.js Log Viewer UI<br/>web/]
+        E -->|Fast SQL Queries| F[Next.js Log Viewer UI<br/>apps/web/]
     end
 ```
 
@@ -37,17 +37,17 @@ graph LR
 
 ## 🌟 Key Features
 
-1. **Lightweight Go Collector Agent (`agent/`)**:
+1. **Lightweight Go Collector Agent (`apps/agent/`)**:
    - Compiles to a single zero-dependency static binary.
    - Circular ring buffer memory management prevents GC pauses.
    - Inode-aware file tailing and automatic log rotation handling.
-2. **Dual-Mode Resilient Ingest Engine (`ingest/`)**:
+2. **Dual-Mode Resilient Ingest Engine (`apps/ingest/`)**:
    - Production mode: Kafka distributed consumer group with automatic rebalancing and partition offset management.
    - Development mode: Zero-config in-memory batch buffer for local offline testing.
 3. **Embedded Vectorized Analytics (`storage/`)**:
    - Powered by DuckDB columnar engine for sub-100ms SQL aggregation over millions of rows.
    - Native export to partitioned Parquet files.
-4. **Interactive Real-Time Console (`web/`)**:
+4. **Interactive Real-Time Console (`apps/web/`)**:
    - Next.js 15 dashboard with live tailing, regex filtering, error level faceting, and trace timeline visualization.
 
 ---
@@ -67,7 +67,7 @@ pnpm dev
 ### 2. Run the Go Edge Agent
 
 ```bash
-cd agent
+cd apps/agent
 go run cmd/main.go --config config.yaml
 ```
 
@@ -87,18 +87,20 @@ pnpm build
 
 ```
 devlab-logs/
-├── agent/                      # High-performance Go edge telemetry collection daemon
-│   ├── cmd/main.go             # Agent CLI entrypoint
-│   └── producer/buffer.go      # Concurrent circular ring buffer
-├── ingest/                     # Node.js / Express high-throughput stream ingestion service
-│   └── src/
-│       ├── consumers/          # Dual-mode Kafka consumer group & fallback
-│       └── routes/             # Ingestion endpoints & batch handlers
-├── storage/                    # DuckDB columnar analytical database adapters
-├── web/                        # Next.js 15 interactive log viewer and search console
+├── apps/
+│   ├── agent/                  # High-performance Go edge telemetry collection daemon
+│   │   ├── cmd/main.go         # Agent CLI entrypoint
+│   │   └── producer/buffer.go  # Concurrent circular ring buffer
+│   ├── ingest/                 # Node.js / Express high-throughput stream ingestion service
+│   │   └── src/
+│   │       ├── consumers/      # Dual-mode Kafka consumer group & fallback
+│   │       └── routes/         # Ingestion endpoints & batch handlers
+│   └── web/                    # Next.js 15 interactive log viewer and search console
+├── storage/                    # Database schemas and analytical storage adapters
 ├── .agents/                    # Specialized AI agent definitions
 ├── .husky/                     # Pre-commit & commit-msg hooks (gofmt, prettier, commitlint)
 ├── .vscode/                    # VS Code settings with watcher exclusions & Go format-on-save
 ├── commitlint.config.ts        # Conventional commits configuration
+├── pnpm-workspace.yaml         # Monorepo workspace configuration (apps/*)
 └── turbo.json                  # Turborepo task pipeline configuration
 ```
