@@ -7,7 +7,7 @@
 
 import { useQuery, type QueryClient } from "@tanstack/react-query";
 import { useDevLabAuth } from "@yuva-devlab/auth-client";
-import { API_BASE_URL, API_ROUTES } from "@/lib/constants";
+import { API_ROUTES, getApiBaseUrl } from "@/lib/constants";
 import { normalizeBackendLog } from "@/lib/logs";
 import type { LogEvent } from "../types";
 
@@ -43,7 +43,7 @@ export async function getHistoricalLogs(
   if (params.tenantId) query.set("tenantId", params.tenantId);
   if (params.search) query.set("search", params.search);
 
-  const res = await fetch(`${API_BASE_URL}${API_ROUTES.LOGS}?${query.toString()}`, {
+  const res = await fetch(`${getApiBaseUrl()}${API_ROUTES.LOGS}?${query.toString()}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) {

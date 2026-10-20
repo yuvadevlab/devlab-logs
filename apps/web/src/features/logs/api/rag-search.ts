@@ -7,7 +7,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useDevLabAuth } from "@yuva-devlab/auth-client";
-import { API_BASE_URL, API_ROUTES } from "@/lib/constants";
+import { API_ROUTES, getApiBaseUrl } from "@/lib/constants";
 import type { LogEpisodeMatch, RagSearchResponse } from "../types";
 
 export interface RagSearchPayload {
@@ -24,7 +24,7 @@ export async function executeRagSearch(
   payload: RagSearchPayload,
   token: string,
 ): Promise<RagSearchResponse> {
-  const res = await fetch(`${API_BASE_URL}${API_ROUTES.RAG_SEARCH}`, {
+  const res = await fetch(`${getApiBaseUrl()}${API_ROUTES.RAG_SEARCH}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

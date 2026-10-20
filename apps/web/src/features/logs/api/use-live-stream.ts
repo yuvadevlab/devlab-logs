@@ -7,7 +7,13 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useDevLabAuth } from "@yuva-devlab/auth-client";
-import { API_BASE_URL, API_ROUTES, WS_STREAM_URL, StreamState, LogLevel } from "@/lib/constants";
+import {
+  API_ROUTES,
+  getApiBaseUrl,
+  getWebSocketStreamUrl,
+  StreamState,
+  LogLevel,
+} from "@/lib/constants";
 import { normalizeBackendLog } from "@/lib/logs";
 import type { LogEvent } from "../types";
 
@@ -57,7 +63,7 @@ export function useLiveStream({
     const connect = async () => {
       if (isCleanedUp || isPaused || !token) return;
       try {
-        const ticketResponse = await fetch(`${API_BASE_URL}${API_ROUTES.STREAM_TICKET}`, {
+        const ticketResponse = await fetch(`${getApiBaseUrl()}${API_ROUTES.STREAM_TICKET}`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -68,7 +74,7 @@ export function useLiveStream({
         if (!ticketData.ticket) throw new Error("Stream authentication returned no ticket.");
         if (isCleanedUp || isPaused) return;
 
-        const streamUrl = new URL(WS_STREAM_URL);
+        const streamUrl = new URL(getWebSocketStreamUrl());
         streamUrl.searchParams.set("ticket", ticketData.ticket);
         const ws = new WebSocket(streamUrl);
         wsRef.current = ws;
