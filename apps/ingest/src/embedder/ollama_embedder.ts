@@ -23,7 +23,7 @@ export class OllamaEmbedder {
    */
   constructor(pool: Pool, ollamaUrl?: string, model?: string) {
     this.pool = pool;
-    this.ollamaUrl = ollamaUrl || process.env.OLLAMA_URL || "http://localhost:11434";
+    this.ollamaUrl = ollamaUrl || process.env.OLLAMA_BASE_URL || "http://localhost:11434";
     this.model = model || process.env.EMBEDDING_MODEL || "nomic-embed-text:latest";
   }
 
