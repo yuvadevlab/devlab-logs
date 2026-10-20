@@ -7,22 +7,9 @@
 
 import React from "react";
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { ConfigProvider, Toaster } from "@devlab-logs/ui";
 import { QueryProvider, AuthProvider } from "@/providers";
 import "./globals.css";
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "DevLab Logs — Real-time Telemetry & Log Analytics",
@@ -47,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      className="dark"
       data-brand="logs"
       data-theme="logs-dark"
       suppressHydrationWarning
