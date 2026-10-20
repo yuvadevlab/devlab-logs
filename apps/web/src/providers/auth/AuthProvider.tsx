@@ -19,13 +19,17 @@ export interface AuthProviderProps {
  * @returns Context provider tree wrapped in DevLabAuthProvider
  */
 export function AuthProvider({ children }: AuthProviderProps): React.JSX.Element {
-  const gatewayUrl =
-    process.env.NEXT_PUBLIC_GATEWAY_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    "http://localhost:3015";
+  const gatewayUrl = process.env.NEXT_PUBLIC_DEVLAB_PORTAL_API_URL;
+  const portalUrl = process.env.NEXT_PUBLIC_DEVLAB_PORTAL_WEB_URL;
+
+  if (!gatewayUrl || !portalUrl) {
+    throw new Error(
+      "NEXT_PUBLIC_DEVLAB_PORTAL_API_URL and NEXT_PUBLIC_DEVLAB_PORTAL_WEB_URL must be configured.",
+    );
+  }
 
   return (
-    <DevLabAuthProvider appId="devlab-logs" gatewayUrl={gatewayUrl}>
+    <DevLabAuthProvider appId="devlab-logs" gatewayUrl={gatewayUrl} portalUrl={portalUrl}>
       {children}
     </DevLabAuthProvider>
   );

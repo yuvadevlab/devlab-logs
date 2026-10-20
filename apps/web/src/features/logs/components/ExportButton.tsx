@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { FileJson, Download } from "lucide-react";
-import { Button, Progress, toast } from "@yuva-devlab/ui";
+import { Button, Progress, toast } from "@devlab-logs/ui";
 import { ExportFormat, type LogEvent } from "../types";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export interface ExportButtonProps {
   format: ExportFormat;
@@ -49,7 +50,7 @@ export function ExportButton({ format, rows }: ExportButtonProps) {
         a.href = URL.createObjectURL(new Blob([body], { type: "application/octet-stream" }));
         a.download = `devlab-logs-${Date.now()}.${format}`;
         a.click();
-        toast.success(`Exported ${rows.length.toLocaleString()} rows as ${label}`);
+        toast.success(UI_COPY.LOGS.NOTIFICATIONS.EXPORTED(rows.length.toLocaleString(), label));
       } else {
         setProgress(v);
       }
@@ -65,7 +66,7 @@ export function ExportButton({ format, rows }: ExportButtonProps) {
       disabled={progress !== null || !rows.length}
     >
       {isJsonl ? <FileJson className="mr-1 size-3.5" /> : <Download className="mr-1 size-3.5" />}
-      {progress !== null ? `${Math.round(progress)}%` : `Export ${label}`}
+      {progress !== null ? `${Math.round(progress)}%` : UI_COPY.LOGS.AI.EXPORT(label)}
       {progress !== null && (
         <Progress value={progress} className="absolute inset-x-0 bottom-0 h-0.5 rounded-none" />
       )}

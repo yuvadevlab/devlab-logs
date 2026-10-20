@@ -9,8 +9,9 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
-} from "@yuva-devlab/ui";
+} from "@devlab-logs/ui";
 import { SERVICES, type ServiceName } from "../types";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export interface CommandPaletteProps {
   open: boolean;
@@ -40,10 +41,13 @@ export function CommandPalette({
 }: CommandPaletteProps) {
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Search logs or run a command…" onValueChange={onSearchQuery} />
+      <CommandInput
+        placeholder={UI_COPY.LOGS.COMMAND_PALETTE.SEARCH_PLACEHOLDER}
+        onValueChange={onSearchQuery}
+      />
       <CommandList>
-        <CommandEmpty>Press enter to search messages.</CommandEmpty>
-        <CommandGroup heading="Actions">
+        <CommandEmpty>{UI_COPY.LOGS.COMMAND_PALETTE.EMPTY}</CommandEmpty>
+        <CommandGroup heading={UI_COPY.LOGS.COMMAND_PALETTE.ACTIONS}>
           <CommandItem
             onSelect={() => {
               onOpenChange(false);
@@ -51,7 +55,7 @@ export function CommandPalette({
             }}
           >
             <Bot className="text-ai mr-2 size-4" />
-            Ask AI root-cause analysis
+            {UI_COPY.LOGS.COMMAND_PALETTE.ASK_AI}
           </CommandItem>
           <CommandItem
             onSelect={() => {
@@ -60,7 +64,7 @@ export function CommandPalette({
             }}
           >
             <Database className="text-primary mr-2 size-4" />
-            Open SQL workbench
+            {UI_COPY.LOGS.COMMAND_PALETTE.OPEN_SQL}
           </CommandItem>
           <CommandItem
             onSelect={() => {
@@ -69,7 +73,7 @@ export function CommandPalette({
             }}
           >
             <Radio className="mr-2 size-4" />
-            Toggle live stream
+            {UI_COPY.LOGS.COMMAND_PALETTE.TOGGLE_STREAM}
           </CommandItem>
           <CommandItem
             onSelect={() => {
@@ -78,7 +82,7 @@ export function CommandPalette({
             }}
           >
             <AlertTriangle className="text-error mr-2 size-4" />
-            Show only errors
+            {UI_COPY.LOGS.COMMAND_PALETTE.SHOW_ERRORS}
           </CommandItem>
           <CommandItem
             onSelect={() => {
@@ -87,10 +91,10 @@ export function CommandPalette({
             }}
           >
             <X className="mr-2 size-4" />
-            Clear all filters
+            {UI_COPY.LOGS.COMMAND_PALETTE.CLEAR_FILTERS}
           </CommandItem>
         </CommandGroup>
-        <CommandGroup heading="Services">
+        <CommandGroup heading={UI_COPY.LOGS.COMMAND_PALETTE.SERVICES}>
           {SERVICES.map((s) => (
             <CommandItem
               key={s}

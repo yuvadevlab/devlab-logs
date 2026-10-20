@@ -6,6 +6,7 @@
  */
 
 import { useQuery, type QueryClient } from "@tanstack/react-query";
+import { useDevLabAuth } from "@yuva-devlab/auth-client";
 import { API_BASE_URL, API_ROUTES } from "@/lib/constants";
 import { normalizeBackendLog } from "@/lib/logs";
 import type { LogEvent } from "../types";
@@ -22,13 +23,15 @@ export interface GetLogsParams {
 
 export const logsQueryKeys = {
   all: ["logs"] as const,
-  historical: (params?: GetLogsParams) => ["logs", "historical", params] as const,
+  historical: (params?: GetLogsParams, userId?: string) =>
+    ["logs", "historical", userId, params] as const,
 };
 
 /**
  * Fetches real historical telemetry logs from DevLab Ingest Gateway API.
  */
 export async function getHistoricalLogs(
+  token: string,
   params: GetLogsParams = { limit: 1000 },
 ): Promise<LogEvent[]> {
   const query = new URLSearchParams();
@@ -40,7 +43,9 @@ export async function getHistoricalLogs(
   if (params.tenantId) query.set("tenantId", params.tenantId);
   if (params.search) query.set("search", params.search);
 
-  const res = await fetch(`${API_BASE_URL}${API_ROUTES.LOGS}?${query.toString()}`);
+  const res = await fetch(`${API_BASE_URL}${API_ROUTES.LOGS}?${query.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   if (!res.ok) {
     throw new Error(`Failed to fetch logs: ${res.statusText}`);
   }
@@ -57,9 +62,14 @@ export async function getHistoricalLogs(
  * Custom hook consuming encapsulated historical logs server state.
  */
 export function useLogsQuery(params?: GetLogsParams) {
+  const { token, user } = useDevLabAuth();
   return useQuery({
-    queryKey: logsQueryKeys.historical(params),
-    queryFn: () => getHistoricalLogs(params),
+    queryKey: logsQueryKeys.historical(params, user?.id),
+    queryFn: () => {
+      if (!token) throw new Error("Authentication is required to read logs.");
+      return getHistoricalLogs(token, params);
+    },
+    enabled: Boolean(token),
     staleTime: 30 * 1000,
   });
 }
@@ -67,9 +77,14 @@ export function useLogsQuery(params?: GetLogsParams) {
 /**
  * SSR Prefetch helper for Next.js Server Components.
  */
-export async function prefetchHistoricalLogs(queryClient: QueryClient, params?: GetLogsParams) {
+export async function prefetchHistoricalLogs(
+  queryClient: QueryClient,
+  token: string,
+  userId: string,
+  params?: GetLogsParams,
+) {
   await queryClient.prefetchQuery({
-    queryKey: logsQueryKeys.historical(params),
-    queryFn: () => getHistoricalLogs(params),
+    queryKey: logsQueryKeys.historical(params, userId),
+    queryFn: () => getHistoricalLogs(token, params),
   });
 }

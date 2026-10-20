@@ -6,6 +6,7 @@
  */
 
 import { useMutation } from "@tanstack/react-query";
+import { useDevLabAuth } from "@yuva-devlab/auth-client";
 import { API_BASE_URL, API_ROUTES } from "@/lib/constants";
 import type { LogEpisodeMatch, RagSearchResponse } from "../types";
 
@@ -19,10 +20,16 @@ export type { LogEpisodeMatch, RagSearchResponse as RagSearchResult };
 /**
  * Executes a semantic nearest-neighbor search against the Ollama log embeddings.
  */
-export async function executeRagSearch(payload: RagSearchPayload): Promise<RagSearchResponse> {
+export async function executeRagSearch(
+  payload: RagSearchPayload,
+  token: string,
+): Promise<RagSearchResponse> {
   const res = await fetch(`${API_BASE_URL}${API_ROUTES.RAG_SEARCH}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(payload),
   });
 
@@ -37,7 +44,11 @@ export async function executeRagSearch(payload: RagSearchPayload): Promise<RagSe
  * Custom mutation hook for semantic Log-RAG investigations.
  */
 export function useRagSearchMutation() {
+  const { token } = useDevLabAuth();
   return useMutation({
-    mutationFn: executeRagSearch,
+    mutationFn: (payload: RagSearchPayload) => {
+      if (!token) throw new Error("Authentication is required to search logs.");
+      return executeRagSearch(payload, token);
+    },
   });
 }

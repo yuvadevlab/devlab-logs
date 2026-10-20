@@ -14,12 +14,13 @@ import {
   TabsContent,
   Button,
   Input,
+  JsonTree,
   toast,
-} from "@yuva-devlab/ui";
+} from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { LEVEL_CLASS, fmtIso } from "@/lib/logs";
+import { UI_COPY } from "@/lib/ui-copy";
 import type { LogEvent } from "../types";
-import { JsonTree } from "./JsonTree";
 
 export interface LogDrawerProps {
   log: LogEvent | null;
@@ -67,7 +68,7 @@ export function LogDrawer({ log, logs, onClose, onSelect }: LogDrawerProps) {
   const copyPayload = () => {
     if (!log) return;
     navigator.clipboard?.writeText(JSON.stringify(log.meta, null, 2)).catch(() => {});
-    toast.success("Payload JSON copied to clipboard");
+    toast.success(UI_COPY.LOGS.NOTIFICATIONS.PAYLOAD_COPIED);
   };
 
   return (
@@ -95,9 +96,9 @@ export function LogDrawer({ log, logs, onClose, onSelect }: LogDrawerProps) {
 
             <Tabs defaultValue="json" className="mt-4">
               <TabsList>
-                <TabsTrigger value="json">Payload</TabsTrigger>
+                <TabsTrigger value="json">{UI_COPY.LOGS.DRAWER.PAYLOAD}</TabsTrigger>
                 <TabsTrigger value="trace">Trace ({trace.length})</TabsTrigger>
-                <TabsTrigger value="around">Surrounding</TabsTrigger>
+                <TabsTrigger value="around">{UI_COPY.LOGS.DRAWER.SURROUNDING}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="json" className="space-y-2 pt-2">
@@ -105,12 +106,12 @@ export function LogDrawer({ log, logs, onClose, onSelect }: LogDrawerProps) {
                   <Input
                     value={keyFilter}
                     onChange={(e) => setKeyFilter(e.target.value)}
-                    placeholder="Filter keys…"
+                    placeholder={UI_COPY.LOGS.FILTERS.FILTER_KEYS_PLACEHOLDER}
                     className="h-8 font-mono text-xs"
                   />
                   <Button size="sm" variant="outline" onClick={copyPayload}>
                     <Copy className="mr-1 size-3.5" />
-                    Copy JSON
+                    {UI_COPY.LOGS.DRAWER.COPY_JSON}
                   </Button>
                 </div>
                 <div className="panel p-3">

@@ -3,9 +3,9 @@
  * Consumes partitioned logs from devlab.telemetry.logs topic and executes bulk batch insertions.
  */
 
-import type { IngestLogEvent } from "../types.js";
-import { SqlBatcher } from "../batcher/sql_batcher.js";
-import { OllamaEmbedder } from "../embedder/ollama_embedder.js";
+import type { IngestLogEvent } from "../types";
+import { SqlBatcher } from "../batcher/sql_batcher";
+import { OllamaEmbedder } from "../embedder/ollama_embedder";
 
 export interface KafkaConsumerConfig {
   brokers: string[];

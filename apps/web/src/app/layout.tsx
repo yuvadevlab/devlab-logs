@@ -8,7 +8,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
-import { ConfigProvider, Toaster } from "@yuva-devlab/ui";
+import { ConfigProvider, Toaster } from "@devlab-logs/ui";
 import { QueryProvider, AuthProvider } from "@/providers";
 import "./globals.css";
 

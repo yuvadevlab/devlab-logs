@@ -4,7 +4,7 @@
  */
 
 import { Pool } from "pg";
-import type { SystemLogRecord, LogEpisodeMatch } from "../types.js";
+import type { SystemLogRecord, LogEpisodeMatch } from "../types";
 
 /**
  * Embedder service encapsulating Ollama interaction and vector database operations.
@@ -112,9 +112,14 @@ export class OllamaEmbedder {
    *
    * @param query Natural language inquiry (e.g. "connection timeout on worker")
    * @param limit Top matches to return
+   * @param tenantId Optional tenant scope for user-level searches
    * @returns Ranked log episode matches with cosine similarity scores
    */
-  async searchLogEpisodes(query: string, limit: number = 5): Promise<LogEpisodeMatch[]> {
+  async searchLogEpisodes(
+    query: string,
+    limit: number = 5,
+    tenantId?: string,
+  ): Promise<LogEpisodeMatch[]> {
     const queryVector = await this.generateEmbedding(query);
     if (!queryVector) {
       return [];
@@ -122,11 +127,17 @@ export class OllamaEmbedder {
 
     const vectorString = `[${queryVector.join(",")}]`;
 
+    const tenantFilter = tenantId ? "AND logs.tenant_id = $2" : "";
+    const limitParameter = tenantId ? "$3" : "$2";
     const searchQuery = `
-      SELECT id, log_id, log_timestamp, service, summary, (1 - (embedding <=> $1::vector)) AS similarity
-      FROM log_embeddings
-      ORDER BY embedding <=> $1::vector ASC
-      LIMIT $2;
+      SELECT embeddings.id, embeddings.log_id, embeddings.log_timestamp, embeddings.service,
+             embeddings.summary, (1 - (embeddings.embedding <=> $1::vector)) AS similarity
+      FROM log_embeddings AS embeddings
+      INNER JOIN system_logs AS logs
+        ON logs.id = embeddings.log_id AND logs.timestamp = embeddings.log_timestamp
+      WHERE TRUE ${tenantFilter}
+      ORDER BY embeddings.embedding <=> $1::vector ASC
+      LIMIT ${limitParameter};
     `;
 
     const res = await this.pool.query<{
@@ -136,7 +147,7 @@ export class OllamaEmbedder {
       service: string;
       summary: string;
       similarity: string | number;
-    }>(searchQuery, [vectorString, limit]);
+    }>(searchQuery, tenantId ? [vectorString, tenantId, limit] : [vectorString, limit]);
 
     return res.rows.map((row) => ({
       id: row.id,
