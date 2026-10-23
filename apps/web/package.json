@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "node --env-file-if-exists=.env.local --env-file-if-exists=.env node_modules/next/dist/bin/next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node --env-file-if-exists=.env.local --env-file-if-exists=.env node_modules/next/dist/bin/next start",
+    "storybook": "storybook dev -p 6003",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
   },
@@ -15,7 +16,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/space-grotesk": "^5.3.0",
     "@tanstack/react-query": "^5.67.2",
-    "@yuva-devlab/auth-client": "^1.0.0",
+    "@yuva-devlab/auth-client": "^1.0.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
     "next": "^15.2.0",
