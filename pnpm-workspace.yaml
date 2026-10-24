@@ -6,5 +6,5 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - "@yuva-devlab/logger@1.2.0"
   - "@yuva-devlab/tokens@1.2.0 || 1.3.0"
-  - "@yuva-devlab/ui@1.4.0 || 1.4.1"
-  - "@yuva-devlab/auth-client@0.2.0 || 0.3.0 || 1.0.0 || 1.0.1"
+  - "@yuva-devlab/ui@1.4.0 || 1.4.1 || 1.4.2"
+  - "@yuva-devlab/auth-client@0.2.0 || 0.3.0 || 1.0.0 || 1.0.1 || 1.1.0"
