@@ -20,7 +20,7 @@ import { Logger } from "@yuva-devlab/logger";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-const port = parseInt(process.env.PORT || "3020", 10);
+const port = parseInt(process.env.PORT || "4003", 10);
 const logger = new Logger("LogsIngest");
 const app = express();
 const server = http.createServer(app);
