@@ -19,39 +19,38 @@ export function JsonTree({ data, filter = "", depth = 0 }: JsonTreeProps) {
   }
 
   const entries = Array.isArray(data)
-    ? data.map((v, i) => [String(i), v] as const)
+    ? data.map((value, index) => [String(index), value] as const)
     : Object.entries(data as object);
 
-  const f = filter.toLowerCase();
-  const matches = (k: string, v: unknown): boolean =>
-    !f ||
-    k.toLowerCase().includes(f) ||
-    (typeof v === "object" && v !== null && Object.entries(v).some(([kk, vv]) => matches(kk, vv)));
+  const normalizedFilter = filter.toLowerCase();
+  const matches = (key: string, value: unknown): boolean =>
+    !normalizedFilter ||
+    key.toLowerCase().includes(normalizedFilter) ||
+    (typeof value === "object" &&
+      value !== null &&
+      Object.entries(value).some(([nestedKey, nestedValue]) => matches(nestedKey, nestedValue)));
 
   return (
     <div className="font-mono text-xs leading-5">
       {entries
-        .filter(([k, v]) => matches(k, v))
-        .map(([k, v]) => (
-          <JsonNode key={k} k={k} v={v} filter={filter} depth={depth} />
+        .filter(([key, value]) => matches(key, value))
+        .map(([key, value]) => (
+          <JsonNode key={key} nodeKey={key} value={value} filter={filter} depth={depth} />
         ))}
     </div>
   );
 }
 
-function JsonNode({
-  k,
-  v,
-  filter,
-  depth,
-}: {
-  k: string;
-  v: unknown;
+interface JsonNodeProps {
+  nodeKey: string;
+  value: unknown;
   filter: string;
   depth: number;
-}) {
+}
+
+function JsonNode({ nodeKey, value, filter, depth }: JsonNodeProps) {
   const [open, setOpen] = useState(true);
-  const isObject = typeof v === "object" && v !== null;
+  const isObject = typeof value === "object" && value !== null;
 
   return (
     <div style={{ paddingLeft: depth ? 14 : 0 }}>
@@ -63,19 +62,19 @@ function JsonNode({
             className="text-left hover:opacity-80"
           >
             <span className="text-muted-foreground mr-1 inline-block w-3">{open ? "▾" : "▸"}</span>
-            <span className="text-syn-key">{k}</span>
+            <span className="text-syn-key">{nodeKey}</span>
             <span className="text-muted-foreground">
-              : {Array.isArray(v) ? `[${(v as unknown[]).length}]` : "{…}"}
+              : {Array.isArray(value) ? `[${value.length}]` : "{…}"}
             </span>
           </button>
-          {open && <JsonTree data={v} filter={filter} depth={depth + 1} />}
+          {open && <JsonTree data={value} filter={filter} depth={depth + 1} />}
         </>
       ) : (
         <div>
           <span className="mr-1 inline-block w-3" />
-          <span className="text-syn-key">{k}</span>
+          <span className="text-syn-key">{nodeKey}</span>
           <span className="text-muted-foreground">: </span>
-          <JsonTree data={v} />
+          <JsonTree data={value} />
         </div>
       )}
     </div>

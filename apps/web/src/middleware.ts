@@ -22,12 +22,31 @@ const AUTH_ROUTES = new Set<string>([
  */
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
+
+  // 1. If returning from DevLab Portal SSO with token in query params
+  const tokenParam =
+    request.nextUrl.searchParams.get("token") || request.nextUrl.searchParams.get("access_token");
+
+  if (tokenParam) {
+    const cleanUrl = new URL(request.url);
+    cleanUrl.searchParams.delete("token");
+    cleanUrl.searchParams.delete("access_token");
+
+    const response = NextResponse.redirect(cleanUrl);
+    response.cookies.set("devlab_access_token", tokenParam, {
+      path: "/",
+      maxAge: 604800,
+      sameSite: "lax",
+    });
+    return response;
+  }
+
   const tokenCookie = request.cookies.get("devlab_access_token");
   const isAuthenticated = Boolean(tokenCookie?.value && tokenCookie.value.trim().length > 0);
 
   const isAuthRoute = AUTH_ROUTES.has(pathname);
 
-  // 1. Unauthenticated users attempting to access protected observability console routes get redirected to /login
+  // 2. Unauthenticated users attempting to access protected observability console routes get redirected to /login
   if (!isAuthenticated && !isAuthRoute) {
     const loginUrl = new URL(APP_ROUTES.LOGIN, request.url);
     // Preserve requested destination if deep-linking into subpages
@@ -37,8 +56,16 @@ export function middleware(request: NextRequest): NextResponse {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 2. Authenticated users attempting to access /login, /forgot-password, etc. get redirected to home console
+  // 3. Authenticated users attempting to access /login, /forgot-password, etc. get redirected to destination or home
   if (isAuthenticated && isAuthRoute) {
+    const redirectParam = request.nextUrl.searchParams.get("redirect");
+    if (redirectParam && redirectParam !== APP_ROUTES.HOME) {
+      try {
+        return NextResponse.redirect(new URL(redirectParam, request.url));
+      } catch {
+        // Fallback
+      }
+    }
     const dashboardUrl = new URL(APP_ROUTES.HOME, request.url);
     return NextResponse.redirect(dashboardUrl);
   }

@@ -16,17 +16,30 @@ import (
 
 func main() {
 	logDir := flag.String("dir", getEnv("LOG_DIR", "./logs"), "Target directory to watch for .log files")
-	ingestURL := flag.String("ingest-url", getEnv("INGEST_URL", "http://localhost:3020/api/v1/logs/batch"), "DevLab Ingest HTTP Endpoint")
-	service := flag.String("service", getEnv("SERVICE_NAME", "finai"), "Default service identifier")
+	ingestURL := flag.String("ingest-url", os.Getenv("INGEST_URL"), "DevLab Ingest HTTP Endpoint")
+	service := flag.String("service", os.Getenv("SERVICE_NAME"), "Default service identifier")
 	batchSize := flag.Int("batch-size", 500, "Maximum records accumulated before bulk flush")
 	flag.Parse()
+
+	if *ingestURL == "" {
+		slog.Error("INGEST_URL or --ingest-url must be set")
+		os.Exit(1)
+	}
+	if *service == "" {
+		slog.Error("SERVICE_NAME or --service must be set")
+		os.Exit(1)
+	}
+	apiKey := os.Getenv("DEVLAB_LOGS_API_KEY")
+	if apiKey == "" {
+		slog.Error("DEVLAB_LOGS_API_KEY must be set to authenticate with DevLab Logs")
+		os.Exit(1)
+	}
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
 	slog.Info("Starting devlab-log-agent telemetry daemon",
 		"dir", *logDir,
-		"ingestURL", *ingestURL,
 		"service", *service,
 		"batchSize", *batchSize,
 	)
@@ -50,7 +63,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	batchProducer := producer.NewBatchProducer(*ingestURL, *batchSize, 200*time.Millisecond)
+	batchProducer := producer.NewBatchProducer(*ingestURL, apiKey, *batchSize, 200*time.Millisecond)
 
 	// Launch consumer goroutine bridging tailer events to producer
 	go func() {

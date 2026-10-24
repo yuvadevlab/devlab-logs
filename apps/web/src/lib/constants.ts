@@ -10,7 +10,14 @@ export * from "./constants/enums";
 export * from "./constants/routes";
 export * from "./constants/regex";
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3020";
+export function getApiBaseUrl(): string {
+  const configuredApiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!configuredApiBaseUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL must be configured for the Logs Console.");
+  }
+  return configuredApiBaseUrl;
+}
 
-export const WS_STREAM_URL =
-  process.env.NEXT_PUBLIC_WS_URL || API_BASE_URL.replace(/^http/, "ws") + API_ROUTES.WS_STREAM;
+export function getWebSocketStreamUrl(): string {
+  return getApiBaseUrl().replace(/^http/, "ws") + API_ROUTES.WS_STREAM;
+}

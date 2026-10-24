@@ -6,7 +6,14 @@
  */
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { WS_STREAM_URL, StreamState, LogLevel } from "@/lib/constants";
+import { useDevLabAuth } from "@yuva-devlab/auth-client";
+import {
+  API_ROUTES,
+  getApiBaseUrl,
+  getWebSocketStreamUrl,
+  StreamState,
+  LogLevel,
+} from "@/lib/constants";
 import { normalizeBackendLog } from "@/lib/logs";
 import type { LogEvent } from "../types";
 
@@ -21,6 +28,7 @@ export function useLiveStream({
   initialLogs = [],
   maxBuffer = MAX_BUFFER,
 }: UseLiveStreamOptions = {}) {
+  const { token } = useDevLabAuth();
   const [logs, setLogs] = useState<LogEvent[]>(initialLogs);
   const [stream, setStream] = useState<StreamState>(StreamState.RECONNECTING);
   const [rateHist, setRateHist] = useState<number[]>(() => Array(30).fill(0));
@@ -29,6 +37,7 @@ export function useLiveStream({
 
   const wsRef = useRef<WebSocket | null>(null);
   const tickCount = useRef(0);
+  const isPaused = Boolean(token && stream === StreamState.PAUSED);
 
   // Sync initial logs when query completes
   useEffect(() => {
@@ -42,23 +51,42 @@ export function useLiveStream({
 
   // Connect to live WebSocket stream
   useEffect(() => {
-    let reconnectTimer: NodeJS.Timeout;
+    let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
     let isCleanedUp = false;
 
-    const connect = () => {
-      if (isCleanedUp) return;
+    const scheduleReconnect = () => {
+      if (!isCleanedUp && !isPaused) {
+        reconnectTimer = setTimeout(() => void connect(), 3000);
+      }
+    };
+
+    const connect = async () => {
+      if (isCleanedUp || isPaused || !token) return;
       try {
-        const ws = new WebSocket(WS_STREAM_URL);
+        const ticketResponse = await fetch(`${getApiBaseUrl()}${API_ROUTES.STREAM_TICKET}`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!ticketResponse.ok) {
+          throw new Error(`Stream authentication failed: ${ticketResponse.status}`);
+        }
+        const ticketData = (await ticketResponse.json()) as { ticket?: string };
+        if (!ticketData.ticket) throw new Error("Stream authentication returned no ticket.");
+        if (isCleanedUp || isPaused) return;
+
+        const streamUrl = new URL(getWebSocketStreamUrl());
+        streamUrl.searchParams.set("ticket", ticketData.ticket);
+        const ws = new WebSocket(streamUrl);
         wsRef.current = ws;
 
         ws.onopen = () => {
-          if (!isCleanedUp) {
+          if (!isCleanedUp && !isPaused) {
             setStream(StreamState.LIVE);
           }
         };
 
         ws.onmessage = (event) => {
-          if (stream === StreamState.PAUSED) return;
+          if (isPaused) return;
           try {
             const raw = JSON.parse(event.data as string) as Record<string, unknown>;
             const eventLog = normalizeBackendLog(raw);
@@ -74,32 +102,34 @@ export function useLiveStream({
 
         ws.onclose = () => {
           if (!isCleanedUp) {
-            setStream((s) =>
-              s === StreamState.PAUSED ? StreamState.PAUSED : StreamState.RECONNECTING,
-            );
-            reconnectTimer = setTimeout(connect, 3000);
+            if (!isPaused) setStream(StreamState.RECONNECTING);
+            scheduleReconnect();
           }
         };
 
         ws.onerror = () => {
           ws.close();
         };
-      } catch {
+      } catch (error) {
+        console.error("[WebSocket] Live stream connection failed:", error);
         if (!isCleanedUp) {
-          setStream(StreamState.RECONNECTING);
-          reconnectTimer = setTimeout(connect, 3000);
+          if (!isPaused) setStream(StreamState.RECONNECTING);
+          scheduleReconnect();
         }
       }
     };
 
-    connect();
+    if (!token) {
+      return;
+    }
+    if (!isPaused) void connect();
 
     return () => {
       isCleanedUp = true;
-      clearTimeout(reconnectTimer);
+      if (reconnectTimer) clearTimeout(reconnectTimer);
       wsRef.current?.close();
     };
-  }, [stream, maxBuffer]);
+  }, [token, isPaused, maxBuffer]);
 
   // Compute EPS and sliding sparkline metrics every second
   useEffect(() => {
@@ -141,7 +171,7 @@ export function useLiveStream({
 
   return {
     logs,
-    stream,
+    stream: token ? stream : StreamState.RECONNECTING,
     rateHist,
     errHist,
     p95,

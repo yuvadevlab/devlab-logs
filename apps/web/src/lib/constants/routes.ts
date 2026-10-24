@@ -18,6 +18,7 @@ export const API_ROUTES = {
   LOGS: "/api/v1/logs",
   LOGS_BATCH: "/api/v1/logs/batch",
   RAG_SEARCH: "/api/v1/logs/rag-search",
+  STREAM_TICKET: "/api/v1/logs/stream-ticket",
   HEALTH: "/health",
   WS_STREAM: "/stream",
   AUTH_LOGIN: "/auth/login",

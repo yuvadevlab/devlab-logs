@@ -8,9 +8,10 @@
 
 import React, { Suspense } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { Activity, ArrowLeft } from "lucide-react";
 import { APP_ROUTES } from "@/lib/constants/routes";
 import { ResetPasswordForm } from "./reset-password-form";
+import { UI_COPY } from "@/lib/ui-copy";
 
 /**
  * Main interactive password reset view wrapped in Suspense boundary for Next.js searchParams.
@@ -19,29 +20,41 @@ import { ResetPasswordForm } from "./reset-password-form";
  */
 export const ResetPasswordView: React.FC = () => {
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-foreground text-xl font-bold tracking-tight">Set Account Password</h2>
-        <p className="text-muted-foreground mt-1 text-xs">
-          Choose a secure password to access your DevLab Logs workspace.
-        </p>
-      </div>
+    <main className="bg-background text-foreground flex min-h-dvh w-full items-center justify-center overflow-y-auto px-4 py-8">
+      <div className="w-full max-w-md space-y-6">
+        <div className="mb-8 flex items-center justify-center gap-3">
+          <span className="bg-primary text-primary-foreground glow flex size-10 items-center justify-center rounded-lg shadow-md">
+            <Activity className="size-5" strokeWidth={2.5} />
+          </span>
+          <span className="text-foreground text-xl font-bold tracking-tight">DevLab Logs</span>
+        </div>
+        <div className="text-center">
+          <h2 className="text-foreground text-xl font-bold tracking-tight">
+            {UI_COPY.AUTH.RESET_PASSWORD.TITLE}
+          </h2>
+          <p className="text-muted-foreground mt-1 text-xs">
+            {UI_COPY.AUTH.RESET_PASSWORD.DESCRIPTION}
+          </p>
+        </div>
 
-      <div className="border-border bg-card rounded-xl border p-6 shadow-sm">
-        <Suspense fallback={<div className="text-muted-foreground text-xs">Loading…</div>}>
-          <ResetPasswordForm />
-        </Suspense>
-      </div>
+        <div className="border-border bg-card rounded-xl border p-6 shadow-sm">
+          <Suspense
+            fallback={<div className="text-muted-foreground text-xs">{UI_COPY.COMMON.LOADING}</div>}
+          >
+            <ResetPasswordForm />
+          </Suspense>
+        </div>
 
-      <div className="text-center">
-        <Link
-          href={APP_ROUTES.LOGIN}
-          className="text-primary hover:text-primary/80 inline-flex items-center gap-1.5 text-xs font-medium"
-        >
-          <ArrowLeft className="size-3.5" />
-          Back to sign in
-        </Link>
+        <div className="text-center">
+          <Link
+            href={APP_ROUTES.LOGIN}
+            className="text-primary hover:text-primary/80 inline-flex items-center gap-1.5 text-xs font-medium"
+          >
+            <ArrowLeft className="size-3.5" />
+            {UI_COPY.AUTH.RESET_PASSWORD.BACK_TO_SIGN_IN}
+          </Link>
+        </div>
       </div>
-    </div>
+    </main>
   );
 };

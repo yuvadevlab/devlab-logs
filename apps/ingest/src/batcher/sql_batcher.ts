@@ -4,7 +4,7 @@
  */
 
 import { Pool } from "pg";
-import type { IngestLogEvent, SystemLogRecord, QueryLogsParams } from "../types.js";
+import type { IngestLogEvent, SystemLogRecord, QueryLogsParams } from "../types";
 
 /**
  * SQL Batcher managing pooled connections and bulk ingestion operations.
@@ -18,11 +18,10 @@ export class SqlBatcher {
    * @param connectionString Database connection URI
    */
   constructor(connectionString?: string) {
-    const connStr =
-      connectionString ||
-      process.env.TELEMETRY_DATABASE_URL ||
-      process.env.DATABASE_URL ||
-      "postgresql://yuvarajpattabi:Yuva1213@localhost:5432/devlab_logs_dev";
+    const connStr = connectionString ?? process.env.TELEMETRY_DATABASE_URL;
+    if (!connStr) {
+      throw new Error("TELEMETRY_DATABASE_URL must be configured for log ingestion.");
+    }
 
     this.pool = new Pool({
       connectionString: connStr,
@@ -116,22 +115,23 @@ export class SqlBatcher {
       values.push(params.tenantId);
     }
     if (params.search) {
-      conditions.push(`message ILIKE ${idx}`);
+      conditions.push(`message ILIKE $${idx++}`);
       values.push(`%${params.search}%`);
     }
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-    const limit = Math.min(params.limit || 100, 1000);
-    const offset = params.offset || 0;
+    const limit = Math.min(Math.max(params.limit ?? 100, 1), 1000);
+    const offset = Math.max(params.offset ?? 0, 0);
 
     const query = `
       SELECT id, service, level, trace_id, tenant_id, message, metadata, timestamp
       FROM system_logs
       ${whereClause}
       ORDER BY timestamp DESC
-      LIMIT ${limit} OFFSET ${offset};
+      LIMIT $${idx++} OFFSET $${idx};
     `;
 
+    values.push(limit, offset);
     const res = await this.pool.query<SystemLogRecord>(query, values);
     return res.rows;
   }

@@ -9,10 +9,11 @@ import {
   SheetTitle,
   SheetDescription,
   Button,
-} from "@yuva-devlab/ui";
+} from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import type { LogEvent } from "../types";
 import { SQL_TEMPLATES, highlightSql, executeQuery } from "./sql-executor";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export interface SqlWorkbenchProps {
   open: boolean;
@@ -82,11 +83,12 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
         <SheetHeader className="text-left">
           <SheetTitle className="flex items-center gap-2">
             <Database className="text-primary size-4" />
-            DuckDB SQL workbench
+            {UI_COPY.LOGS.SQL.TITLE}
           </SheetTitle>
           <SheetDescription>
-            Query the in-memory <code className="chip">logs</code> table (
-            {logs.length.toLocaleString()} rows) with vectorized execution.
+            {UI_COPY.LOGS.SQL.DESCRIPTION_PREFIX} <code className="chip">logs</code>{" "}
+            {UI_COPY.LOGS.SQL.DESCRIPTION_SUFFIX} ({logs.length.toLocaleString()} rows) with
+            vectorized execution.
           </SheetDescription>
         </SheetHeader>
         <div className="grid min-h-0 flex-1 gap-3 px-4 pb-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">

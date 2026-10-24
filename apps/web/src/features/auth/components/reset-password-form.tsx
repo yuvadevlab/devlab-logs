@@ -10,8 +10,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, Lock, Loader2 } from "lucide-react";
-import { Button, Input, Label } from "@yuva-devlab/ui";
+import { Button, Input, Label } from "@devlab-logs/ui";
 import { APP_ROUTES, API_ROUTES } from "@/lib/constants/routes";
+import { UI_COPY } from "@/lib/ui-copy";
 
 /**
  * Interactive form handling token extraction, validation, and password reset dispatch.
@@ -37,19 +38,19 @@ export function ResetPasswordForm(): React.JSX.Element {
 
     // Validate token presence
     if (!token.trim()) {
-      setErrorMessage("Reset or onboarding token is required.");
+      setErrorMessage(UI_COPY.AUTH.RESET_PASSWORD.RESET_TOKEN_REQUIRED);
       return;
     }
 
     // Minimum password security length
     if (password.length < 8) {
-      setErrorMessage("Password must be at least 8 characters long.");
+      setErrorMessage(UI_COPY.AUTH.RESET_PASSWORD.PASSWORD_MINIMUM);
       return;
     }
 
     // Confirmation matching check
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match.");
+      setErrorMessage(UI_COPY.AUTH.RESET_PASSWORD.PASSWORD_MISMATCH);
       return;
     }
 
@@ -57,8 +58,9 @@ export function ResetPasswordForm(): React.JSX.Element {
 
     try {
       const apiBase =
+        process.env.NEXT_PUBLIC_DEVLAB_PORTAL_API_URL ||
+        process.env.NEXT_PUBLIC_DEVLAB_AUTH_URL ||
         process.env.NEXT_PUBLIC_GATEWAY_URL ||
-        process.env.NEXT_PUBLIC_API_URL ||
         "http://localhost:3015";
       const res = await fetch(`${apiBase}${API_ROUTES.AUTH_RESET_PASSWORD}`, {
         method: "POST",
@@ -68,7 +70,7 @@ export function ResetPasswordForm(): React.JSX.Element {
 
       if (!res.ok) {
         const errorData = (await res.json().catch(() => ({}))) as { message?: string };
-        throw new Error(errorData.message || "Reset failed. The token may have expired.");
+        throw new Error(errorData.message || UI_COPY.AUTH.RESET_PASSWORD.RESET_FAILED);
       }
 
       setDone(true);
@@ -89,12 +91,14 @@ export function ResetPasswordForm(): React.JSX.Element {
         </div>
         <div>
           <h3 className="text-foreground text-base font-semibold">
-            Password updated successfully!
+            {UI_COPY.AUTH.RESET_PASSWORD.SUCCESS}
           </h3>
-          <p className="text-muted-foreground mt-1 text-xs">Redirecting you to login…</p>
+          <p className="text-muted-foreground mt-1 text-xs">
+            {UI_COPY.AUTH.RESET_PASSWORD.REDIRECTING}
+          </p>
         </div>
         <Button asChild className="w-full">
-          <Link href={APP_ROUTES.LOGIN}>Go to Login</Link>
+          <Link href={APP_ROUTES.LOGIN}>{UI_COPY.AUTH.RESET_PASSWORD.GO_TO_LOGIN}</Link>
         </Button>
       </div>
     );
@@ -111,12 +115,12 @@ export function ResetPasswordForm(): React.JSX.Element {
       {!tokenFromUrl && (
         <div className="space-y-1.5">
           <Label htmlFor="token" className="text-xs font-semibold">
-            Token
+            {UI_COPY.AUTH.RESET_PASSWORD.TOKEN_LABEL}
           </Label>
           <Input
             id="token"
             type="text"
-            placeholder="Paste your reset token here"
+            placeholder={UI_COPY.AUTH.RESET_PASSWORD.TOKEN_PLACEHOLDER}
             value={token}
             onChange={(e) => setToken(e.target.value)}
             disabled={loading}
@@ -127,12 +131,14 @@ export function ResetPasswordForm(): React.JSX.Element {
 
       <div className="space-y-1.5">
         <Label htmlFor="password" className="text-xs font-semibold">
-          {isWelcome ? "Create Password" : "New Password"}
+          {isWelcome
+            ? UI_COPY.AUTH.RESET_PASSWORD.CREATE_PASSWORD
+            : UI_COPY.AUTH.RESET_PASSWORD.NEW_PASSWORD}
         </Label>
         <Input
           id="password"
           type="password"
-          placeholder="••••••••••••"
+          placeholder={UI_COPY.AUTH.RESET_PASSWORD.PASSWORD_PLACEHOLDER}
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -143,12 +149,12 @@ export function ResetPasswordForm(): React.JSX.Element {
 
       <div className="space-y-1.5">
         <Label htmlFor="confirmPassword" className="text-xs font-semibold">
-          Confirm Password
+          {UI_COPY.AUTH.RESET_PASSWORD.CONFIRM_PASSWORD}
         </Label>
         <Input
           id="confirmPassword"
           type="password"
-          placeholder="••••••••••••"
+          placeholder={UI_COPY.AUTH.RESET_PASSWORD.PASSWORD_PLACEHOLDER}
           required
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}

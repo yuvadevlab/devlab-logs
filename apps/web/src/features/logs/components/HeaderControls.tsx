@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { Button, Input, Popover, PopoverTrigger, PopoverContent } from "@yuva-devlab/ui";
+import { Button, Input, Popover, PopoverTrigger, PopoverContent } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { StreamState, TimeRangeKey, type TimeWindow } from "../types";
+import { UI_COPY } from "@/lib/ui-copy";
 
 const STREAM_STATE_CONFIG: Record<
   StreamState,
@@ -99,11 +100,11 @@ export function TimeRangeControl({
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
-            Custom
+            {UI_COPY.LOGS.FILTERS.CUSTOM}
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-72 space-y-2 p-3" align="end">
-          <div className="text-xs font-medium">Custom range</div>
+          <div className="text-xs font-medium">{UI_COPY.LOGS.FILTERS.CUSTOM_RANGE}</div>
           <Input
             type="datetime-local"
             value={custom.from}
@@ -122,7 +123,7 @@ export function TimeRangeControl({
             disabled={!custom.from || !custom.to}
             onClick={() => setRange(TimeRangeKey.CUSTOM)}
           >
-            Apply range
+            {UI_COPY.LOGS.FILTERS.APPLY_RANGE}
           </Button>
         </PopoverContent>
       </Popover>

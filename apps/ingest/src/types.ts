@@ -14,7 +14,7 @@ export const IngestLogEventSchema = z.object({
   level: z.string().min(1).max(16),
   traceId: z.string().max(64).optional(),
   tenantId: z.string().max(64).optional(),
-  message: z.string(),
+  message: z.string().max(16_384),
   metadata: z.record(z.unknown()).optional().default({}),
   timestamp: z.string().or(z.date()),
 });

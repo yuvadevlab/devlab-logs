@@ -10,24 +10,18 @@ import {
   DialogDescription,
   Button,
   Input,
-} from "@yuva-devlab/ui";
+} from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { LogLevel, AiAnalysisPhase, type LogEvent, type LogEpisodeMatch } from "../types";
 import { useRagSearchMutation } from "../api/rag-search";
 import { AiSection } from "./AiSection";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export interface AiModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   logs: LogEvent[];
 }
-
-const INVESTIGATION_STEPS = [
-  "Generating query vector embeddings…",
-  "Executing HNSW cosine similarity search…",
-  "Correlating log episodes across services…",
-  "Synthesizing incident root cause…",
-];
 
 /**
  * Natural language Log-RAG incident investigation modal.
@@ -38,6 +32,7 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
   const [step, setStep] = useState(0);
 
   const ragMutation = useRagSearchMutation();
+  const investigationSteps = UI_COPY.LOGS.AI.INVESTIGATION_STEPS;
 
   const phase: AiAnalysisPhase = ragMutation.isPending
     ? AiAnalysisPhase.THINKING
@@ -61,7 +56,7 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
     if (!prompt.trim() || ragMutation.isPending) return;
 
     setStep(0);
-    INVESTIGATION_STEPS.forEach((_, i) => {
+    investigationSteps.forEach((_, i) => {
       setTimeout(() => setStep(i + 1), 300 * (i + 1));
     });
 
@@ -78,9 +73,7 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
             <Sparkles className="text-ai size-4" />
             Log-RAG Incident Investigation
           </DialogTitle>
-          <DialogDescription>
-            Ask in plain English. Queries are embedded with Ollama and grounded in vector logs.
-          </DialogDescription>
+          <DialogDescription>{UI_COPY.LOGS.AI.ASK_DESCRIPTION}</DialogDescription>
         </DialogHeader>
 
         <div className="flex gap-2">
@@ -88,7 +81,7 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleInvestigate()}
-            placeholder="e.g. database timeout or authentication failure…"
+            placeholder={UI_COPY.LOGS.AI.PROMPT_PLACEHOLDER}
             className="font-mono text-xs"
           />
           <Button
@@ -96,13 +89,13 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
             disabled={phase === AiAnalysisPhase.THINKING || !prompt.trim()}
           >
             <Bot className="mr-1 size-4" />
-            Investigate
+            {UI_COPY.LOGS.AI.INVESTIGATE}
           </Button>
         </div>
 
         {phase === AiAnalysisPhase.THINKING && (
           <div className="panel space-y-1.5 p-4 font-mono text-xs">
-            {INVESTIGATION_STEPS.map((s, i) => (
+            {investigationSteps.map((s, i) => (
               <div
                 key={s}
                 className={cn(
@@ -123,25 +116,22 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
         {phase === AiAnalysisPhase.ERROR && (
           <div className="panel text-error flex items-center gap-2 p-4 text-xs">
             <AlertCircle className="size-4 shrink-0" />
-            <span>
-              Failed to query Log-RAG vector embeddings. Ensure DevLab Ingestion Gateway is
-              reachable.
-            </span>
+            <span>{UI_COPY.LOGS.AI.QUERY_FAILED}</span>
           </div>
         )}
 
         {phase === AiAnalysisPhase.DONE && (
           <div className="animate-in fade-in slide-in-from-bottom-2 space-y-3">
-            <AiSection icon={FileSearch} title="Buffer Telemetry Context">
-              Analyzed telemetry buffer contains <b>{bufferAnalysis.errorCount}</b> error and fatal
-              events. Primary impacted service:{" "}
-              <b>{bufferAnalysis.topServices[0]?.[0] ?? "none"}</b> (
-              {bufferAnalysis.topServices[0]?.[1] ?? 0} errors).
+            <AiSection icon={FileSearch} title={UI_COPY.LOGS.AI.BUFFER_CONTEXT}>
+              Analyzed telemetry buffer contains <b>{bufferAnalysis.errorCount}</b>{" "}
+              {UI_COPY.LOGS.AI.ERROR_COUNT}{" "}
+              <b>{bufferAnalysis.topServices[0]?.[0] ?? UI_COPY.LOGS.AI.NO_MATCH}</b> (
+              {bufferAnalysis.topServices[0]?.[1] ?? 0} {UI_COPY.LOGS.AI.ERROR_COUNT_SUFFIX}
             </AiSection>
 
             {matches.length > 0 ? (
               <>
-                <AiSection icon={Target} title="Matched Vector Episodes">
+                <AiSection icon={Target} title={UI_COPY.LOGS.AI.MATCHED_EPISODES}>
                   <div className="space-y-1.5">
                     {matches.map((match) => (
                       <div
@@ -149,7 +139,8 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
                         className="bg-background/50 flex items-start gap-2 rounded border p-2 font-mono text-[11px]"
                       >
                         <span className="chip lvl-info shrink-0">
-                          {(match.similarity * 100).toFixed(1)}% match
+                          {(match.similarity * 100).toFixed(1)}
+                          {UI_COPY.LOGS.AI.MATCH}
                         </span>
                         <span className="chip shrink-0">{match.service}</span>
                         <span className="flex-1">{match.summary}</span>
@@ -161,24 +152,21 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
                   </div>
                 </AiSection>
 
-                <AiSection icon={Wrench} title="Remediation Protocol">
+                <AiSection icon={Wrench} title={UI_COPY.LOGS.AI.REMEDIATION}>
                   <ol className="list-decimal space-y-1 pl-4 text-xs">
                     <li>
-                      Inspect upstream connection limits on {matches[0]?.service ?? "service"}.
+                      {UI_COPY.LOGS.AI.INSPECT_UPSTREAM(
+                        matches[0]?.service ?? UI_COPY.LOGS.AI.NO_SERVICE,
+                      )}
                     </li>
-                    <li>Verify trace correlation ID across service boundaries.</li>
-                    <li>
-                      Enable rate-limiting circuit breaker if traffic exceeds service threshold.
-                    </li>
+                    <li>{UI_COPY.LOGS.AI.VERIFY_TRACE}</li>
+                    <li>{UI_COPY.LOGS.AI.ENABLE_RATE_LIMIT}</li>
                   </ol>
                 </AiSection>
               </>
             ) : (
-              <AiSection icon={Database} title="Vector Search Results">
-                <p className="text-muted-foreground text-xs">
-                  No semantic episodes matched the query in the vector store. Ingest error logs with
-                  Ollama embeddings enabled to populate the vector index.
-                </p>
+              <AiSection icon={Database} title={UI_COPY.LOGS.AI.VECTOR_RESULTS}>
+                <p className="text-muted-foreground text-xs">{UI_COPY.LOGS.AI.NO_MATCHES}</p>
               </AiSection>
             )}
           </div>

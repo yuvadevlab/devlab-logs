@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from "react";
 import { Clock, Eye, ArrowDownToLine } from "lucide-react";
 import type { LogEvent } from "../types";
 import { LogRow } from "./LogRow";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export interface LogStreamListProps {
   logs: LogEvent[];
@@ -79,15 +80,15 @@ export function LogStreamList({
           className="hover:text-foreground flex cursor-pointer items-center gap-1 text-left"
         >
           <Clock className="size-3" />
-          {isoTime ? "ISO UTC" : "Relative"} ⇄
+          {isoTime ? UI_COPY.LOGS.STREAM.ISO_UTC : UI_COPY.LOGS.STREAM.RELATIVE} ⇄
         </button>
-        <span>Level</span>
-        <span>Service</span>
-        <span>Trace</span>
+        <span>{UI_COPY.LOGS.STREAM.LEVEL}</span>
+        <span>{UI_COPY.LOGS.STREAM.SERVICE}</span>
+        <span>{UI_COPY.LOGS.STREAM.TRACE}</span>
         <span className="flex justify-between">
-          Message
+          {UI_COPY.LOGS.STREAM.MESSAGE}
           <span className="tracking-normal normal-case">
-            {visibleLogs.length.toLocaleString()} events
+            {visibleLogs.length.toLocaleString()} {UI_COPY.LOGS.STREAM.EVENTS}
             {filterCount > 0 && (
               <>
                 {" "}
@@ -97,7 +98,7 @@ export function LogStreamList({
                   onClick={onClearFilters}
                   className="text-primary cursor-pointer hover:underline"
                 >
-                  clear {filterCount} filter{filterCount > 1 ? "s" : ""}
+                  {UI_COPY.LOGS.STREAM.CLEAR_FILTERS(filterCount)}
                 </button>
               </>
             )}
@@ -116,11 +117,11 @@ export function LogStreamList({
           <div className="grid h-full place-items-center p-10 text-center">
             <div>
               <Eye className="text-muted-foreground mx-auto mb-3 size-8" />
-              <div className="font-sans text-base font-medium">No events match these filters</div>
+              <div className="font-sans text-base font-medium">
+                {UI_COPY.LOGS.STREAM.EMPTY_TITLE}
+              </div>
               <p className="text-muted-foreground mt-1 font-sans text-xs">
-                {logs.length
-                  ? "Try widening the time range or clearing active filters."
-                  : "Buffer is empty — waiting for incoming telemetry events."}
+                {logs.length ? UI_COPY.LOGS.STREAM.EMPTY_FILTERS : UI_COPY.LOGS.STREAM.EMPTY_BUFFER}
               </p>
             </div>
           </div>
@@ -155,7 +156,7 @@ export function LogStreamList({
           }}
           className="bg-primary text-primary-foreground glow mx-auto -mt-12 mb-3 flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium shadow-lg"
         >
-          <ArrowDownToLine className="size-3.5" /> Jump to live
+          <ArrowDownToLine className="size-3.5" /> {UI_COPY.LOGS.STREAM.JUMP_TO_LIVE}
         </button>
       )}
     </section>
