@@ -16,6 +16,7 @@ import (
 // BatchProducer accumulates telemetry events and executes bulk HTTP or message queue flushes.
 type BatchProducer struct {
 	ingestURL     string
+	apiKey        string
 	batchSize     int
 	flushInterval time.Duration
 	buffer        []*normalizer.LogEvent
@@ -24,9 +25,10 @@ type BatchProducer struct {
 }
 
 // NewBatchProducer instantiates a new backpressure batcher.
-func NewBatchProducer(ingestURL string, batchSize int, flushInterval time.Duration) *BatchProducer {
+func NewBatchProducer(ingestURL string, apiKey string, batchSize int, flushInterval time.Duration) *BatchProducer {
 	return &BatchProducer{
 		ingestURL:     ingestURL,
+		apiKey:        apiKey,
 		batchSize:     batchSize,
 		flushInterval: flushInterval,
 		buffer:        make([]*normalizer.LogEvent, 0, batchSize),
@@ -59,20 +61,23 @@ func (bp *BatchProducer) Flush() {
 
 	data, err := json.Marshal(batch)
 	if err != nil {
-		slog.Error("Failed to serialize batch", "err", err)
+		slog.Error("Failed to serialize telemetry batch")
 		return
 	}
 
 	req, err := http.NewRequest("POST", bp.ingestURL, bytes.NewBuffer(data))
 	if err != nil {
-		slog.Error("Failed to build HTTP request", "err", err)
+		slog.Error("Failed to build telemetry ingestion request")
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
+	if bp.apiKey != "" {
+		req.Header.Set("Authorization", "Bearer "+bp.apiKey)
+	}
 
 	resp, err := bp.httpClient.Do(req)
 	if err != nil {
-		slog.Error("Failed to transmit batch to ingest endpoint", "count", len(batch), "err", err)
+		slog.Error("Failed to transmit telemetry batch", "count", len(batch))
 		return
 	}
 	defer resp.Body.Close()

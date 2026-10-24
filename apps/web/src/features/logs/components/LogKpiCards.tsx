@@ -2,7 +2,8 @@
 
 import React from "react";
 import { Zap, AlertTriangle, Server, Cpu } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { KpiCard } from "@devlab-logs/ui";
+import { UI_COPY } from "@/lib/ui-copy";
 import { Environment, LogLevel } from "../types";
 
 export interface LogKpiCardsProps {
@@ -14,77 +15,6 @@ export interface LogKpiCardsProps {
   p95: number;
 }
 
-function Spark({ data, isErrorTone }: { data: number[]; isErrorTone?: boolean }) {
-  const max = Math.max(1, ...data);
-  const pts = data
-    .map((v, i) => `${(i / (data.length - 1)) * 100},${28 - (v / max) * 26}`)
-    .join(" ");
-  return (
-    <svg
-      viewBox="0 0 100 30"
-      preserveAspectRatio="none"
-      className={cn("h-8 w-full", isErrorTone ? "text-error" : "text-primary")}
-    >
-      <polyline points={`0,30 ${pts} 100,30`} className="fill-current opacity-10" />
-      <polyline
-        points={pts}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
-  );
-}
-
-function Kpi({
-  icon: Icon,
-  label,
-  value,
-  unit,
-  spark,
-  sub,
-  badge,
-  isErrorTone,
-}: {
-  icon: typeof Zap;
-  label: string;
-  value: string;
-  unit: string;
-  spark?: number[];
-  sub?: string;
-  badge?: { label: string; class: string };
-  isErrorTone?: boolean;
-}) {
-  return (
-    <div className="panel flex flex-col justify-between p-3">
-      <div className="text-muted-foreground flex items-center justify-between text-xs">
-        <span className="flex items-center gap-1.5">
-          <Icon className="size-3.5" />
-          {label}
-        </span>
-        {badge && <span className={cn("chip", badge.class)}>{badge.label}</span>}
-      </div>
-      <div className="mt-1 flex items-baseline gap-1">
-        <span
-          className={cn(
-            "font-mono text-2xl font-semibold tabular-nums",
-            isErrorTone && "text-error",
-          )}
-        >
-          {value}
-        </span>
-        <span className="text-muted-foreground text-xs">{unit}</span>
-      </div>
-      {spark ? (
-        <Spark data={spark} isErrorTone={isErrorTone} />
-      ) : (
-        <div className="text-muted-foreground font-mono text-[11px]">{sub}</div>
-      )}
-    </div>
-  );
-}
-
 /**
  * Top KPI dashboard metrics summary cards.
  */
@@ -93,39 +23,45 @@ export function LogKpiCards({ eps, errRate, rateHist, errHist, env, p95 }: LogKp
   const isCritical = errRate > 8;
 
   const errBadge = isCritical
-    ? { label: LogLevel.FATAL, class: "lvl-error" }
+    ? { label: LogLevel.FATAL, className: "lvl-error" }
     : isHighError
-      ? { label: LogLevel.WARN, class: "lvl-warn" }
-      : { label: LogLevel.INFO, class: "lvl-info" };
+      ? { label: LogLevel.WARN, className: "lvl-warn" }
+      : { label: LogLevel.INFO, className: "lvl-info" };
 
   const collectors =
     env === Environment.DEVELOPMENT ? "3" : env === Environment.STAGING ? "24" : "128";
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      <Kpi icon={Zap} label="Throughput" value={eps.toFixed(1)} unit="ev/s" spark={rateHist} />
-      <Kpi
+      <KpiCard
+        icon={Zap}
+        label={UI_COPY.LOGS.METRICS.THROUGHPUT}
+        value={eps.toFixed(1)}
+        unit={UI_COPY.LOGS.HEADER.EVENTS_PER_SECOND}
+        sparkData={rateHist}
+      />
+      <KpiCard
         icon={AlertTriangle}
-        label="Error rate"
+        label={UI_COPY.LOGS.METRICS.ERROR_RATE}
         value={errRate.toFixed(1)}
         unit="%"
-        spark={errHist}
+        sparkData={errHist}
         badge={errBadge}
-        isErrorTone={isHighError}
+        tone={isHighError ? "error" : undefined}
       />
-      <Kpi
+      <KpiCard
         icon={Server}
-        label="Edge collectors"
+        label={UI_COPY.LOGS.METRICS.EDGE_COLLECTORS}
         value={collectors}
-        unit="go agents"
-        sub="Kafka broker connected"
+        unit={UI_COPY.LOGS.METRICS.COLLECTORS_UNIT}
+        subtext={UI_COPY.LOGS.METRICS.COLLECTORS_NOTE}
       />
-      <Kpi
+      <KpiCard
         icon={Cpu}
-        label="p95 query latency"
+        label={UI_COPY.LOGS.METRICS.P95_QUERY_LATENCY}
         value={`${p95}`}
         unit="ms"
-        sub="duckdb vectorized"
+        subtext={UI_COPY.LOGS.METRICS.QUERY_LATENCY_NOTE}
       />
     </div>
   );

@@ -3,6 +3,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { LogLevel, LEVELS, type LogEvent } from "../types";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export interface LogHistogramProps {
   logs: LogEvent[];
@@ -81,7 +82,7 @@ export function LogHistogram({
   return (
     <div className="panel flex flex-col p-3">
       <div className="mb-2 flex items-center justify-between text-xs">
-        <span className="text-muted-foreground">Log volume · drag to zoom</span>
+        <span className="text-muted-foreground">{UI_COPY.LOGS.STREAM.LOG_VOLUME}</span>
         <div className="flex items-center gap-3 font-mono text-[10px]">
           {ORDER.slice()
             .reverse()

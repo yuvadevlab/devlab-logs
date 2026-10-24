@@ -19,9 +19,10 @@ import {
   SelectContent,
   SelectItem,
   Switch,
-} from "@yuva-devlab/ui";
+} from "@devlab-logs/ui";
 import { Environment, StreamState, type TimeRangeKey, type TimeWindow } from "../types";
 import { UserButton } from "@yuva-devlab/auth-client";
+import { UI_COPY } from "@/lib/ui-copy";
 import { StreamBadge, TimeRangeControl } from "./HeaderControls";
 
 export interface LogHeaderProps {
@@ -73,9 +74,9 @@ export function LogHeader({
           <Activity className="size-4" strokeWidth={2.5} />
         </div>
         <div className="leading-tight">
-          <div className="font-semibold tracking-tight">DevLab Logs</div>
+          <div className="font-semibold tracking-tight">{UI_COPY.COMMON.BRAND}</div>
           <div className="text-muted-foreground font-mono text-[10px]">
-            telemetry · kafka · duckdb
+            {UI_COPY.COMMON.TELEMETRY_TAGLINE}
           </div>
         </div>
       </div>
@@ -86,9 +87,13 @@ export function LogHeader({
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={Environment.PRODUCTION}>● production</SelectItem>
-          <SelectItem value={Environment.STAGING}>● staging</SelectItem>
-          <SelectItem value={Environment.DEVELOPMENT}>● local-dev</SelectItem>
+          <SelectItem value={Environment.PRODUCTION}>
+            {UI_COPY.COMMON.ENVIRONMENT.PRODUCTION}
+          </SelectItem>
+          <SelectItem value={Environment.STAGING}>{UI_COPY.COMMON.ENVIRONMENT.STAGING}</SelectItem>
+          <SelectItem value={Environment.DEVELOPMENT}>
+            {UI_COPY.COMMON.ENVIRONMENT.DEVELOPMENT}
+          </SelectItem>
         </SelectContent>
       </Select>
 
@@ -98,10 +103,11 @@ export function LogHeader({
       {/* Throughput & Buffer Info */}
       <div className="text-muted-foreground hidden items-center gap-4 font-mono text-xs lg:flex">
         <span>
-          <span className="text-foreground">{eps.toFixed(1)}</span> ev/s
+          <span className="text-foreground">{eps.toFixed(1)}</span>{" "}
+          {UI_COPY.LOGS.HEADER.EVENTS_PER_SECOND}
         </span>
         <span className="flex items-center gap-2">
-          buf
+          {UI_COPY.LOGS.HEADER.BUFFER}
           <span className="bg-muted h-1.5 w-20 overflow-hidden rounded">
             <span
               className="bg-primary block h-full transition-all"
@@ -118,7 +124,7 @@ export function LogHeader({
         <TimeRangeControl range={range} setRange={setRange} custom={custom} setCustom={setCustom} />
 
         <label className="flex cursor-pointer items-center gap-1.5 rounded-md border px-2 py-1 text-xs">
-          <ArrowDownToLine className="size-3.5" /> Auto-scroll
+          <ArrowDownToLine className="size-3.5" /> {UI_COPY.LOGS.HEADER.AUTO_SCROLL}
           <Switch checked={autoScroll} onCheckedChange={setAutoScroll} className="scale-75" />
         </label>
 
@@ -128,22 +134,24 @@ export function LogHeader({
           ) : (
             <Pause className="mr-1 size-3" />
           )}
-          {stream === StreamState.PAUSED ? "Resume" : "Pause"}
+          {stream === StreamState.PAUSED
+            ? UI_COPY.COMMON.ACTIONS.RESUME
+            : UI_COPY.COMMON.ACTIONS.PAUSE}
         </Button>
 
         <Button size="sm" variant="ghost" onClick={onClearLogs}>
           <Eraser className="mr-1 size-3" />
-          Clear
+          {UI_COPY.COMMON.ACTIONS.CLEAR}
         </Button>
 
         <Button size="sm" variant="outline" onClick={onOpenSql}>
           <Database className="mr-1 size-3" />
-          SQL
+          {UI_COPY.COMMON.ACTIONS.SQL}
         </Button>
 
         <Button size="sm" onClick={onOpenAi} className="glow">
           <Sparkles className="mr-1 size-3" />
-          Ask AI
+          {UI_COPY.COMMON.ACTIONS.ASK_AI}
         </Button>
 
         <Button

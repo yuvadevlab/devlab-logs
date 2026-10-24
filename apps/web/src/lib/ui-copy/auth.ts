@@ -1,0 +1,20 @@
+export const AUTH_COPY = {
+  RESET_PASSWORD: {
+    SUCCESS: "Password updated successfully!",
+    TITLE: "Set Account Password",
+    DESCRIPTION: "Choose a secure password to access your DevLab Logs workspace.",
+    BACK_TO_SIGN_IN: "Back to sign in",
+    REDIRECTING: "Redirecting you to login…",
+    GO_TO_LOGIN: "Go to Login",
+    TOKEN_LABEL: "Token",
+    TOKEN_PLACEHOLDER: "Paste your reset token here",
+    CREATE_PASSWORD: "Create Password",
+    NEW_PASSWORD: "New Password",
+    CONFIRM_PASSWORD: "Confirm Password",
+    PASSWORD_PLACEHOLDER: "••••••••••••",
+    RESET_TOKEN_REQUIRED: "Reset or onboarding token is required.",
+    PASSWORD_MINIMUM: "Password must be at least 8 characters long.",
+    PASSWORD_MISMATCH: "Passwords do not match.",
+    RESET_FAILED: "Reset failed. The token may have expired.",
+  },
+} as const;

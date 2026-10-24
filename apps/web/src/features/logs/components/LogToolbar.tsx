@@ -2,11 +2,12 @@
 
 import React from "react";
 import { Search, History, GitBranch, X, Server } from "lucide-react";
-import { Button, Input, Popover, PopoverTrigger, PopoverContent, Checkbox } from "@yuva-devlab/ui";
+import { Button, Input, Popover, PopoverTrigger, PopoverContent, Checkbox } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { LEVEL_CLASS } from "@/lib/logs";
 import { LogLevel, ServiceName, ExportFormat, LEVELS, SERVICES, type LogEvent } from "../types";
 import { ExportButton } from "./ExportButton";
+import { UI_COPY } from "@/lib/ui-copy";
 
 export interface LogToolbarProps {
   query: string;
@@ -172,7 +173,7 @@ export function LogToolbar({
         <Input
           value={traceFilter}
           onChange={(e) => setTraceFilter(e.target.value)}
-          placeholder="trace_id"
+          placeholder={UI_COPY.LOGS.FILTERS.TRACE_ID_PLACEHOLDER}
           className="h-8 w-36 pl-7 font-mono text-xs"
         />
         {traceFilter && (

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { toast } from "@yuva-devlab/ui";
+import { toast } from "@devlab-logs/ui";
 import { LogLevel } from "../types";
 import { useLogsQuery } from "../api/get-logs";
 import { useLiveStream } from "../api/use-live-stream";
@@ -15,6 +15,7 @@ import { LogDrawer } from "./LogDrawer";
 import { AiModal } from "./AiModal";
 import { SqlWorkbench } from "./SqlWorkbench";
 import { CommandPalette } from "./CommandPalette";
+import { UI_COPY } from "@/lib/ui-copy";
 
 const MAX_BUFFER = 5000;
 
@@ -88,7 +89,7 @@ export function Console() {
         setAutoScroll={filterState.setAutoScroll}
         onClearLogs={() => {
           clearLogs();
-          toast.success("Buffer cleared");
+          toast.success(UI_COPY.LOGS.NOTIFICATIONS.BUFFER_CLEARED);
         }}
         onOpenSql={() => setSqlOpen(true)}
         onOpenAi={() => setAiOpen(true)}

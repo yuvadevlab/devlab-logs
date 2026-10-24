@@ -2,11 +2,11 @@
 
 import React from "react";
 import { Copy, GitBranch, Activity, Eye, ChevronRight } from "lucide-react";
-import { toast } from "@yuva-devlab/ui";
+import { JsonTree, toast } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { LEVEL_CLASS, fmtIso, fmtRel } from "@/lib/logs";
+import { UI_COPY } from "@/lib/ui-copy";
 import { LogLevel, type LogEvent } from "../types";
-import { JsonTree } from "./JsonTree";
 
 export interface LogRowProps {
   log: LogEvent;
@@ -71,7 +71,7 @@ export function LogRow({
 
   const copyText = (t: string, label: string) => {
     navigator.clipboard?.writeText(t).catch(() => {});
-    toast.success(`${label} copied to clipboard`);
+    toast.success(UI_COPY.LOGS.NOTIFICATIONS.COPIED(label));
   };
 
   return (
@@ -94,10 +94,10 @@ export function LogRow({
             onTrace();
           }}
           className="chip text-ai hover:border-ai truncate"
-          title="Filter by trace"
+          title={UI_COPY.LOGS.ROW_ACTIONS.FILTER_BY_TRACE}
         >
           <GitBranch className="size-3 shrink-0" />
-          {log.traceId ? log.traceId.slice(0, 10) : "no-trace"}
+          {log.traceId ? log.traceId.slice(0, 10) : UI_COPY.LOGS.STREAM.NO_TRACE}
         </button>
         <span className="truncate">{highlight(log.message, query, regex)}</span>
         <button
@@ -115,16 +115,24 @@ export function LogRow({
         <div className="bg-popover absolute top-1/2 right-10 hidden -translate-y-1/2 items-center gap-0.5 rounded-md border p-0.5 shadow-lg group-hover:flex">
           <ActionButton
             icon={Copy}
-            title="Copy message"
-            onClick={() => copyText(log.message, "Message")}
+            title={UI_COPY.LOGS.ROW_ACTIONS.COPY_MESSAGE}
+            onClick={() => copyText(log.message, UI_COPY.LOGS.NOTIFICATIONS.MESSAGE)}
           />
           <ActionButton
             icon={GitBranch}
-            title="Copy trace ID"
-            onClick={() => copyText(log.traceId, "Trace ID")}
+            title={UI_COPY.LOGS.ROW_ACTIONS.COPY_TRACE_ID}
+            onClick={() => copyText(log.traceId, UI_COPY.LOGS.NOTIFICATIONS.TRACE_ID)}
           />
-          <ActionButton icon={Activity} title="View trace spans" onClick={onInspect} />
-          <ActionButton icon={Eye} title="Inspect full payload" onClick={onToggle} />
+          <ActionButton
+            icon={Activity}
+            title={UI_COPY.LOGS.ROW_ACTIONS.VIEW_TRACE_SPANS}
+            onClick={onInspect}
+          />
+          <ActionButton
+            icon={Eye}
+            title={UI_COPY.LOGS.ROW_ACTIONS.INSPECT_PAYLOAD}
+            onClick={onToggle}
+          />
         </div>
       </div>
       {open && (

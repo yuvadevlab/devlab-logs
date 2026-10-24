@@ -64,12 +64,36 @@ pnpm install
 pnpm dev
 ```
 
+### Authenticated ingestion and console access
+
+- Configure `TELEMETRY_DATABASE_URL` and `DEVLAB_LOGS_API_KEY` in
+  `apps/ingest/.env`. Keep the ingestion key server-side; never expose it to the
+  browser.
+- Configure `DEVLAB_PORTAL_API_URL`, `OIDC_ISSUER`, and
+  `DEVLAB_LOGS_CORS_ORIGINS` for Portal SSO and the allowed console origin.
+- Set `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_DEVLAB_PORTAL_API_URL`, and
+  `NEXT_PUBLIC_DEVLAB_PORTAL_WEB_URL` in `apps/web/.env.local`. The console uses
+  the authenticated Portal session for log queries and obtains a one-time,
+  short-lived ticket for WebSocket connections.
+- Set `INGEST_URL`, `SERVICE_NAME`, and `DEVLAB_LOGS_API_KEY` in the collector's
+  process environment. `INGEST_URL` must use HTTPS outside local development.
+- Set `DEVLAB_LOGS_READ_API_KEY` only for trusted server-side consumers that
+  need service-to-service read access, such as IncidentAI. Portal users receive
+  tenant-scoped query access.
+
+The API does not permit anonymous ingestion or log reads. Do not put ingestion
+or read keys in `NEXT_PUBLIC_*` variables, and rotate any credentials that have
+been exposed in local environment files.
+
 ### 2. Run the Go Edge Agent
 
 ```bash
 cd apps/agent
-go run cmd/main.go --config config.yaml
+go run ./cmd --dir ./logs
 ```
+
+Provide `INGEST_URL`, `SERVICE_NAME`, and `DEVLAB_LOGS_API_KEY` through the
+process environment or a secret manager before starting the collector.
 
 ### 3. Build & Typecheck
 

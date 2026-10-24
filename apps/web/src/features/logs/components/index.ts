@@ -2,7 +2,6 @@
  * Component barrel exports for Telemetry & Log Analytics feature.
  */
 
-export * from "./JsonTree";
 export * from "./LogDrawer";
 export * from "./AiModal";
 export * from "./SqlWorkbench";
