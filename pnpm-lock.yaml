@@ -279,8 +279,8 @@ importers:
         specifier: ^5.67.2
         version: 5.104.1(react@19.3.0)
       '@yuva-devlab/auth-client':
-        specifier: ^1.1.0
-        version: 1.1.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^1.1.1
+        version: 1.1.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -328,8 +328,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.0
       '@yuva-devlab/ui':
-        specifier: ^1.4.2
-        version: 1.4.2(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))
+        specifier: ^1.4.3
+        version: 1.4.3(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))
       react:
         specifier: ^19.0.0
         version: 19.3.0
@@ -2167,8 +2167,8 @@ packages:
     resolution: {integrity: sha512-0GxiUGqMU0qXJt58cBsiG3DP8lUmBaFo2vChtUX+CT7PnR3v/VGLLrzVP4K9r1lNiZXjHYefMBbPunplr09v6w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@yuva-devlab/auth-client@1.1.0':
-    resolution: {integrity: sha512-RlLPhItj32+mPuQR/6IkXV0337LMgAKnhv4e+RV7Tl0qoY9Y3id8G/n/7GVj778tWMkSXLELiQiWO8Z53iKyJw==}
+  '@yuva-devlab/auth-client@1.1.1':
+    resolution: {integrity: sha512-4xIU9mOmU2ZspRQnuZqlRRI+HOSDJOiQCJkaNzD0W8/3Q2czQjT5M+iR7d9XOKi9fZSQeGbE27GUjJLabmKegw==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -2182,8 +2182,8 @@ packages:
   '@yuva-devlab/tokens@1.3.0':
     resolution: {integrity: sha512-yfAzbjekLngeI9gDyCN10DJpGxYzp0cgKJmlRfjnIrQNHGojZWk6PdCsuV0VP6W3UpoOHAVl+cd0DLnO9NPu7Q==}
 
-  '@yuva-devlab/ui@1.4.2':
-    resolution: {integrity: sha512-GYozqbnfzixl/fGfiPt+zzF+A5iGAytC0JlyKoG6nacE1qRu59VQ3jG2fIJtkKTKFypx8mzF0hFKRYDzR1D3xA==}
+  '@yuva-devlab/ui@1.4.3':
+    resolution: {integrity: sha512-uyqeP5KSwlCJkc8NfyIa/7d7hNZFlQPv3CUQTFSd4xPATEpKTr8FvN74K2ePMP+meeqGspqX3GnzguVOGeiR8g==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -5727,7 +5727,7 @@ snapshots:
       '@typescript-eslint/types': 8.71.1
       eslint-visitor-keys: 5.0.1
 
-  '@yuva-devlab/auth-client@1.1.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@yuva-devlab/auth-client@1.1.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@yuva-devlab/errors': 0.2.0
       '@yuva-devlab/logger': 1.2.0
@@ -5741,7 +5741,7 @@ snapshots:
 
   '@yuva-devlab/tokens@1.3.0': {}
 
-  '@yuva-devlab/ui@1.4.2(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))':
+  '@yuva-devlab/ui@1.4.3(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))':
     dependencies:
       '@radix-ui/react-accordion': 1.2.21(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-alert-dialog': 1.1.24(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
