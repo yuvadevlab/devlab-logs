@@ -28,10 +28,11 @@ jobs:
           go-version: "stable"
           cache-dependency-path: apps/agent/go.sum
 
-      - name: 🔎 Go Vet & Build
+      - name: 🔎 Go Vet, Staticcheck & Build
         run: |
           cd apps/agent
           go vet ./...
+          go run honnef.co/go/tools/cmd/staticcheck@latest ./...
           go build -o /tmp/devlab-agent ./cmd/main.go
 
   format:
