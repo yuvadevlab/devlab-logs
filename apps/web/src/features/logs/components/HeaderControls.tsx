@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button, Input, Popover, PopoverTrigger, PopoverContent } from "@devlab-logs/ui";
+import { Button, Input, Popover, PopoverTrigger, PopoverContent, Badge } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { StreamState, TimeRangeKey, type TimeWindow } from "../types";
 import { UI_COPY } from "@/lib/ui-copy";
@@ -36,11 +36,9 @@ export function StreamBadge({ state }: { state: StreamState }) {
   const config = STREAM_STATE_CONFIG[state] ?? STREAM_STATE_CONFIG[StreamState.RECONNECTING];
 
   return (
-    <div
-      className={cn(
-        "flex items-center gap-2 rounded-md border px-2 py-1 font-mono text-[11px]",
-        config.colorClass,
-      )}
+    <Badge
+      variant="outline"
+      className={cn("flex items-center gap-2 px-2 py-1 font-mono text-[11px]", config.colorClass)}
     >
       <span
         className={cn(
@@ -50,7 +48,7 @@ export function StreamBadge({ state }: { state: StreamState }) {
       />
       <span className="font-semibold">{config.label}</span>
       <span className="text-muted-foreground">({config.subtext})</span>
-    </div>
+    </Badge>
   );
 }
 

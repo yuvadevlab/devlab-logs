@@ -1,6 +1,7 @@
 "use client";
 
 import type { ComponentType } from "react";
+import { Sparkline } from "../icons";
 
 export interface KpiCardProps {
   icon: ComponentType<{ className?: string }>;
@@ -49,26 +50,5 @@ export function KpiCard({
         <div className="text-muted-foreground font-mono text-[11px]">{subtext}</div>
       )}
     </div>
-  );
-}
-
-function Sparkline({ data, tone }: { data: number[]; tone?: "error" }) {
-  const max = Math.max(1, ...data);
-  const points = data
-    .map((value, index) => `${(index / (data.length - 1)) * 100},${28 - (value / max) * 26}`)
-    .join(" ");
-  const colorClass = tone === "error" ? "text-error" : "text-primary";
-
-  return (
-    <svg viewBox="0 0 100 30" preserveAspectRatio="none" className={`h-8 w-full ${colorClass}`}>
-      <polyline points={`0,30 ${points} 100,30`} className="fill-current opacity-10" />
-      <polyline
-        points={points}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
   );
 }

@@ -11,7 +11,9 @@ export const LOGS_COPY = {
   HEADER: {
     AUTO_SCROLL: "Auto-scroll",
     BUFFER: "buf",
+    BUFFER_LABEL: "buf",
     EVENTS_PER_SECOND: "ev/s",
+    EPS: "eps",
   },
   FILTERS: {
     CUSTOM: "Custom",

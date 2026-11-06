@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Copy, GitBranch, Activity, Eye, ChevronRight } from "lucide-react";
-import { JsonTree, toast } from "@devlab-logs/ui";
+import { JsonTree, Badge, toast } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { LEVEL_CLASS, fmtIso, fmtRel } from "@/lib/logs";
 import { UI_COPY } from "@/lib/ui-copy";
@@ -19,6 +19,8 @@ export interface LogRowProps {
   onToggle: () => void;
   onTrace: () => void;
   onInspect: () => void;
+  density?: "compact" | "comfortable";
+  isSelected?: boolean;
 }
 
 function highlight(text: string, query: string, re: RegExp | null) {
@@ -66,6 +68,8 @@ export function LogRow({
   onToggle,
   onTrace,
   onInspect,
+  density = "compact",
+  isSelected = false,
 }: LogRowProps) {
   const emph = log.level === LogLevel.ERROR || log.level === LogLevel.FATAL;
 
@@ -76,27 +80,42 @@ export function LogRow({
 
   return (
     <div
-      className={cn("group border-border/40 border-b", isNew && "row-new", emph && "bg-error/5")}
+      className={cn(
+        "group border-border/40 border-b transition-colors",
+        isNew && "row-new",
+        emph && "bg-error/5",
+        isSelected && "bg-accent/60 ring-primary/50 ring-1",
+      )}
     >
       <div
         onClick={onInspect}
-        className="hover:bg-accent/50 relative grid cursor-pointer grid-cols-[150px_64px_130px_120px_1fr_24px] items-center gap-3 px-3 py-1"
+        className={cn(
+          "hover:bg-accent/50 relative grid cursor-pointer grid-cols-[150px_64px_130px_120px_1fr_24px] items-center gap-3 px-3",
+          density === "comfortable" ? "py-2.5" : "py-0.5",
+        )}
       >
         <span className="text-muted-foreground truncate tabular-nums">
           {iso ? fmtIso(log.ts) : fmtRel(log.ts, now)}
         </span>
-        <span className={cn("chip justify-center", LEVEL_CLASS[log.level])}>{log.level}</span>
-        <span className="chip truncate">{log.service}</span>
+        <Badge
+          variant="outline"
+          className={cn("justify-center px-1 py-0 font-mono text-[9px]", LEVEL_CLASS[log.level])}
+        >
+          {log.level}
+        </Badge>
+        <Badge variant="secondary" className="truncate px-1 py-0 font-mono text-[9px]">
+          {log.service}
+        </Badge>
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             onTrace();
           }}
-          className="chip text-ai hover:border-ai truncate"
+          className="border-ai/40 bg-ai/10 text-ai hover:border-ai inline-flex cursor-pointer items-center gap-1 truncate rounded border px-1.5 py-0 font-mono text-[9px] transition"
           title={UI_COPY.LOGS.ROW_ACTIONS.FILTER_BY_TRACE}
         >
-          <GitBranch className="size-3 shrink-0" />
+          <GitBranch className="size-2.5 shrink-0" />
           {log.traceId ? log.traceId.slice(0, 10) : UI_COPY.LOGS.STREAM.NO_TRACE}
         </button>
         <span className="truncate">{highlight(log.message, query, regex)}</span>

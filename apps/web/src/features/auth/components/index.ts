@@ -7,4 +7,3 @@
 export * from "./login-view";
 export * from "./forgot-password-view";
 export * from "./reset-password-view";
-export * from "./reset-password-form";

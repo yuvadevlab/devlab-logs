@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect } from "react";
 import { Clock, Eye, ArrowDownToLine } from "lucide-react";
+import { EmptyState } from "@devlab-logs/ui";
 import type { LogEvent } from "../types";
 import { LogRow } from "./LogRow";
 import { UI_COPY } from "@/lib/ui-copy";
@@ -23,6 +24,9 @@ export interface LogStreamListProps {
   onSelectLog: (log: LogEvent) => void;
   onTraceFilter: (traceId: string) => void;
   lastId: number;
+  density?: "compact" | "comfortable";
+  selectedIndex?: number;
+  onRowClick?: (idx: number, log: LogEvent) => void;
 }
 
 /**
@@ -45,6 +49,9 @@ export function LogStreamList({
   onSelectLog,
   onTraceFilter,
   lastId,
+  density = "compact",
+  selectedIndex = -1,
+  onRowClick,
 }: LogStreamListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -114,32 +121,34 @@ export function LogStreamList({
         className="min-h-0 flex-1 overflow-y-auto font-mono text-xs"
       >
         {visibleLogs.length === 0 ? (
-          <div className="grid h-full place-items-center p-10 text-center">
-            <div>
-              <Eye className="text-muted-foreground mx-auto mb-3 size-8" />
-              <div className="font-sans text-base font-medium">
-                {UI_COPY.LOGS.STREAM.EMPTY_TITLE}
-              </div>
-              <p className="text-muted-foreground mt-1 font-sans text-xs">
-                {logs.length ? UI_COPY.LOGS.STREAM.EMPTY_FILTERS : UI_COPY.LOGS.STREAM.EMPTY_BUFFER}
-              </p>
-            </div>
+          <div className="grid h-full place-items-center p-10">
+            <EmptyState
+              icon={<Eye className="text-muted-foreground size-8" />}
+              title={UI_COPY.LOGS.STREAM.EMPTY_TITLE}
+              description={
+                logs.length ? UI_COPY.LOGS.STREAM.EMPTY_FILTERS : UI_COPY.LOGS.STREAM.EMPTY_BUFFER
+              }
+              className="border-none bg-transparent p-0"
+            />
           </div>
         ) : (
-          visibleLogs.map((l) => (
-            <LogRow
-              key={l.id}
-              log={l}
-              now={now}
-              iso={isoTime}
-              isNew={l.id > lastId - 3}
-              query={query}
-              regex={regex}
-              open={expanded.has(l.id)}
-              onToggle={() => toggleExpand(l.id)}
-              onTrace={() => onTraceFilter(l.traceId)}
-              onInspect={() => onSelectLog(l)}
-            />
+          visibleLogs.map((l, idx) => (
+            <div key={l.id} onClick={() => onRowClick?.(idx, l)}>
+              <LogRow
+                log={l}
+                now={now}
+                iso={isoTime}
+                isNew={l.id > lastId - 3}
+                query={query}
+                regex={regex}
+                open={expanded.has(l.id)}
+                onToggle={() => toggleExpand(l.id)}
+                onTrace={() => onTraceFilter(l.traceId)}
+                onInspect={() => onSelectLog(l)}
+                density={density}
+                isSelected={selectedIndex === idx}
+              />
+            </div>
           ))
         )}
       </div>

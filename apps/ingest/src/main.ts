@@ -1,19 +1,26 @@
 /**
- * Main HTTP and WebSocket ingestion server for DevLab Telemetry.
- * Exposes batch ingestion endpoints, live event streaming, and semantic Log-RAG search.
+ * @file apps/ingest/src/main.ts
+ * @description Main HTTP & WebSocket telemetry server for DevLab Ingestion Gateway.
+ * Mounts batch ingestion, live stream tickets, historical search, and AI investigations.
+ * @module @devlab/logs-ingest
  */
 
-import { randomBytes, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
-import { WebSocketServer, WebSocket } from "ws";
 import dotenv from "dotenv";
 import { IngestLogEventSchema } from "./types";
 import { SqlBatcher } from "./batcher/sql_batcher";
 import { OllamaEmbedder } from "./embedder/ollama_embedder";
 import { TelemetryKafkaConsumer } from "./consumers/kafka_consumer";
+import { TelemetryWsServer } from "./stream/ws_server";
+import {
+  InvestigationStore,
+  InvestigationService,
+  createInvestigationRouter,
+} from "./investigations";
 import { getLogsPrincipal, requireLogIngestKey, requireLogReadAccess } from "./auth";
 import { Logger } from "@yuva-devlab/logger";
 
@@ -24,19 +31,16 @@ const port = parseInt(process.env.PORT || "4003", 10);
 const logger = new Logger("LogsIngest");
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocketServer({ noServer: true });
 
 app.use(express.json({ limit: "1mb" }));
 app.use("/api/v1/logs", (_req, res, next) => {
   res.setHeader("Cache-Control", "no-store");
   next();
 });
+
 app.use((req, res, next) => {
-  const incomingRequestId = req.header("x-request-id");
-  const requestId =
-    incomingRequestId && /^[A-Za-z0-9._-]{1,128}$/.test(incomingRequestId)
-      ? incomingRequestId
-      : randomUUID();
+  const incoming = req.header("x-request-id");
+  const requestId = incoming && /^[A-Za-z0-9._-]{1,128}$/.test(incoming) ? incoming : randomUUID();
   const startedAt = Date.now();
   res.setHeader("x-request-id", requestId);
   res.once("finish", () => {
@@ -57,6 +61,7 @@ const allowedOrigins = new Set(
     .map((origin) => origin.trim())
     .filter(Boolean),
 );
+
 app.use((req, res, next) => {
   const origin = req.header("origin");
   if (origin && !allowedOrigins.has(origin)) {
@@ -67,7 +72,7 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
   }
   if (req.method === "OPTIONS") {
     res.sendStatus(origin && allowedOrigins.has(origin) ? 204 : 403);
@@ -78,71 +83,17 @@ app.use((req, res, next) => {
 
 const sqlBatcher = new SqlBatcher();
 const embedder = new OllamaEmbedder(sqlBatcher.pool);
+const wsServer = new TelemetryWsServer(allowedOrigins);
+server.on("upgrade", (req, sock, head) => wsServer.handleUpgrade(req, sock, head));
 
-const streamTickets = new Map<
-  string,
-  { principal: ReturnType<typeof getLogsPrincipal>; expiresAt: number }
->();
-const streamClients = new Map<WebSocket, ReturnType<typeof getLogsPrincipal>>();
+const investigationStore = new InvestigationStore(sqlBatcher.pool);
+const investigationService = new InvestigationService(investigationStore, embedder);
+app.use(
+  "/api/v1/investigations",
+  requireLogReadAccess,
+  createInvestigationRouter(investigationService),
+);
 
-setInterval(() => {
-  const now = Date.now();
-  for (const [ticket, data] of streamTickets) {
-    if (data.expiresAt <= now) streamTickets.delete(ticket);
-  }
-}, 30_000).unref();
-
-server.on("upgrade", (request, socket, head) => {
-  const url = new URL(request.url || "/", `http://${request.headers.host || "localhost"}`);
-  const origin = request.headers.origin;
-  if (url.pathname !== "/stream" || !origin || !allowedOrigins.has(origin)) {
-    socket.write("HTTP/1.1 403 Forbidden\r\n\r\n");
-    socket.destroy();
-    return;
-  }
-
-  const ticket = url.searchParams.get("ticket");
-  const ticketData = ticket ? streamTickets.get(ticket) : undefined;
-  if (!ticket || !ticketData || ticketData.expiresAt <= Date.now()) {
-    if (ticket) streamTickets.delete(ticket);
-    socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
-    socket.destroy();
-    return;
-  }
-
-  streamTickets.delete(ticket);
-  wss.handleUpgrade(request, socket, head, (ws) => {
-    streamClients.set(ws, ticketData.principal);
-    ws.on("close", () => streamClients.delete(ws));
-    ws.on("error", () => streamClients.delete(ws));
-  });
-});
-
-/**
- * Broadcasts a log event payload to all connected browser clients.
- */
-function broadcast(log: unknown): void {
-  if (
-    !log ||
-    typeof log !== "object" ||
-    !("tenant_id" in log) ||
-    (log.tenant_id !== null && typeof log.tenant_id !== "string")
-  ) {
-    return;
-  }
-  const payload = JSON.stringify(log);
-  for (const [client, principal] of streamClients) {
-    const canRead =
-      principal.kind === "service" ||
-      principal.isSuperAdmin ||
-      (!!principal.tenantId && log.tenant_id === principal.tenantId);
-    if (client.readyState === WebSocket.OPEN && canRead) {
-      client.send(payload);
-    }
-  }
-}
-
-// Kafka Consumer Initialization
 const kafkaBrokers = process.env.KAFKA_BROKERS
   ? process.env.KAFKA_BROKERS.split(",").map((b) => b.trim())
   : [];
@@ -151,34 +102,25 @@ const kafkaConsumer = new TelemetryKafkaConsumer(
     brokers: kafkaBrokers,
     groupId: process.env.KAFKA_GROUP_ID || "devlab-logs-consumer-group",
     topic: process.env.KAFKA_TOPIC || "devlab.telemetry.logs",
-    broadcastFn: broadcast,
+    broadcastFn: (log) => wsServer.broadcast(log),
   },
   sqlBatcher,
   embedder,
 );
 void kafkaConsumer.start();
 
-// Ingestion endpoint: Receives bulk events from devlab-log-agent
+// Batch Ingestion endpoint
 app.post("/api/v1/logs/batch", requireLogIngestKey, async (req, res) => {
   try {
     const rawBatch = Array.isArray(req.body) ? req.body : [req.body];
     const parsed = IngestLogEventSchema.array().max(500).safeParse(rawBatch);
-
     if (!parsed.success) {
       res.status(400).json({ error: "Invalid log payload", details: parsed.error.issues });
       return;
     }
-
     const { records, latencyMs } = await sqlBatcher.insertBatch(parsed.data);
-
-    // Broadcast records to live streaming clients
-    for (const record of records) {
-      broadcast(record);
-    }
-
-    // Trigger async vector embedding for error and warning traces
+    for (const record of records) wsServer.broadcast(record);
     void embedder.processLogs(records);
-
     res.status(200).json({ success: true, count: records.length, latencyMs });
   } catch (err) {
     logger.error("Batch insertion failed", err instanceof Error ? err.name : "unknown");
@@ -186,42 +128,33 @@ app.post("/api/v1/logs/batch", requireLogIngestKey, async (req, res) => {
   }
 });
 
+// Single-use stream ticket generation
 app.post("/api/v1/logs/stream-ticket", requireLogReadAccess, (_req, res) => {
-  const now = Date.now();
-  for (const [ticket, data] of streamTickets) {
-    if (data.expiresAt <= now) streamTickets.delete(ticket);
-  }
-  if (streamTickets.size >= 10_000) {
+  if (wsServer.ticketCount >= 10_000) {
     res.status(503).json({ error: "Live stream capacity is temporarily unavailable." });
     return;
   }
-
-  const ticket = randomBytes(32).toString("base64url");
-  streamTickets.set(ticket, {
-    principal: getLogsPrincipal(res.locals.logsPrincipal),
-    expiresAt: now + 30_000,
-  });
+  const ticket = wsServer.createTicket(getLogsPrincipal(res.locals.logsPrincipal));
   res.setHeader("Cache-Control", "no-store");
   res.status(201).json({ ticket, expiresInSeconds: 30 });
 });
 
-// Query endpoint: Paginated historical log retrieval
+// Historical paginated logs endpoint
 app.get("/api/v1/logs", requireLogReadAccess, async (req, res) => {
   try {
     const principal = getLogsPrincipal(res.locals.logsPrincipal);
-    const requestedLimit = req.query.limit ? Number(req.query.limit) : 100;
-    const requestedOffset = req.query.offset ? Number(req.query.offset) : 0;
+    const limit = req.query.limit ? Number(req.query.limit) : 100;
+    const offset = req.query.offset ? Number(req.query.offset) : 0;
     if (
-      !Number.isSafeInteger(requestedLimit) ||
-      requestedLimit < 1 ||
-      requestedLimit > 1000 ||
-      !Number.isSafeInteger(requestedOffset) ||
-      requestedOffset < 0
+      !Number.isSafeInteger(limit) ||
+      limit < 1 ||
+      limit > 1000 ||
+      !Number.isSafeInteger(offset) ||
+      offset < 0
     ) {
       res.status(400).json({ error: "Invalid pagination parameters." });
       return;
     }
-
     const logs = await sqlBatcher.queryLogs({
       service: typeof req.query.service === "string" ? req.query.service : undefined,
       level: typeof req.query.level === "string" ? req.query.level : undefined,
@@ -233,8 +166,8 @@ app.get("/api/v1/logs", requireLogReadAccess, async (req, res) => {
             ? req.query.tenantId
             : undefined,
       search: typeof req.query.search === "string" ? req.query.search : undefined,
-      limit: requestedLimit,
-      offset: requestedOffset,
+      limit,
+      offset,
     });
     res.status(200).json({ logs });
   } catch (err) {
@@ -243,13 +176,12 @@ app.get("/api/v1/logs", requireLogReadAccess, async (req, res) => {
   }
 });
 
-// Semantic search endpoint: HNSW cosine nearest neighbor retrieval
+// Semantic Log-RAG search endpoint
 app.post("/api/v1/logs/rag-search", requireLogReadAccess, async (req, res) => {
   try {
     const principal = getLogsPrincipal(res.locals.logsPrincipal);
     const query = typeof req.body.query === "string" ? req.body.query : "";
     const limit = typeof req.body.limit === "number" ? req.body.limit : 5;
-
     if (
       !query.trim() ||
       query.length > 2000 ||
@@ -260,7 +192,6 @@ app.post("/api/v1/logs/rag-search", requireLogReadAccess, async (req, res) => {
       res.status(400).json({ error: "Invalid semantic search query or limit." });
       return;
     }
-
     const tenantId =
       principal.kind === "user" && !principal.isSuperAdmin ? principal.tenantId : undefined;
     const matches = await embedder.searchLogEpisodes(query, limit, tenantId);
@@ -271,21 +202,18 @@ app.post("/api/v1/logs/rag-search", requireLogReadAccess, async (req, res) => {
   }
 });
 
-// Health check endpoint
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "healthy", timestamp: new Date().toISOString() });
 });
 
 server.listen(port, () => {
-  console.log(`[IngestServer] DevLab Ingest Service running on http://localhost:${port}`);
-  console.log(`[IngestServer] WebSocket Live Log Stream active on ws://localhost:${port}/stream`);
+  console.log(`[IngestServer] DevLab Ingest running on http://localhost:${port}`);
 });
 
-// Graceful termination handling
 const shutdown = async () => {
   console.log("[IngestServer] Gracefully shutting down...");
   await kafkaConsumer.stop();
-  wss.close();
+  wsServer.close();
   server.close();
   await sqlBatcher.close();
   process.exit(0);

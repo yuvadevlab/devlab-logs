@@ -14,6 +14,7 @@ import {
   TabsContent,
   Button,
   Input,
+  Badge,
   JsonTree,
   toast,
 } from "@devlab-logs/ui";
@@ -81,10 +82,24 @@ export function LogDrawer({ log, logs, onClose, onSelect }: LogDrawerProps) {
           <div className="space-y-4">
             <SheetHeader className="space-y-2 text-left">
               <div className="flex flex-wrap items-center gap-2">
-                <span className={cn("chip", LEVEL_CLASS[log.level])}>{log.level}</span>
-                <span className="chip">{log.service}</span>
-                <span className="chip text-ai">trace {log.traceId}</span>
-                <span className="chip">{log.latency}ms</span>
+                <Badge
+                  variant="outline"
+                  className={cn("font-mono text-[10px]", LEVEL_CLASS[log.level])}
+                >
+                  {log.level}
+                </Badge>
+                <Badge variant="secondary" className="font-mono text-[10px]">
+                  {log.service}
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className="border-ai/40 bg-ai/10 text-ai font-mono text-[10px]"
+                >
+                  trace {log.traceId}
+                </Badge>
+                <Badge variant="outline" className="font-mono text-[10px]">
+                  {log.latency}ms
+                </Badge>
               </div>
               <SheetTitle className="font-mono text-sm leading-relaxed font-medium">
                 {log.message}

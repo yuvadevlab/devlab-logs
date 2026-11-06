@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@yuva-devlab/auth-server": "^1.0.0",
     "@yuva-devlab/logger": "^1.2.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -22,8 +23,8 @@
     "@types/node": "^24.10.1",
     "@types/pg": "^8.11.11",
     "@types/ws": "^8.5.14",
-    "tsx": "^4.19.3",
     "tsup": "^8.5.1",
+    "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   }
 }
