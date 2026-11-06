@@ -14,6 +14,20 @@ export const APP_ROUTES = {
   RESET_PASSWORD: "/reset-password",
 } as const;
 
+/** DevLab Central Portal SSO route builders and canonical destinations */
+const PORTAL_WEB_URL = process.env.NEXT_PUBLIC_DEVLAB_PORTAL_WEB_URL || "http://localhost:3000";
+const APP_ID = "devlab-logs";
+
+export const DEVLAB_PORTAL_ROUTES = {
+  LOGIN: (redirectUrl?: string) => {
+    const base = `${PORTAL_WEB_URL}/login?app=${encodeURIComponent(APP_ID)}`;
+    return redirectUrl ? `${base}&redirect=${encodeURIComponent(redirectUrl)}` : base;
+  },
+  REGISTER: () => `${PORTAL_WEB_URL}/register?app=${encodeURIComponent(APP_ID)}`,
+  FORGOT_PASSWORD: () => `${PORTAL_WEB_URL}/forgot-password?app=${encodeURIComponent(APP_ID)}`,
+  RESET_PASSWORD: () => `${PORTAL_WEB_URL}/reset-password?app=${encodeURIComponent(APP_ID)}`,
+} as const;
+
 /** Backend REST and WebSocket API routes */
 export const API_ROUTES = {
   LOGS: "/api/v1/logs",

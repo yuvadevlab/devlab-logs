@@ -220,6 +220,9 @@ importers:
 
   apps/ingest:
     dependencies:
+      '@yuva-devlab/auth-server':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@yuva-devlab/logger':
         specifier: ^1.2.0
         version: 1.2.0
@@ -2172,6 +2175,9 @@ packages:
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
+
+  '@yuva-devlab/auth-server@1.0.0':
+    resolution: {integrity: sha512-a5Mxs2VFns+8Zx4YI+t8jJ4bXFrXiUJayUObMX4JNywBJdW2BrWRzwcKK7QjLVHrCOpaqmzubm25mIqFT0Rhiw==}
 
   '@yuva-devlab/errors@0.2.0':
     resolution: {integrity: sha512-eGunJ1eDbkGfEida3MJx9gaWRTeWjx/UPFUHUs+r7m++hkbShw4VKekaH5MMb7gIIc5sUmb4mESgir0TYnE30w==}
@@ -5734,6 +5740,12 @@ snapshots:
       lucide-react: 0.575.0(react@19.3.0)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
+
+  '@yuva-devlab/auth-server@1.0.0':
+    dependencies:
+      '@yuva-devlab/errors': 0.2.0
+      '@yuva-devlab/logger': 1.2.0
+      zod: 3.25.76
 
   '@yuva-devlab/errors@0.2.0': {}
 

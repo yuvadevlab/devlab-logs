@@ -1,12 +1,29 @@
+/**
+ * @file apps/ingest/src/auth.ts
+ * @description Authentication guards and token validation using @yuva-devlab/auth-server.
+ * Enforces RS256 JWKS SSO tokens, M2M API keys, and service secrets.
+ * @module @devlab/logs-ingest/auth
+ */
+
 import { timingSafeEqual } from "node:crypto";
 import type { RequestHandler } from "express";
-import { createRemoteJWKSet, jwtVerify } from "jose";
+import { JwksValidator, M2mApiKeyValidator } from "@yuva-devlab/auth-server";
 
 export type LogsPrincipal =
   | { kind: "service"; userId: string }
   | { kind: "user"; userId: string; tenantId: string; isSuperAdmin: boolean };
 
-let remoteJwks: ReturnType<typeof createRemoteJWKSet> | undefined;
+const portalApiUrl = process.env.DEVLAB_PORTAL_API_URL || "http://localhost:3015";
+const issuer = process.env.OIDC_ISSUER || "http://localhost:3015";
+
+const jwksValidator = new JwksValidator({
+  jwksUri: process.env.JWKS_URI || `${portalApiUrl}/.well-known/jwks.json`,
+  issuer,
+});
+
+const m2mValidator = new M2mApiKeyValidator({
+  portalUrl: portalApiUrl,
+});
 
 function matchesSecret(candidate: string, expected: string | undefined): boolean {
   if (!expected) return false;
@@ -23,31 +40,44 @@ function bearerToken(header: string | undefined): string | undefined {
   return match?.[1];
 }
 
-function ensureTrailingSlash(value: string): string {
-  return value.endsWith("/") ? value : `${value}/`;
-}
-
 /**
- * Authenticates machine-to-machine log ingestion using a dedicated bearer secret.
+ * Authenticates machine-to-machine log ingestion using a dedicated secret or DevLab Portal M2M key.
  */
-export const requireLogIngestKey: RequestHandler = (request, response, next) => {
+export const requireLogIngestKey: RequestHandler = async (request, response, next) => {
+  const token =
+    bearerToken(request.header("authorization")) ||
+    (request.header("x-api-key") as string | undefined);
+
+  if (!token) {
+    response.status(401).json({ error: "Missing log ingestion credentials." });
+    return;
+  }
+
+  // 1. Direct environment ingest key
   const expectedKey = process.env.DEVLAB_LOGS_API_KEY;
-  if (!expectedKey) {
-    response.status(503).json({ error: "Log ingestion is not configured." });
+  if (expectedKey && matchesSecret(token, expectedKey)) {
+    next();
     return;
   }
 
-  const token = bearerToken(request.header("authorization"));
-  if (!token || !matchesSecret(token, expectedKey)) {
-    response.status(401).json({ error: "Invalid or missing log ingestion credentials." });
-    return;
+  // 2. DevLab Portal registered M2M API Key (dlk_...)
+  if (token.startsWith("dlk_")) {
+    try {
+      const validated = await m2mValidator.validateKey(token);
+      if (validated.valid) {
+        next();
+        return;
+      }
+    } catch {
+      // Fall through to 401
+    }
   }
 
-  next();
+  response.status(401).json({ error: "Invalid or missing log ingestion credentials." });
 };
 
 /**
- * Authenticates read access through a read-only service key or a Portal-issued SSO token.
+ * Authenticates read access through a read-only service key or DevLab Portal RS256 JWKS token.
  */
 export const requireLogReadAccess: RequestHandler = async (request, response, next) => {
   const token = bearerToken(request.header("authorization"));
@@ -56,6 +86,7 @@ export const requireLogReadAccess: RequestHandler = async (request, response, ne
     return;
   }
 
+  // 1. Read-only service secret
   if (matchesSecret(token, process.env.DEVLAB_LOGS_READ_API_KEY)) {
     response.locals.logsPrincipal = {
       kind: "service",
@@ -65,21 +96,9 @@ export const requireLogReadAccess: RequestHandler = async (request, response, ne
     return;
   }
 
-  const portalApiUrl = process.env.DEVLAB_PORTAL_API_URL;
-  const issuer = process.env.OIDC_ISSUER;
-  if (!portalApiUrl || !issuer) {
-    response.status(503).json({ error: "Portal token verification is not configured." });
-    return;
-  }
-
+  // 2. DevLab Portal SSO Token (verified via @yuva-devlab/auth-server JwksValidator)
   try {
-    remoteJwks ??= createRemoteJWKSet(
-      new URL(".well-known/jwks.json", ensureTrailingSlash(portalApiUrl)),
-    );
-    const { payload } = await jwtVerify(token, remoteJwks, {
-      issuer,
-      algorithms: ["RS256"],
-    });
+    const payload = (await jwksValidator.verifyToken(token)) as Record<string, unknown>;
     const role = typeof payload.role === "string" ? payload.role : "";
     const isSuperAdmin = role === "super_admin";
     const tenantId = typeof payload.tenant_id === "string" ? payload.tenant_id : "";
