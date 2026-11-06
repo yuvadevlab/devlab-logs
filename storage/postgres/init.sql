@@ -55,3 +55,39 @@ CREATE INDEX IF NOT EXISTS idx_log_embeddings_hnsw
 ON log_embeddings 
 USING hnsw (embedding vector_cosine_ops)
 WITH (m = 16, ef_construction = 64);
+
+-- 7. Persistent AI Investigation Conversations
+CREATE TABLE IF NOT EXISTS investigation_conversations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  tenant_id VARCHAR(64),
+  user_id VARCHAR(64) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  summary TEXT,
+  pinned BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Index on User ID and Updated At for Fast History Drawer Retrieval
+CREATE INDEX IF NOT EXISTS idx_investigation_conversations_user 
+ON investigation_conversations (user_id, updated_at DESC);
+
+-- Index on Tenant ID for Multi-Tenant Scoping
+CREATE INDEX IF NOT EXISTS idx_investigation_conversations_tenant 
+ON investigation_conversations (tenant_id, updated_at DESC);
+
+-- 8. Persistent AI Investigation Messages with Log-RAG Citations
+CREATE TABLE IF NOT EXISTS investigation_messages (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  conversation_id UUID NOT NULL REFERENCES investigation_conversations(id) ON DELETE CASCADE,
+  role VARCHAR(16) NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
+  content TEXT NOT NULL,
+  citations JSONB DEFAULT '[]'::jsonb,
+  metadata JSONB DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Chronological Index for Conversation Message Turn Hydration
+CREATE INDEX IF NOT EXISTS idx_investigation_messages_convo 
+ON investigation_messages (conversation_id, created_at ASC);
+

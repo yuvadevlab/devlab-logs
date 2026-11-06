@@ -8,6 +8,7 @@
 /** Client-side URL routes */
 export const APP_ROUTES = {
   HOME: "/",
+  INVESTIGATE: (id?: string) => (id ? `/investigate/${id}` : "/investigate"),
   LOGIN: "/login",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
@@ -18,6 +19,8 @@ export const API_ROUTES = {
   LOGS: "/api/v1/logs",
   LOGS_BATCH: "/api/v1/logs/batch",
   RAG_SEARCH: "/api/v1/logs/rag-search",
+  INVESTIGATIONS: "/api/v1/investigations",
+  INVESTIGATION_MESSAGES: (id: string) => `/api/v1/investigations/${id}/messages`,
   STREAM_TICKET: "/api/v1/logs/stream-ticket",
   HEALTH: "/health",
   WS_STREAM: "/stream",

@@ -3,7 +3,8 @@ import type { RequestHandler } from "express";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 
 export type LogsPrincipal =
-  { kind: "service" } | { kind: "user"; tenantId: string; isSuperAdmin: boolean };
+  | { kind: "service"; userId: string }
+  | { kind: "user"; userId: string; tenantId: string; isSuperAdmin: boolean };
 
 let remoteJwks: ReturnType<typeof createRemoteJWKSet> | undefined;
 
@@ -56,7 +57,10 @@ export const requireLogReadAccess: RequestHandler = async (request, response, ne
   }
 
   if (matchesSecret(token, process.env.DEVLAB_LOGS_READ_API_KEY)) {
-    response.locals.logsPrincipal = { kind: "service" } satisfies LogsPrincipal;
+    response.locals.logsPrincipal = {
+      kind: "service",
+      userId: "service_reader",
+    } satisfies LogsPrincipal;
     next();
     return;
   }
@@ -79,6 +83,12 @@ export const requireLogReadAccess: RequestHandler = async (request, response, ne
     const role = typeof payload.role === "string" ? payload.role : "";
     const isSuperAdmin = role === "super_admin";
     const tenantId = typeof payload.tenant_id === "string" ? payload.tenant_id : "";
+    const userId =
+      typeof payload.sub === "string"
+        ? payload.sub
+        : typeof payload.user_id === "string"
+          ? payload.user_id
+          : "system_user";
 
     if (payload.type !== "user_session" || (!tenantId && !isSuperAdmin)) {
       response.status(403).json({ error: "This identity cannot access log data." });
@@ -87,6 +97,7 @@ export const requireLogReadAccess: RequestHandler = async (request, response, ne
 
     response.locals.logsPrincipal = {
       kind: "user",
+      userId,
       tenantId,
       isSuperAdmin,
     } satisfies LogsPrincipal;
@@ -104,17 +115,26 @@ export function getLogsPrincipal(principal: unknown): LogsPrincipal {
     throw new Error("Authenticated log principal is missing from the request.");
   }
   if (principal.kind === "service") {
-    return { kind: "service" };
+    return {
+      kind: "service",
+      userId:
+        "userId" in principal && typeof principal.userId === "string"
+          ? principal.userId
+          : "service_reader",
+    };
   }
   if (
     principal.kind === "user" &&
     "tenantId" in principal &&
     typeof principal.tenantId === "string" &&
+    "userId" in principal &&
+    typeof principal.userId === "string" &&
     "isSuperAdmin" in principal &&
     typeof principal.isSuperAdmin === "boolean"
   ) {
     return {
       kind: "user",
+      userId: principal.userId,
       tenantId: principal.tenantId,
       isSuperAdmin: principal.isSuperAdmin,
     };

@@ -12,9 +12,5 @@ export const metadata: Metadata = {
  * Pure SSR Server Component wrapping the interactive Observability Console.
  */
 export default function TelemetryLogsPage() {
-  return (
-    <main className="bg-background text-foreground min-h-screen">
-      <Console />
-    </main>
-  );
+  return <Console />;
 }

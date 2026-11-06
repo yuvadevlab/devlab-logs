@@ -9,6 +9,7 @@ import {
   SheetTitle,
   SheetDescription,
   Button,
+  Badge,
 } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import type { LogEvent } from "../types";
@@ -86,7 +87,10 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
             {UI_COPY.LOGS.SQL.TITLE}
           </SheetTitle>
           <SheetDescription>
-            {UI_COPY.LOGS.SQL.DESCRIPTION_PREFIX} <code className="chip">logs</code>{" "}
+            {UI_COPY.LOGS.SQL.DESCRIPTION_PREFIX}{" "}
+            <Badge variant="outline" className="font-mono text-[10px]">
+              logs
+            </Badge>{" "}
             {UI_COPY.LOGS.SQL.DESCRIPTION_SUFFIX} ({logs.length.toLocaleString()} rows) with
             vectorized execution.
           </SheetDescription>
@@ -95,17 +99,15 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
           <div className="flex min-h-0 flex-col gap-2">
             <div className="flex flex-wrap gap-1.5">
               {SQL_TEMPLATES.map((t) => (
-                <button
+                <Button
                   key={t.id}
-                  type="button"
+                  size="sm"
+                  variant={sql === t.sql ? "secondary" : "outline"}
                   onClick={() => setSql(t.sql)}
-                  className={cn(
-                    "chip hover:border-primary",
-                    sql === t.sql && "border-primary text-primary",
-                  )}
+                  className="h-6 px-2 font-mono text-xs"
                 >
                   {t.name}
-                </button>
+                </Button>
               ))}
             </div>
             <div className="panel relative min-h-48 flex-1 overflow-hidden">
@@ -133,11 +135,16 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
                 <Play className="mr-1 size-3.5" />
                 {running ? "Running…" : "Run query"}
               </Button>
-              <span className="text-muted-foreground font-mono text-[11px]">⌘↵</span>
+              <kbd className="border-border/80 bg-muted text-muted-foreground rounded border px-1.5 py-0.5 font-mono text-[10px]">
+                ⌘↵
+              </kbd>
               {ms !== null && !running && (
-                <span className="chip lvl-info ml-auto">
+                <Badge
+                  variant="outline"
+                  className="border-primary/40 bg-primary/10 text-primary ml-auto font-mono text-[10px]"
+                >
                   Executed in {ms}ms · {rows?.length} rows
-                </span>
+                </Badge>
               )}
             </div>
           </div>
