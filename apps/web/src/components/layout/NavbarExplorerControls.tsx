@@ -9,19 +9,11 @@
 
 import React from "react";
 import { Play, Pause, Database, Eraser, ArrowDownToLine } from "lucide-react";
-import {
-  Button,
-  Input,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  Switch,
-  Separator,
-} from "@devlab-logs/ui";
+import { Button, Switch, Separator } from "@devlab-logs/ui";
 import { useExplorerContext } from "@/features/logs";
 import { StreamState, TimeRangeKey, type TimeWindow } from "@/features/logs/types";
 import { UI_COPY } from "@/lib/ui-copy";
-import { cn } from "@/lib/utils";
+import { NavbarTimeRange } from "./NavbarTimeRange";
 
 export interface NavbarExplorerControlsProps {
   stream?: StreamState;
@@ -38,13 +30,6 @@ export interface NavbarExplorerControlsProps {
   onClearLogs?: () => void;
   onOpenSql?: () => void;
 }
-
-const PRESET_RANGES = [
-  TimeRangeKey.FIVE_MINUTES,
-  TimeRangeKey.FIFTEEN_MINUTES,
-  TimeRangeKey.ONE_HOUR,
-  TimeRangeKey.TWENTY_FOUR_HOURS,
-] as const;
 
 export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
   const explorer = useExplorerContext();
@@ -85,70 +70,11 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
         </span>
       </div>
 
-      <div className="border-border/60 bg-muted/30 hidden shrink-0 items-center rounded-md border p-0.5 font-mono text-xs sm:flex">
-        {PRESET_RANGES.map((r) => (
-          <button
-            key={r}
-            type="button"
-            onClick={() => setRange(r)}
-            className={cn(
-              "shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] transition",
-              range === r
-                ? "bg-accent text-accent-foreground font-medium shadow-xs"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {r}
-          </button>
-        ))}
-        <Popover>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              className={cn(
-                "shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] transition",
-                range === TimeRangeKey.CUSTOM
-                  ? "bg-accent text-accent-foreground font-medium"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {UI_COPY.LOGS.FILTERS.CUSTOM}
-            </button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            side="bottom"
-            sideOffset={8}
-            avoidCollisions={false}
-            className="w-72 max-w-[calc(100vw-2rem)] space-y-2 p-3 shadow-xl"
-          >
-            <div className="text-xs font-medium">{UI_COPY.LOGS.FILTERS.CUSTOM_RANGE}</div>
-            <Input
-              type="datetime-local"
-              value={custom.from}
-              onChange={(e) => setCustom((prev) => ({ ...prev, from: e.target.value }))}
-              className="font-mono text-xs"
-            />
-            <Input
-              type="datetime-local"
-              value={custom.to}
-              onChange={(e) => setCustom((prev) => ({ ...prev, to: e.target.value }))}
-              className="font-mono text-xs"
-            />
-            <Button
-              size="sm"
-              className="w-full"
-              disabled={!custom.from || !custom.to}
-              onClick={() => setRange(TimeRangeKey.CUSTOM)}
-            >
-              {UI_COPY.LOGS.FILTERS.APPLY_RANGE}
-            </Button>
-          </PopoverContent>
-        </Popover>
-      </div>
+      {/* Responsive Time Window Range Selector */}
+      <NavbarTimeRange range={range} setRange={setRange} custom={custom} setCustom={setCustom} />
 
-      {/* Auto-Scroll Toggle */}
-      <label className="text-muted-foreground hover:text-foreground hidden shrink-0 cursor-pointer items-center gap-1.5 px-1 text-xs lg:flex">
+      {/* Auto-Scroll Toggle (Visible on wide displays >= 1280px) */}
+      <label className="text-muted-foreground hover:text-foreground hidden shrink-0 cursor-pointer items-center gap-1.5 px-1 text-xs xl:flex">
         <ArrowDownToLine className="size-3" />
         <Switch checked={autoScroll} onCheckedChange={setAutoScroll} className="scale-75" />
       </label>
@@ -191,8 +117,8 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
         className="h-7 shrink-0 px-2 font-sans text-xs"
         title={UI_COPY.COMMON.ACTIONS.OPEN_SQL}
       >
-        <Database className="size-3.5 sm:mr-1" />
-        <span className="hidden sm:inline">{UI_COPY.COMMON.ACTIONS.SQL}</span>
+        <Database className="size-3.5 xl:mr-1" />
+        <span className="hidden xl:inline">{UI_COPY.COMMON.ACTIONS.SQL}</span>
       </Button>
 
       <Separator orientation="vertical" className="hidden h-5 shrink-0 sm:block" />

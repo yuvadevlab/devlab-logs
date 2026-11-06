@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { Copy, GitBranch, Activity, Eye, ChevronRight } from "lucide-react";
-import { JsonTree, Badge, toast } from "@devlab-logs/ui";
+import { GitBranch, ChevronRight } from "lucide-react";
+import { JsonTree, Badge } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { LEVEL_CLASS, fmtIso, fmtRel } from "@/lib/logs";
 import { UI_COPY } from "@/lib/ui-copy";
 import { LogLevel, type LogEvent } from "../types";
+import { LogRowQuickActions } from "./LogRowQuickActions";
 
 export interface LogRowProps {
   log: LogEvent;
@@ -19,7 +20,6 @@ export interface LogRowProps {
   onToggle: () => void;
   onTrace: () => void;
   onInspect: () => void;
-  density?: "compact" | "comfortable";
   isSelected?: boolean;
 }
 
@@ -55,7 +55,7 @@ function highlight(text: string, query: string, re: RegExp | null) {
 }
 
 /**
- * High-density log row rendering severity chips, trace correlation buttons, and syntax tokens.
+ * Log row rendering severity chips, trace correlation buttons, and syntax tokens.
  */
 export function LogRow({
   log,
@@ -68,15 +68,9 @@ export function LogRow({
   onToggle,
   onTrace,
   onInspect,
-  density = "compact",
   isSelected = false,
 }: LogRowProps) {
   const emph = log.level === LogLevel.ERROR || log.level === LogLevel.FATAL;
-
-  const copyText = (t: string, label: string) => {
-    navigator.clipboard?.writeText(t).catch(() => {});
-    toast.success(UI_COPY.LOGS.NOTIFICATIONS.COPIED(label));
-  };
 
   return (
     <div
@@ -89,12 +83,9 @@ export function LogRow({
     >
       <div
         onClick={onInspect}
-        className={cn(
-          "hover:bg-accent/50 relative grid cursor-pointer grid-cols-[150px_64px_130px_120px_1fr_24px] items-center gap-3 px-3",
-          density === "comfortable" ? "py-2.5" : "py-0.5",
-        )}
+        className="hover:bg-accent/50 relative grid cursor-pointer grid-cols-[150px_64px_130px_120px_1fr_24px] items-center gap-3 px-3 py-1 font-mono text-xs transition-colors"
       >
-        <span className="text-muted-foreground truncate tabular-nums">
+        <span className="text-muted-foreground truncate text-[11px] tabular-nums">
           {iso ? fmtIso(log.ts) : fmtRel(log.ts, now)}
         </span>
         <Badge
@@ -118,7 +109,9 @@ export function LogRow({
           <GitBranch className="size-2.5 shrink-0" />
           {log.traceId ? log.traceId.slice(0, 10) : UI_COPY.LOGS.STREAM.NO_TRACE}
         </button>
-        <span className="truncate">{highlight(log.message, query, regex)}</span>
+        <span className="text-foreground/90 truncate text-[11px] leading-4">
+          {highlight(log.message, query, regex)}
+        </span>
         <button
           type="button"
           onClick={(e) => {
@@ -131,28 +124,7 @@ export function LogRow({
         </button>
 
         {/* Hover Quick Action Buttons */}
-        <div className="bg-popover absolute top-1/2 right-10 hidden -translate-y-1/2 items-center gap-0.5 rounded-md border p-0.5 shadow-lg group-hover:flex">
-          <ActionButton
-            icon={Copy}
-            title={UI_COPY.LOGS.ROW_ACTIONS.COPY_MESSAGE}
-            onClick={() => copyText(log.message, UI_COPY.LOGS.NOTIFICATIONS.MESSAGE)}
-          />
-          <ActionButton
-            icon={GitBranch}
-            title={UI_COPY.LOGS.ROW_ACTIONS.COPY_TRACE_ID}
-            onClick={() => copyText(log.traceId, UI_COPY.LOGS.NOTIFICATIONS.TRACE_ID)}
-          />
-          <ActionButton
-            icon={Activity}
-            title={UI_COPY.LOGS.ROW_ACTIONS.VIEW_TRACE_SPANS}
-            onClick={onInspect}
-          />
-          <ActionButton
-            icon={Eye}
-            title={UI_COPY.LOGS.ROW_ACTIONS.INSPECT_PAYLOAD}
-            onClick={onToggle}
-          />
-        </div>
+        <LogRowQuickActions log={log} onToggle={onToggle} onInspect={onInspect} />
       </div>
       {open && (
         <div className="bg-background/60 px-6 py-2">
@@ -160,29 +132,5 @@ export function LogRow({
         </div>
       )}
     </div>
-  );
-}
-
-function ActionButton({
-  icon: Icon,
-  title,
-  onClick,
-}: {
-  icon: typeof Copy;
-  title: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      title={title}
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
-      className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-1"
-    >
-      <Icon className="size-3.5" />
-    </button>
   );
 }

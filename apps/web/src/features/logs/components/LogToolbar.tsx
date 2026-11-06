@@ -8,7 +8,7 @@
 "use client";
 
 import React from "react";
-import { Search, History, GitBranch, X, BarChart3, AlignJustify, List } from "lucide-react";
+import { Search, History, GitBranch, X, BarChart3 } from "lucide-react";
 import { Button, Input, Popover, PopoverTrigger, PopoverContent, Badge } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { LogLevel, ServiceName, ExportFormat, type LogEvent } from "../types";
@@ -32,8 +32,6 @@ export interface LogToolbarProps {
   onCommitSearch: () => void;
   showTimeline?: boolean;
   setShowTimeline?: (s: boolean | ((p: boolean) => boolean)) => void;
-  density?: "compact" | "comfortable";
-  setDensity?: (d: "compact" | "comfortable") => void;
 }
 
 export function LogToolbar({
@@ -52,8 +50,6 @@ export function LogToolbar({
   onCommitSearch,
   showTimeline = true,
   setShowTimeline,
-  density = "compact",
-  setDensity,
 }: LogToolbarProps) {
   let regexOk = true;
   if (regex && query) {
@@ -179,27 +175,10 @@ export function LogToolbar({
             variant={showTimeline ? "secondary" : "outline"}
             onClick={() => setShowTimeline((prev) => !prev)}
             className="h-8 font-mono text-xs"
-            title="Toggle Histogram Timeline"
+            title={UI_COPY.LOGS.TOOLBAR.TOGGLE_TIMELINE}
           >
             <BarChart3 className="mr-1 size-3.5" />
             Timeline
-          </Button>
-        )}
-
-        {setDensity && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setDensity(density === "compact" ? "comfortable" : "compact")}
-            className="h-8 font-mono text-xs"
-            title={`Switch to ${density === "compact" ? "comfortable" : "compact"} density`}
-          >
-            {density === "compact" ? (
-              <AlignJustify className="mr-1 size-3.5" />
-            ) : (
-              <List className="mr-1 size-3.5" />
-            )}
-            {density}
           </Button>
         )}
 
