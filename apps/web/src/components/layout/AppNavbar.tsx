@@ -1,6 +1,6 @@
 /**
  * @file apps/web/src/components/layout/AppNavbar.tsx
- * @description Master unified top navigation bar across all DevLab Logs routes.
+ * @description Master unified top navigation bar mounted centrally in the dashboard shell.
  * Ensures pixel-perfect alignment, zero layout shift, and consistent responsive controls.
  * @module @devlab/logs-web/components/layout/AppNavbar
  */
@@ -22,12 +22,8 @@ import {
   SelectItem,
 } from "@devlab-logs/ui";
 import { UserButton } from "@yuva-devlab/auth-client";
-import {
-  Environment,
-  StreamState,
-  type TimeRangeKey,
-  type TimeWindow,
-} from "@/features/logs/types";
+import { useExplorerContext } from "@/features/logs";
+import { Environment, StreamState } from "@/features/logs/types";
 import { APP_ROUTES } from "@/lib/constants";
 import { UI_COPY } from "@/lib/ui-copy";
 import { cn } from "@/lib/utils";
@@ -37,45 +33,20 @@ import { EcosystemLauncher } from "./EcosystemLauncher";
 export interface AppNavbarProps {
   env?: Environment;
   setEnv?: (env: Environment) => void;
-  stream?: StreamState;
-  onToggleStream?: () => void;
-  eps?: number;
-  bufferCount?: number;
-  maxBuffer?: number;
-  range?: TimeRangeKey;
-  setRange?: (r: TimeRangeKey) => void;
-  custom?: TimeWindow;
-  setCustom?: React.Dispatch<React.SetStateAction<TimeWindow>>;
-  autoScroll?: boolean;
-  setAutoScroll?: (v: boolean | ((p: boolean) => boolean)) => void;
-  onClearLogs?: () => void;
-  onOpenSql?: () => void;
-  onOpenCopilot?: () => void;
   onOpenCmd?: () => void;
 }
 
-export function AppNavbar({
-  env = Environment.PRODUCTION,
-  setEnv,
-  stream = StreamState.LIVE,
-  onToggleStream,
-  eps = 0,
-  bufferCount = 0,
-  maxBuffer = 5000,
-  range,
-  setRange,
-  custom,
-  setCustom,
-  autoScroll,
-  setAutoScroll,
-  onClearLogs,
-  onOpenSql,
-  onOpenCopilot,
-  onOpenCmd,
-}: AppNavbarProps) {
+export function AppNavbar(props?: AppNavbarProps) {
   const pathname = usePathname();
+  const explorer = useExplorerContext();
+
   const isExplorer = pathname === "/" || pathname === "";
   const isInvestigate = pathname.startsWith("/investigate");
+
+  const env = props?.env ?? explorer.env;
+  const setEnv = props?.setEnv ?? explorer.setEnv;
+  const onOpenCmd = props?.onOpenCmd ?? (() => explorer.setCmdOpen(true));
+  const stream = explorer.stream;
 
   return (
     <nav className="border-border/60 bg-card/70 sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b px-3 backdrop-blur-md select-none sm:px-4">
@@ -116,7 +87,7 @@ export function AppNavbar({
               )}
             />
             <Layers className="size-3.5 shrink-0" />
-            <span>Live Explorer</span>
+            <span>{UI_COPY.COMMON.NAVIGATION.LIVE_EXPLORER}</span>
           </Link>
 
           <Link
@@ -129,12 +100,12 @@ export function AppNavbar({
             )}
           >
             <Sparkles className="text-primary size-3.5 shrink-0" />
-            <span>AI Investigator</span>
+            <span>{UI_COPY.COMMON.NAVIGATION.AI_INVESTIGATOR}</span>
             <Badge
               variant="outline"
               className="border-primary/40 bg-primary/10 text-primary px-1 py-0 font-mono text-[9px] leading-none"
             >
-              RAG
+              {UI_COPY.COMMON.NAVIGATION.RAG_BADGE}
             </Badge>
           </Link>
         </div>
@@ -142,59 +113,38 @@ export function AppNavbar({
 
       {/* Right Controls: Explorer Tools, Env, Ecosystem Launcher, CmdK, Profile */}
       <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-        {isExplorer && (
-          <NavbarExplorerControls
-            stream={stream}
-            onToggleStream={onToggleStream}
-            eps={eps}
-            bufferCount={bufferCount}
-            maxBuffer={maxBuffer}
-            range={range}
-            setRange={setRange}
-            custom={custom}
-            setCustom={setCustom}
-            autoScroll={autoScroll}
-            setAutoScroll={setAutoScroll}
-            onClearLogs={onClearLogs}
-            onOpenSql={onOpenSql}
-            onOpenCopilot={onOpenCopilot}
-          />
-        )}
+        {isExplorer && <NavbarExplorerControls />}
 
-        {setEnv && (
-          <Select value={env} onValueChange={(val) => setEnv(val as Environment)}>
-            <SelectTrigger className="h-7 w-[95px] shrink-0 font-mono text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="end" className="min-w-[130px]">
-              <SelectItem value={Environment.PRODUCTION}>
-                {UI_COPY.COMMON.ENVIRONMENT.PRODUCTION}
-              </SelectItem>
-              <SelectItem value={Environment.STAGING}>
-                {UI_COPY.COMMON.ENVIRONMENT.STAGING}
-              </SelectItem>
-              <SelectItem value={Environment.DEVELOPMENT}>
-                {UI_COPY.COMMON.ENVIRONMENT.DEVELOPMENT}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        )}
+        <Select value={env} onValueChange={(val) => setEnv(val as Environment)}>
+          <SelectTrigger className="h-7 w-[95px] shrink-0 font-mono text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent align="end" className="min-w-[130px]">
+            <SelectItem value={Environment.PRODUCTION}>
+              {UI_COPY.COMMON.ENVIRONMENT.PRODUCTION}
+            </SelectItem>
+            <SelectItem value={Environment.STAGING}>
+              {UI_COPY.COMMON.ENVIRONMENT.STAGING}
+            </SelectItem>
+            <SelectItem value={Environment.DEVELOPMENT}>
+              {UI_COPY.COMMON.ENVIRONMENT.DEVELOPMENT}
+            </SelectItem>
+          </SelectContent>
+        </Select>
 
         {/* DevLab Ecosystem Applications Popover */}
         <EcosystemLauncher />
 
-        {onOpenCmd && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={onOpenCmd}
-            className="text-muted-foreground hidden h-7 shrink-0 px-2 font-mono text-xs sm:flex"
-            title="Search and commands (⌘K)"
-          >
-            <Search className="mr-1 size-3" />
-            ⌘K
-          </Button>
-        )}
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onOpenCmd}
+          className="text-muted-foreground hidden h-7 shrink-0 px-2 font-mono text-xs sm:flex"
+          title={UI_COPY.COMMON.ACTIONS.SEARCH_AND_COMMANDS}
+        >
+          <Search className="mr-1 size-3" />
+          {UI_COPY.COMMON.ACTIONS.COMMAND_PALETTE}
+        </Button>
 
         <Separator orientation="vertical" className="h-5 shrink-0" />
 

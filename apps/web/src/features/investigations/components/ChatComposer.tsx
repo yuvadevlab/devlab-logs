@@ -4,6 +4,8 @@
  * @module @devlab/logs-web/features/investigations/components/ChatComposer
  */
 
+"use client";
+
 import React, { useRef, useEffect } from "react";
 import { ArrowUp, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@devlab-logs/ui";

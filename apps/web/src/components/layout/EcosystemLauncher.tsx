@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Button, Badge, Popover, PopoverTrigger, PopoverContent, Separator } from "@devlab-logs/ui";
 import { APP_ROUTES } from "@/lib/constants";
+import { UI_COPY } from "@/lib/ui-copy";
 import { cn } from "@/lib/utils";
 
 /** Ecosystem application metadata */
@@ -105,8 +106,8 @@ export function EcosystemLauncher(): React.JSX.Element {
           variant="ghost"
           size="icon"
           className="size-8 shrink-0"
-          title="DevLab Ecosystem Applications"
-          aria-label="DevLab Ecosystem Applications"
+          title={UI_COPY.COMMON.ECOSYSTEM.TITLE}
+          aria-label={UI_COPY.COMMON.ECOSYSTEM.TITLE}
         >
           <Grid2X2 className="size-4" />
         </Button>
@@ -121,7 +122,7 @@ export function EcosystemLauncher(): React.JSX.Element {
         {/* Responsive Workspace Views (Shown on small viewports where topbar tabs collapse) */}
         <div className="mb-2.5 block md:hidden">
           <div className="text-muted-foreground mb-1.5 px-1 font-mono text-[10px] font-semibold tracking-wider uppercase">
-            Workspace Views
+            {UI_COPY.COMMON.ECOSYSTEM.SECTION_VIEWS}
           </div>
           <div className="grid grid-cols-2 gap-1.5 font-sans">
             <Link
@@ -135,7 +136,7 @@ export function EcosystemLauncher(): React.JSX.Element {
               )}
             >
               <Layers className="size-3.5 text-emerald-500" />
-              <span>Live Explorer</span>
+              <span>{UI_COPY.COMMON.NAVIGATION.LIVE_EXPLORER}</span>
             </Link>
             <Link
               href={APP_ROUTES.INVESTIGATE()}
@@ -148,7 +149,7 @@ export function EcosystemLauncher(): React.JSX.Element {
               )}
             >
               <Sparkles className="text-primary size-3.5" />
-              <span>AI Investigator</span>
+              <span>{UI_COPY.COMMON.NAVIGATION.AI_INVESTIGATOR}</span>
             </Link>
           </div>
           <Separator className="mt-2.5" />
@@ -157,7 +158,7 @@ export function EcosystemLauncher(): React.JSX.Element {
         {/* Ecosystem Applications Catalog */}
         <div className="flex items-center justify-between px-1 pb-1">
           <span className="text-muted-foreground font-mono text-[10px] font-semibold tracking-wider uppercase">
-            DevLab Ecosystem
+            {UI_COPY.COMMON.ECOSYSTEM.SECTION_APPS}
           </span>
           <Badge variant="secondary" className="px-1.5 py-0 font-mono text-[10px]">
             {DEVLAB_APPS.length}

@@ -5,6 +5,8 @@
  * @module @devlab/logs-web/features/investigations/hooks/useInvestigationSession
  */
 
+"use client";
+
 import { useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { APP_ROUTES } from "@/lib/constants";

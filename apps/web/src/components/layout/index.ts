@@ -7,3 +7,4 @@
 export * from "./AppNavbar";
 export * from "./NavbarExplorerControls";
 export * from "./EcosystemLauncher";
+export * from "./DashboardShell";

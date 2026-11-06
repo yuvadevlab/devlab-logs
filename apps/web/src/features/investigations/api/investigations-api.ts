@@ -5,6 +5,8 @@
  * @module @devlab/logs-web/features/investigations/api/investigations-api
  */
 
+"use client";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDevLabAuth } from "@yuva-devlab/auth-client";
 import { API_ROUTES, getApiBaseUrl } from "@/lib/constants";

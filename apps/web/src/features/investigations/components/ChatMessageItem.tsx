@@ -4,6 +4,8 @@
  * @module @devlab/logs-web/features/investigations/components/ChatMessageItem
  */
 
+"use client";
+
 import React from "react";
 import { Sparkles, User } from "lucide-react";
 import { Badge } from "@devlab-logs/ui";
