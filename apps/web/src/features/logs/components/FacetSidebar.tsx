@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Badge, Button, Input, ScrollArea } from "@devlab-logs/ui";
 import { LEVEL_CLASS } from "@/lib/logs";
+import { UI_COPY } from "@/lib/ui-copy";
 import { cn } from "@/lib/utils";
 import { LogLevel, ServiceName, LEVELS, type LogEvent } from "../types";
 import { computeFacetDistributions } from "./facet-utils";
@@ -112,15 +113,13 @@ export function FacetSidebar({
       </div>
 
       <div className="border-border/40 border-b p-2">
-        <div className="relative">
-          <Search className="text-muted-foreground absolute top-1/2 left-2 size-3 -translate-y-1/2" />
-          <Input
-            value={facetSearch}
-            onChange={(e) => setFacetSearch(e.target.value)}
-            placeholder="Filter fields…"
-            className="h-7 pl-6 font-mono text-[11px]"
-          />
-        </div>
+        <Input
+          value={facetSearch}
+          onChange={(e) => setFacetSearch(e.target.value)}
+          placeholder={UI_COPY.LOGS.FILTERS.FILTER_KEYS_PLACEHOLDER}
+          startIcon={<Search className="text-muted-foreground size-3.5" />}
+          className="h-7 font-mono text-[11px]"
+        />
       </div>
 
       <ScrollArea className="flex-1 p-2">

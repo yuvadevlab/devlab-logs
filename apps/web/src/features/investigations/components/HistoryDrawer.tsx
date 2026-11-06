@@ -114,13 +114,13 @@ export function HistoryDrawer({
           {UI_COPY.INVESTIGATIONS.NEW_INVESTIGATION}
         </Button>
 
-        <div className="relative mt-3">
-          <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2" />
+        <div className="mt-3">
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={UI_COPY.INVESTIGATIONS.SEARCH_THREADS}
-            className="h-8 pl-8 font-sans text-xs"
+            startIcon={<Search className="text-muted-foreground size-3.5" />}
+            className="h-8 font-sans text-xs"
           />
         </div>
 

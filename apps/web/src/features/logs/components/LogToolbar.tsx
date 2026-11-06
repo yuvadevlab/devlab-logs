@@ -74,13 +74,14 @@ export function LogToolbar({
     <section className="panel flex flex-wrap items-center gap-2 p-2">
       {/* Search Input with Regex and History */}
       <div className="relative min-w-64 flex-1">
-        <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onCommitSearch()}
           placeholder={regex ? "regex filter, e.g. timeout|OOM" : "Search messages…"}
-          className="h-8 pr-40 pl-8 font-mono text-xs"
+          startIcon={<Search className="text-muted-foreground size-4" />}
+          className="h-8 font-mono text-xs"
+          style={{ paddingInlineEnd: "10rem" }}
         />
         <div className="absolute top-1/2 right-1 flex -translate-y-1/2 items-center gap-1">
           {regex && query && (
@@ -141,21 +142,22 @@ export function LogToolbar({
 
       {/* Trace ID Filter Input */}
       <div className="relative">
-        <GitBranch className="text-muted-foreground absolute top-1/2 left-2 size-3.5 -translate-y-1/2" />
         <Input
           value={traceFilter}
           onChange={(e) => setTraceFilter(e.target.value)}
           placeholder={UI_COPY.LOGS.FILTERS.TRACE_ID_PLACEHOLDER}
-          className="h-8 w-36 pl-7 font-mono text-xs"
+          startIcon={<GitBranch className="text-muted-foreground size-3.5" />}
+          className="h-8 w-40 font-mono text-xs"
+          style={traceFilter ? { paddingInlineEnd: "1.75rem" } : undefined}
         />
         {traceFilter && (
           <button
             type="button"
             onClick={() => setTraceFilter("")}
-            className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
+            className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
             title="Clear trace filter"
           >
-            <X className="text-muted-foreground hover:text-foreground size-3" />
+            <X className="size-3" />
           </button>
         )}
       </div>
