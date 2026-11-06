@@ -38,8 +38,8 @@ export const COMMON_COPY = {
     SEARCH_AND_COMMANDS: "Search and commands (⌘K)",
   },
   ENVIRONMENT: {
-    PRODUCTION: "● production",
-    STAGING: "● staging",
-    DEVELOPMENT: "● local-dev",
+    PRODUCTION: "production",
+    STAGING: "staging",
+    DEVELOPMENT: "development",
   },
 } as const;
