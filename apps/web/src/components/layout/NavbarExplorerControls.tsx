@@ -114,7 +114,13 @@ export function NavbarExplorerControls({
                   {UI_COPY.LOGS.FILTERS.CUSTOM}
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-72 space-y-2 p-3" align="end">
+              <PopoverContent
+                align="end"
+                side="bottom"
+                sideOffset={8}
+                avoidCollisions={false}
+                className="w-72 max-w-[calc(100vw-2rem)] space-y-2 p-3 shadow-xl"
+              >
                 <div className="text-xs font-medium">{UI_COPY.LOGS.FILTERS.CUSTOM_RANGE}</div>
                 <Input
                   type="datetime-local"

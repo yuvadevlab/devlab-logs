@@ -166,7 +166,7 @@ export function AppNavbar({
             <SelectTrigger className="h-7 w-[95px] shrink-0 font-mono text-xs">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent align="end" className="min-w-[130px]">
               <SelectItem value={Environment.PRODUCTION}>
                 {UI_COPY.COMMON.ENVIRONMENT.PRODUCTION}
               </SelectItem>

@@ -111,7 +111,13 @@ export function EcosystemLauncher(): React.JSX.Element {
           <Grid2X2 className="size-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-3 shadow-xl" align="end" sideOffset={8}>
+      <PopoverContent
+        align="end"
+        side="bottom"
+        sideOffset={8}
+        avoidCollisions={false}
+        className="max-h-[min(560px,calc(100vh-80px))] w-[min(320px,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] overflow-y-auto p-3 shadow-xl"
+      >
         {/* Responsive Workspace Views (Shown on small viewports where topbar tabs collapse) */}
         <div className="mb-2.5 block md:hidden">
           <div className="text-muted-foreground mb-1.5 px-1 font-mono text-[10px] font-semibold tracking-wider uppercase">
