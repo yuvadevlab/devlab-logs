@@ -331,8 +331,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@yuva-devlab/ui':
-        specifier: ^2.0.0
-        version: 2.0.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))
+        specifier: ^2.1.0
+        version: 2.1.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))
       react:
         specifier: ^19.0.0
         version: 19.3.0
@@ -2188,8 +2188,8 @@ packages:
   '@yuva-devlab/tokens@2.0.0':
     resolution: {integrity: sha512-8qLAZ3V4YZlJL2u55mjr09dsMYi1nABv4HMhTsB/iiZhamkVSNkW4p5vPojBu8UiChdjLmVVe8wFhyKRLLesZg==}
 
-  '@yuva-devlab/ui@2.0.0':
-    resolution: {integrity: sha512-90HVf+IIiqStbQqLhNY5rap65EFPe9CsjwiodeiQB9yyP0qBd1tWlYbIodBo+6mER1PGF5E4T69Xgw3lCb+wbg==}
+  '@yuva-devlab/ui@2.1.0':
+    resolution: {integrity: sha512-0Nakg+jnOlO6NeypxkNYzXTLWtn3U32lVEta82jFr6YS1q92EuvrrIIFT4dv/pxg1JqUh68idRl5rWAas00lpA==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -5753,7 +5753,7 @@ snapshots:
 
   '@yuva-devlab/tokens@2.0.0': {}
 
-  '@yuva-devlab/ui@2.0.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))':
+  '@yuva-devlab/ui@2.1.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))':
     dependencies:
       '@radix-ui/react-accordion': 1.2.21(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-alert-dialog': 1.1.24(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
