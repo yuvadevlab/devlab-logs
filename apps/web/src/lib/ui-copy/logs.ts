@@ -38,6 +38,9 @@ export const LOGS_COPY = {
     LOG_VOLUME: "Log volume · drag to zoom",
     NO_TRACE: "no-trace",
   },
+  TOOLBAR: {
+    TOGGLE_TIMELINE: "Toggle Histogram Timeline",
+  },
   ROW_ACTIONS: {
     FILTER_BY_TRACE: "Filter by trace",
     COPY_MESSAGE: "Copy message",

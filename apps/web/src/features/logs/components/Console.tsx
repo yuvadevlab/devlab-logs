@@ -1,7 +1,7 @@
 /**
  * @file apps/web/src/features/logs/components/Console.tsx
  * @description Enterprise Telemetry & Log Analytics Console container.
- * Features Splunk/Datadog-grade facets, collapsible timeline, and density toggles.
+ * Features Splunk/Datadog-grade facets, collapsible timeline, and live waterfall stream.
  * Consumes the central ExplorerContext without mounting a duplicate AppNavbar.
  * @module @devlab/logs-web/features/logs/components/Console
  */
@@ -39,8 +39,6 @@ export function Console() {
     setCmdOpen,
     showTimeline,
     setShowTimeline,
-    density,
-    setDensity,
     facetsCollapsed,
     setFacetsCollapsed,
     selectedIndex,
@@ -143,8 +141,6 @@ export function Console() {
             onCommitSearch={filterState.commitSearch}
             showTimeline={showTimeline}
             setShowTimeline={setShowTimeline}
-            density={density}
-            setDensity={setDensity}
           />
 
           <LogStreamList
@@ -164,7 +160,6 @@ export function Console() {
             onSelectLog={filterState.setSelected}
             onTraceFilter={(tid) => filterState.setTraceFilter(tid)}
             lastId={lastId}
-            density={density}
             selectedIndex={selectedIndex}
             onRowClick={(idx) => setSelectedIndex(idx)}
           />

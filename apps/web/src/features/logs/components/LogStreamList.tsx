@@ -24,7 +24,6 @@ export interface LogStreamListProps {
   onSelectLog: (log: LogEvent) => void;
   onTraceFilter: (traceId: string) => void;
   lastId: number;
-  density?: "compact" | "comfortable";
   selectedIndex?: number;
   onRowClick?: (idx: number, log: LogEvent) => void;
 }
@@ -49,7 +48,6 @@ export function LogStreamList({
   onSelectLog,
   onTraceFilter,
   lastId,
-  density = "compact",
   selectedIndex = -1,
   onRowClick,
 }: LogStreamListProps) {
@@ -145,7 +143,6 @@ export function LogStreamList({
                 onToggle={() => toggleExpand(l.id)}
                 onTrace={() => onTraceFilter(l.traceId)}
                 onInspect={() => onSelectLog(l)}
-                density={density}
                 isSelected={selectedIndex === idx}
               />
             </div>

@@ -60,8 +60,6 @@ export interface ExplorerContextValue {
   // View Layout
   showTimeline: boolean;
   setShowTimeline: React.Dispatch<React.SetStateAction<boolean>>;
-  density: "compact" | "comfortable";
-  setDensity: React.Dispatch<React.SetStateAction<"compact" | "comfortable">>;
   facetsCollapsed: boolean;
   setFacetsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   selectedIndex: number;
@@ -87,7 +85,6 @@ export function ExplorerProvider({ children }: ExplorerProviderProps) {
 
   const filterState = useConsoleFilters(logs, now);
   const [showTimeline, setShowTimeline] = useState(true);
-  const [density, setDensity] = useState<"compact" | "comfortable">("compact");
   const [facetsCollapsed, setFacetsCollapsed] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [sqlOpen, setSqlOpen] = useState(false);
@@ -137,8 +134,6 @@ export function ExplorerProvider({ children }: ExplorerProviderProps) {
       setCmdOpen,
       showTimeline,
       setShowTimeline,
-      density,
-      setDensity,
       facetsCollapsed,
       setFacetsCollapsed,
       selectedIndex,
@@ -160,7 +155,6 @@ export function ExplorerProvider({ children }: ExplorerProviderProps) {
       sqlOpen,
       cmdOpen,
       showTimeline,
-      density,
       facetsCollapsed,
       selectedIndex,
     ],
