@@ -10,4 +10,3 @@ export * from "./ChatMessageItem";
 export * from "./ChatComposer";
 export * from "./HistoryDrawer";
 export * from "./InvestigationWorkspace";
-export * from "./InvestigationCopilotSheet";

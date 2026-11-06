@@ -52,8 +52,6 @@ export interface ExplorerContextValue {
   setAutoScroll: (v: boolean | ((p: boolean) => boolean)) => void;
 
   // Workbench & Dialog State
-  copilotOpen: boolean;
-  setCopilotOpen: React.Dispatch<React.SetStateAction<boolean>>;
   sqlOpen: boolean;
   setSqlOpen: React.Dispatch<React.SetStateAction<boolean>>;
   cmdOpen: boolean;
@@ -92,7 +90,6 @@ export function ExplorerProvider({ children }: ExplorerProviderProps) {
   const [density, setDensity] = useState<"compact" | "comfortable">("compact");
   const [facetsCollapsed, setFacetsCollapsed] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [copilotOpen, setCopilotOpen] = useState(false);
   const [sqlOpen, setSqlOpen] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
 
@@ -134,8 +131,6 @@ export function ExplorerProvider({ children }: ExplorerProviderProps) {
       setCustom: filterState.setCustom,
       autoScroll: filterState.autoScroll,
       setAutoScroll: filterState.setAutoScroll,
-      copilotOpen,
-      setCopilotOpen,
       sqlOpen,
       setSqlOpen,
       cmdOpen,
@@ -162,7 +157,6 @@ export function ExplorerProvider({ children }: ExplorerProviderProps) {
       handleClearLogs,
       filterState,
       handleSetRange,
-      copilotOpen,
       sqlOpen,
       cmdOpen,
       showTimeline,

@@ -1,7 +1,7 @@
 /**
  * @file apps/web/src/features/logs/components/Console.tsx
  * @description Enterprise Telemetry & Log Analytics Console container.
- * Features Splunk/Datadog-grade facets, collapsible timeline, density toggles, and persistent AI Copilot.
+ * Features Splunk/Datadog-grade facets, collapsible timeline, and density toggles.
  * Consumes the central ExplorerContext without mounting a duplicate AppNavbar.
  * @module @devlab/logs-web/features/logs/components/Console
  */
@@ -9,6 +9,8 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { APP_ROUTES } from "@/lib/constants";
 import { LogLevel } from "../types";
 import { useExplorerContext } from "../context";
 import { LogKpiCards } from "./LogKpiCards";
@@ -19,9 +21,9 @@ import { LogDrawer } from "./LogDrawer";
 import { FacetSidebar } from "./FacetSidebar";
 import { SqlWorkbench } from "./SqlWorkbench";
 import { CommandPalette } from "./CommandPalette";
-import { InvestigationCopilotSheet } from "@/features/investigations";
 
 export function Console() {
+  const router = useRouter();
   const {
     now,
     logs,
@@ -31,8 +33,6 @@ export function Console() {
     eps,
     togglePause,
     filterState,
-    copilotOpen,
-    setCopilotOpen,
     sqlOpen,
     setSqlOpen,
     cmdOpen,
@@ -78,12 +78,11 @@ export function Console() {
         filterState.setSelected(filterState.filtered[selectedIndex]);
       } else if (e.key === "Escape") {
         filterState.setSelected(null);
-        setCopilotOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [filterState, selectedIndex, setCmdOpen, setCopilotOpen, setSelectedIndex]);
+  }, [filterState, selectedIndex, setCmdOpen, setSelectedIndex]);
 
   const filterCount =
     (filterState.query ? 1 : 0) +
@@ -179,15 +178,13 @@ export function Console() {
         onSelect={filterState.setSelected}
       />
 
-      <InvestigationCopilotSheet open={copilotOpen} onOpenChange={setCopilotOpen} />
-
       <SqlWorkbench open={sqlOpen} onOpenChange={setSqlOpen} logs={logs} />
 
       <CommandPalette
         open={cmdOpen}
         onOpenChange={setCmdOpen}
         onSearchQuery={filterState.setQuery}
-        onOpenAi={() => setCopilotOpen(true)}
+        onOpenAi={() => router.push(APP_ROUTES.INVESTIGATE())}
         onOpenSql={() => setSqlOpen(true)}
         onToggleStream={togglePause}
         onFilterErrors={() => filterState.setLevels([LogLevel.ERROR, LogLevel.FATAL])}

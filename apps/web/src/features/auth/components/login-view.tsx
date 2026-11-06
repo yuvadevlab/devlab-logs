@@ -8,6 +8,7 @@
 "use client";
 
 import React, { useEffect, useCallback } from "react";
+import { SpinnerIcon } from "@devlab-logs/ui";
 import { DEVLAB_PORTAL_ROUTES } from "@/lib/constants/routes";
 
 /**
@@ -36,22 +37,7 @@ export function LoginView(): React.JSX.Element {
     <div className="bg-background flex min-h-screen flex-col items-center justify-center px-4 text-center select-none">
       <div className="border-border bg-card w-full max-w-md rounded-2xl border p-8 shadow-xl">
         <div className="bg-primary/10 text-primary mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl">
-          <svg
-            className="size-8 animate-spin"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-          </svg>
+          <SpinnerIcon className="size-8 animate-spin" />
         </div>
 
         <h1 className="text-foreground text-xl font-bold tracking-tight">

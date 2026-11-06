@@ -8,7 +8,7 @@
 "use client";
 
 import React from "react";
-import { Play, Pause, Database, Sparkles, Eraser, ArrowDownToLine } from "lucide-react";
+import { Play, Pause, Database, Eraser, ArrowDownToLine } from "lucide-react";
 import {
   Button,
   Input,
@@ -37,7 +37,6 @@ export interface NavbarExplorerControlsProps {
   setAutoScroll?: (v: boolean | ((p: boolean) => boolean)) => void;
   onClearLogs?: () => void;
   onOpenSql?: () => void;
-  onOpenCopilot?: () => void;
 }
 
 const PRESET_RANGES = [
@@ -63,7 +62,6 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
   const setAutoScroll = props?.setAutoScroll ?? explorer.setAutoScroll;
   const onClearLogs = props?.onClearLogs ?? explorer.clearLogs;
   const onOpenSql = props?.onOpenSql ?? (() => explorer.setSqlOpen(true));
-  const onOpenCopilot = props?.onOpenCopilot ?? (() => explorer.setCopilotOpen(true));
 
   const bufferPct = Math.min(100, Math.round((bufferCount / maxBuffer) * 100));
 
@@ -195,17 +193,6 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
       >
         <Database className="size-3.5 sm:mr-1" />
         <span className="hidden sm:inline">{UI_COPY.COMMON.ACTIONS.SQL}</span>
-      </Button>
-
-      {/* Copilot Drawer Trigger */}
-      <Button
-        size="sm"
-        onClick={onOpenCopilot}
-        className="h-7 shrink-0 font-sans text-xs shadow-sm"
-        title={UI_COPY.COMMON.ACTIONS.OPEN_COPILOT}
-      >
-        <Sparkles className="size-3.5 sm:mr-1" />
-        <span className="hidden sm:inline">{UI_COPY.COMMON.ACTIONS.COPILOT}</span>
       </Button>
 
       <Separator orientation="vertical" className="hidden h-5 shrink-0 sm:block" />

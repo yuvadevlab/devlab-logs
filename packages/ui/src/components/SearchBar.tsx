@@ -7,28 +7,12 @@
 
 import React from "react";
 import { Input, type InputProps } from "@yuva-devlab/ui";
+import { SearchIcon } from "../icons";
 
 export interface SearchBarProps extends InputProps {
   /** Optional wrapper container class */
   containerClassName?: string;
 }
-
-const DefaultSearchIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="text-muted-foreground size-4"
-    aria-hidden="true"
-  >
-    <circle cx="11" cy="11" r="8" />
-    <path d="m21 21-4.3-4.3" />
-  </svg>
-);
 
 /**
  * Accessible search input wrapper ensuring proper icon alignment and text indent.
@@ -43,7 +27,7 @@ export function SearchBar({
     <div className={containerClassName}>
       <Input
         type="search"
-        startIcon={startIcon ?? <DefaultSearchIcon />}
+        startIcon={startIcon ?? <SearchIcon />}
         className={className}
         {...props}
       />

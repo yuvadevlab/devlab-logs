@@ -19,13 +19,9 @@ import { ChatComposer } from "./ChatComposer";
 
 export interface InvestigationWorkspaceProps {
   initialConversationId?: string;
-  isSheetMode?: boolean;
 }
 
-export function InvestigationWorkspace({
-  initialConversationId,
-  isSheetMode = false,
-}: InvestigationWorkspaceProps) {
+export function InvestigationWorkspace({ initialConversationId }: InvestigationWorkspaceProps) {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -62,9 +58,7 @@ export function InvestigationWorkspace({
   const activeThread = conversations.find((c) => c.id === activeId);
 
   return (
-    <div
-      className={`bg-background relative flex min-h-0 flex-1 flex-col overflow-hidden ${isSheetMode ? "h-full" : "h-full"}`}
-    >
+    <div className="bg-background relative flex h-full min-h-0 flex-1 flex-col overflow-hidden">
       {/* Workspace Sub-Header / Action Toolbar */}
       <header className="border-border/60 bg-card/40 flex h-11 shrink-0 items-center justify-between border-b px-4 backdrop-blur-md">
         <div className="flex min-w-0 items-center gap-2">
