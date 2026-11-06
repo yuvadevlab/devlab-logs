@@ -1,0 +1,39 @@
+name: 🚀 Auto Promote (dev ➔ main)
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  promote-dev-to-main:
+    name: "Sync dev to main (Create or Update PR)"
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (!contains(github.event.head_commit.message, 'sync/main-to-dev') &&
+       !contains(github.event.head_commit.message, 'reverse merge main into dev') &&
+       !contains(github.event.head_commit.message, 'chore(sync):'))
+
+    steps:
+      - name: 📦 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.AUTO_PR_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: 🛠️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 🚀 Create or Update Promotion PR
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_PR_PAT || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.AUTO_PR_PAT || secrets.GITHUB_TOKEN }}
+        run: node .github/scripts/promote-dev-to-main.mjs

@@ -1,41 +1,63 @@
-"use client";
-
 /**
  * @file apps/web/src/features/auth/components/login-view.tsx
- * @description Interactive client view for logs console sign-in with enterprise workspace auth.
+ * @description Client view for DevLab Logs authentication delegating to DevLab Portal Central SSO.
+ * Modeled after FinAI's authentication handoff pattern.
  * @module @devlab/logs-web/features/auth
  */
 
-import React from "react";
-import { Activity } from "lucide-react";
-import { SignIn } from "@yuva-devlab/auth-client";
-import { APP_ROUTES } from "@/lib/constants/routes";
+"use client";
+
+import React, { useEffect, useCallback } from "react";
+import { SpinnerIcon } from "@devlab-logs/ui";
+import { DEVLAB_PORTAL_ROUTES } from "@/lib/constants/routes";
 
 /**
- * Interactive login view rendering DevLab authentication card.
- * Handles credential dispatch, session token storage, and redirect to logs console.
- *
- * @returns React JSX element rendering sign-in form
+ * Client view for DevLab Logs authentication.
+ * Automatically purges stale session markers and delegates to DevLab Portal Central SSO.
  */
-export const LoginView: React.FC = () => {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_DEVLAB_PORTAL_API_URL || "http://localhost:3015";
+export function LoginView(): React.JSX.Element {
+  const purgeAndRedirect = useCallback(() => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("devlab_token");
+      localStorage.removeItem("devlab_user");
+      localStorage.removeItem("devlab_access_token");
+      localStorage.removeItem("devlab_auth_token");
+      localStorage.removeItem("devlab_auth_user");
+      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "devlab_access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      window.location.href = DEVLAB_PORTAL_ROUTES.LOGIN(window.location.origin);
+    }
+  }, []);
+
+  useEffect(() => {
+    purgeAndRedirect();
+  }, [purgeAndRedirect]);
 
   return (
-    <SignIn
-      apiBaseUrl={apiBaseUrl}
-      redirectTo={APP_ROUTES.HOME}
-      forgotPasswordUrl={APP_ROUTES.FORGOT_PASSWORD}
-      brand="logs"
-      theme="logs-dark"
-      logo={
-        <div className="flex items-center gap-3">
-          <span className="bg-primary text-primary-foreground glow flex size-10 items-center justify-center rounded-lg shadow-md">
-            <Activity className="size-5" strokeWidth={2.5} />
-          </span>
-          <span className="text-foreground text-xl font-bold tracking-tight">DevLab Logs</span>
+    <div className="bg-background flex min-h-screen flex-col items-center justify-center px-4 text-center select-none">
+      <div className="border-border bg-card w-full max-w-md rounded-2xl border p-8 shadow-xl">
+        <div className="bg-primary/10 text-primary mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl">
+          <SpinnerIcon className="size-8 animate-spin" />
         </div>
-      }
-      fullPage
-    />
+
+        <h1 className="text-foreground text-xl font-bold tracking-tight">
+          Redirecting to DevLab SSO
+        </h1>
+        <p className="text-muted-foreground mt-2 text-sm">
+          Single Sign-On is required to access DevLab Logs. You are being redirected to the DevLab
+          Portal...
+        </p>
+
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={purgeAndRedirect}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary/20 inline-flex w-full cursor-pointer items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium shadow transition focus:ring-2 focus:outline-none"
+          >
+            Continue to DevLab Portal &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
   );
-};
+}

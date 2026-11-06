@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useRef, useState } from "react";
+import { Button } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { LogLevel, LEVELS, type LogEvent } from "../types";
 import { UI_COPY } from "@/lib/ui-copy";
@@ -93,13 +94,14 @@ export function LogHistogram({
               </span>
             ))}
           {zoom && (
-            <button
-              type="button"
+            <Button
+              size="sm"
+              variant="outline"
               onClick={() => setZoom(null)}
-              className="chip lvl-info hover:border-primary cursor-pointer"
+              className="border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 h-5 px-1.5 font-mono text-[10px]"
             >
               reset zoom ✕
-            </button>
+            </Button>
           )}
         </div>
       </div>

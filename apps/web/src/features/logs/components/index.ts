@@ -17,4 +17,7 @@ export * from "./LogStreamList";
 export * from "./CommandPalette";
 export * from "./useConsoleFilters";
 export * from "./Console";
+export * from "./FacetSidebar";
+export * from "./ActiveFilterPills";
+export * from "./facet-utils";
 export * from "./AiSection";

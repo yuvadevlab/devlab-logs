@@ -19,7 +19,6 @@ type FileTailer struct {
 	path    string
 	service string
 	offset  int64
-	mu      sync.Mutex
 }
 
 // LogTailer monitors directory trees for file append and rotation events.

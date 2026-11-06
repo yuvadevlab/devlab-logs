@@ -10,6 +10,7 @@ import {
   DialogDescription,
   Button,
   Input,
+  Badge,
 } from "@devlab-logs/ui";
 import { cn } from "@/lib/utils";
 import { LogLevel, AiAnalysisPhase, type LogEvent, type LogEpisodeMatch } from "../types";
@@ -138,11 +139,16 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
                         key={match.id}
                         className="bg-background/50 flex items-start gap-2 rounded border p-2 font-mono text-[11px]"
                       >
-                        <span className="chip lvl-info shrink-0">
+                        <Badge
+                          variant="outline"
+                          className="border-primary/40 bg-primary/10 text-primary shrink-0 font-mono text-[10px]"
+                        >
                           {(match.similarity * 100).toFixed(1)}
                           {UI_COPY.LOGS.AI.MATCH}
-                        </span>
-                        <span className="chip shrink-0">{match.service}</span>
+                        </Badge>
+                        <Badge variant="secondary" className="shrink-0 font-mono text-[10px]">
+                          {match.service}
+                        </Badge>
                         <span className="flex-1">{match.summary}</span>
                         <span className="text-muted-foreground shrink-0 tabular-nums">
                           {new Date(match.log_timestamp).toLocaleTimeString()}

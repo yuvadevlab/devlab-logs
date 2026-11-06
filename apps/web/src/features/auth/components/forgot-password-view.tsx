@@ -1,39 +1,35 @@
-"use client";
-
 /**
  * @file apps/web/src/features/auth/components/forgot-password-view.tsx
- * @description Interactive client view for logs console password recovery.
+ * @description Client view for password recovery delegating to DevLab Portal Central SSO.
  * @module @devlab/logs-web/features/auth
  */
 
-import React from "react";
-import { Activity } from "lucide-react";
-import { ForgotPassword } from "@yuva-devlab/auth-client";
-import { APP_ROUTES } from "@/lib/constants/routes";
+"use client";
+
+import React, { useEffect } from "react";
+import { DEVLAB_PORTAL_ROUTES } from "@/lib/constants/routes";
 
 /**
- * Interactive password recovery view sending reset dispatch via DevLab IAM.
- *
- * @returns React JSX element rendering forgot password card
+ * Client view for password recovery.
+ * Redirects to DevLab Portal central password recovery workflow.
  */
-export const ForgotPasswordView: React.FC = () => {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_DEVLAB_PORTAL_API_URL || "http://localhost:3015";
+export function ForgotPasswordView(): React.JSX.Element {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.location.href = DEVLAB_PORTAL_ROUTES.FORGOT_PASSWORD();
+    }
+  }, []);
 
   return (
-    <ForgotPassword
-      apiBaseUrl={apiBaseUrl}
-      signInUrl={APP_ROUTES.LOGIN}
-      brand="logs"
-      theme="logs-dark"
-      logo={
-        <div className="flex items-center gap-3">
-          <span className="bg-primary text-primary-foreground glow flex size-10 items-center justify-center rounded-lg shadow-md">
-            <Activity className="size-5" strokeWidth={2.5} />
-          </span>
-          <span className="text-foreground text-xl font-bold tracking-tight">DevLab Logs</span>
-        </div>
-      }
-      fullPage
-    />
+    <div className="bg-background flex min-h-screen flex-col items-center justify-center px-4 text-center select-none">
+      <div className="border-border bg-card w-full max-w-md rounded-2xl border p-8 shadow-xl">
+        <h1 className="text-foreground text-xl font-bold tracking-tight">
+          Redirecting to Password Recovery
+        </h1>
+        <p className="text-muted-foreground mt-2 text-sm">
+          Password recovery is handled centrally via DevLab Portal...
+        </p>
+      </div>
+    </div>
   );
-};
+}
