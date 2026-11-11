@@ -1,0 +1,64 @@
+/**
+ * @file packages/ui/src/styles/logs-drawer.css
+ * @description Log detail drawer, trace waterfall table, and JSON inspector.
+ * @author yuva.devlab@gmail.com
+ */
+
+.dl-drawer__badge-meta {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+}
+
+.dl-drawer__title-text {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.625;
+}
+
+.dl-drawer__subtitle-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.dl-drawer__action-btn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.dl-drawer__action-icon {
+  margin-right: 0.25rem;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.dl-drawer__trace-cell {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+}
+
+.dl-drawer__trace-cell--md {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+
+.dl-drawer__trace-row:hover {
+  background-color: var(--accent);
+}
+
+.dl-drawer__trace-row--active {
+  background-color: var(--accent);
+}
+
+.dl-drawer__trace-bar {
+  border: 1px solid var(--border);
+}
+
+.dl-header-controls__popover {
+  width: 18rem;
+  padding: 0.75rem;
+}
+
+.dl-header-controls__input {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}

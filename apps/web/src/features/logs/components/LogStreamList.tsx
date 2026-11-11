@@ -76,23 +76,44 @@ export function LogStreamList({
   };
 
   return (
-    <section className="panel flex min-h-0 flex-1 flex-col overflow-hidden">
+    <section
+      className="panel"
+      style={{
+        display: "flex",
+        minHeight: 0,
+        flex: "1 1 0%",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
       {/* Stream Table Header */}
-      <div className="text-muted-foreground grid grid-cols-[150px_64px_130px_120px_1fr_24px] items-center gap-3 border-b px-3 py-1.5 font-mono text-[10px] tracking-wider uppercase">
+      <div className="dl-stream-header">
         <button
           type="button"
           onClick={() => setIsoTime((v) => !v)}
-          className="hover:text-foreground flex cursor-pointer items-center gap-1 text-left"
+          className="hover:text-foreground"
+          style={{
+            display: "flex",
+            cursor: "pointer",
+            alignItems: "center",
+            gap: "0.25rem",
+            textAlign: "left",
+            background: "none",
+            border: "none",
+            padding: 0,
+            color: "inherit",
+            font: "inherit",
+          }}
         >
-          <Clock className="size-3" />
+          <Clock className="dl-stream__status-icon" />
           {isoTime ? UI_COPY.LOGS.STREAM.ISO_UTC : UI_COPY.LOGS.STREAM.RELATIVE} ⇄
         </button>
         <span>{UI_COPY.LOGS.STREAM.LEVEL}</span>
         <span>{UI_COPY.LOGS.STREAM.SERVICE}</span>
         <span>{UI_COPY.LOGS.STREAM.TRACE}</span>
-        <span className="flex justify-between">
+        <span style={{ display: "flex", justifyContent: "space-between" }}>
           {UI_COPY.LOGS.STREAM.MESSAGE}
-          <span className="tracking-normal normal-case">
+          <span style={{ letterSpacing: "normal", textTransform: "none" }}>
             {visibleLogs.length.toLocaleString()} {UI_COPY.LOGS.STREAM.EVENTS}
             {filterCount > 0 && (
               <>
@@ -101,7 +122,15 @@ export function LogStreamList({
                 <button
                   type="button"
                   onClick={onClearFilters}
-                  className="text-primary cursor-pointer hover:underline"
+                  className="hover:underline"
+                  style={{
+                    color: "var(--primary)",
+                    cursor: "pointer",
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    font: "inherit",
+                  }}
                 >
                   {UI_COPY.LOGS.STREAM.CLEAR_FILTERS(filterCount)}
                 </button>
@@ -116,17 +145,25 @@ export function LogStreamList({
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="min-h-0 flex-1 overflow-y-auto font-mono text-xs"
+        className="dl-stream__jump-btn"
+        style={{ minHeight: 0, flex: "1 1 0%", overflowY: "auto" }}
       >
         {visibleLogs.length === 0 ? (
-          <div className="grid h-full place-items-center p-10">
+          <div
+            style={{
+              display: "grid",
+              height: "100%",
+              placeItems: "center",
+              padding: "2.5rem",
+            }}
+          >
             <EmptyState
-              icon={<Eye className="text-muted-foreground size-8" />}
+              icon={<Eye className="dl-stream__empty-icon" />}
               title={UI_COPY.LOGS.STREAM.EMPTY_TITLE}
               description={
                 logs.length ? UI_COPY.LOGS.STREAM.EMPTY_FILTERS : UI_COPY.LOGS.STREAM.EMPTY_BUFFER
               }
-              className="border-none bg-transparent p-0"
+              className="dl-stream__empty-box"
             />
           </div>
         ) : (
@@ -160,9 +197,24 @@ export function LogStreamList({
               scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
             }
           }}
-          className="bg-primary text-primary-foreground glow mx-auto -mt-12 mb-3 flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium shadow-lg"
+          className="glow"
+          style={{
+            margin: "-3rem auto 0.75rem",
+            display: "flex",
+            cursor: "pointer",
+            alignItems: "center",
+            gap: "0.375rem",
+            borderRadius: "9999px",
+            padding: "0.25rem 0.75rem",
+            fontSize: "0.75rem",
+            fontWeight: 500,
+            backgroundColor: "var(--primary)",
+            color: "var(--primaryForeground)",
+            border: "none",
+            boxShadow: "var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.5))",
+          }}
         >
-          <ArrowDownToLine className="size-3.5" /> {UI_COPY.LOGS.STREAM.JUMP_TO_LIVE}
+          <ArrowDownToLine className="dl-stream__jump-icon" /> {UI_COPY.LOGS.STREAM.JUMP_TO_LIVE}
         </button>
       )}
     </section>

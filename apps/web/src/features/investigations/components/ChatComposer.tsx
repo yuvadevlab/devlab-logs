@@ -45,10 +45,10 @@ export function ChatComposer({
   };
 
   return (
-    <div className="bg-card/90 border-border/80 relative rounded-2xl border p-2 shadow-sm backdrop-blur-md">
-      <div className="flex items-end gap-2">
-        <div className="text-primary mt-2 ml-2 hidden sm:block">
-          <Sparkles className="size-4" />
+    <div className="dl-chat-composer">
+      <div style={{ display: "flex", alignItems: "flex-end", gap: "0.5rem" }}>
+        <div className="dl-chat-composer__sparkle-wrapper">
+          <Sparkles className="dl-chat-composer__sparkle-icon" />
         </div>
         <textarea
           ref={textareaRef}
@@ -58,31 +58,62 @@ export function ChatComposer({
           placeholder={UI_COPY.INVESTIGATIONS.COMPOSER.PLACEHOLDER}
           disabled={disabled || isLoading}
           rows={1}
-          className="placeholder:text-muted-foreground text-foreground max-h-40 min-h-11 flex-1 resize-none bg-transparent px-2 py-2.5 text-xs focus:outline-hidden"
+          className="dl-chat-composer__textarea"
         />
         <Button
           size="sm"
           onClick={onSubmit}
           disabled={disabled || isLoading || !input.trim()}
-          className="size-8 shrink-0 rounded-xl p-0"
+          className="dl-chat-composer__action-btn"
         >
-          {isLoading ? <Loader2 className="size-4 animate-spin" /> : <ArrowUp className="size-4" />}
+          {isLoading ? (
+            <Loader2 className="dl-chat-composer__submit-icon dl-spinner" />
+          ) : (
+            <ArrowUp className="dl-chat-composer__submit-icon" />
+          )}
         </Button>
       </div>
 
-      <div className="text-muted-foreground flex items-center justify-between px-3 pt-1 text-[10px]">
-        <div className="flex items-center gap-1.5">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0.25rem 0.75rem 0",
+          fontSize: "0.625rem",
+          color: "var(--mutedForeground)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
           <span>Press</span>
-          <kbd className="border-border/80 bg-muted text-muted-foreground rounded border px-1 py-0.5 font-mono text-[9px]">
+          <kbd
+            style={{
+              borderRadius: "0.25rem",
+              border: "1px solid color-mix(in oklab, var(--border) 80%, transparent)",
+              backgroundColor: "var(--muted)",
+              padding: "0.125rem 0.25rem",
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.5625rem",
+            }}
+          >
             Enter ↵
           </kbd>
           <span>to send,</span>
-          <kbd className="border-border/80 bg-muted text-muted-foreground rounded border px-1 py-0.5 font-mono text-[9px]">
+          <kbd
+            style={{
+              borderRadius: "0.25rem",
+              border: "1px solid color-mix(in oklab, var(--border) 80%, transparent)",
+              backgroundColor: "var(--muted)",
+              padding: "0.125rem 0.25rem",
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.5625rem",
+            }}
+          >
             Shift + Enter
           </kbd>
           <span>for new line</span>
         </div>
-        <span className="font-mono">{input.length} / 4000</span>
+        <span className="dl-chat-composer__char-counter">{input.length} / 4000</span>
       </div>
     </div>
   );

@@ -1,0 +1,67 @@
+/**
+ * @file packages/ui/src/styles/investigations-citations.css
+ * @description AI Incident citations, evidence cards, and telemetry traces.
+ * @author yuva.devlab@gmail.com
+ */
+
+.dl-citation-card {
+  border-radius: var(--radius-lg, 0.5rem);
+  border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  background-color: color-mix(in oklab, var(--card) 70%, transparent);
+  transition: border-color 150ms ease;
+}
+
+.dl-citation-card:hover {
+  border-color: color-mix(in oklab, var(--primary) 50%, transparent);
+}
+
+.dl-citation-card__trigger {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.dl-citation-card__level-badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+.dl-citation-card__service-badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+.dl-citation-card__trace-badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+}
+
+.dl-citation-card__trace-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dl-citation-card__message {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.625;
+}
+
+.dl-citation-card__action-btn {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+}
+
+.dl-citation-card__action-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dl-citation-card__action-icon--left {
+  margin-right: 0.25rem;
+}
+
+.dl-citation-card__action-icon--right {
+  margin-left: 0.25rem;
+}

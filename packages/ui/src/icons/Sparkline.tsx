@@ -23,13 +23,13 @@ export function Sparkline({ data, tone, className }: SparklineProps): React.JSX.
   const points = data
     .map((value, index) => `${(index / (data.length - 1)) * 100},${28 - (value / max) * 26}`)
     .join(" ");
-  const colorClass = tone === "error" ? "text-error" : "text-primary";
+  const colorClass = tone === "error" ? "dl-sparkline--error" : "dl-sparkline--primary";
 
   return (
     <svg
       viewBox="0 0 100 30"
       preserveAspectRatio="none"
-      className={`h-8 w-full ${colorClass} ${className ?? ""}`}
+      className={`dl-sparkline ${colorClass} ${className ?? ""}`}
       aria-hidden="true"
     >
       <polyline points={`0,30 ${points} 100,30`} className="fill-current opacity-10" />

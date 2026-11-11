@@ -21,9 +21,9 @@ export interface DashboardShellProps {
 export function DashboardShell({ children }: DashboardShellProps): React.JSX.Element {
   return (
     <ExplorerProvider>
-      <div className="bg-background text-foreground flex h-screen flex-col overflow-hidden select-none">
+      <div className="dl-shell">
         <AppNavbar />
-        <main className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</main>
+        <main className="dl-shell__main">{children}</main>
       </div>
     </ExplorerProvider>
   );

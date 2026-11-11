@@ -24,11 +24,11 @@ const ORDER: readonly LogLevel[] = [
 ] as const;
 
 const FILL: Record<LogLevel, string> = {
-  [LogLevel.DEBUG]: "bg-debug",
-  [LogLevel.INFO]: "bg-info",
-  [LogLevel.WARN]: "bg-warn",
-  [LogLevel.ERROR]: "bg-error",
-  [LogLevel.FATAL]: "bg-fatal",
+  [LogLevel.DEBUG]: "dl-histogram__bar--debug",
+  [LogLevel.INFO]: "dl-histogram__bar--info",
+  [LogLevel.WARN]: "dl-histogram__bar--warn",
+  [LogLevel.ERROR]: "dl-histogram__bar--error",
+  [LogLevel.FATAL]: "dl-histogram__bar--fatal",
 };
 
 /**
@@ -81,15 +81,29 @@ export function LogHistogram({
     });
 
   return (
-    <div className="panel flex flex-col p-3">
-      <div className="mb-2 flex items-center justify-between text-xs">
-        <span className="text-muted-foreground">{UI_COPY.LOGS.STREAM.LOG_VOLUME}</span>
-        <div className="flex items-center gap-3 font-mono text-[10px]">
+    <div className="panel" style={{ display: "flex", flexDirection: "column", padding: "0.75rem" }}>
+      <div
+        style={{
+          marginBottom: "0.5rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          fontSize: "0.75rem",
+        }}
+      >
+        <span style={{ color: "var(--mutedForeground)" }}>{UI_COPY.LOGS.STREAM.LOG_VOLUME}</span>
+        <div
+          style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
+          className="dl-histogram__badge"
+        >
           {ORDER.slice()
             .reverse()
             .map((l) => (
-              <span key={l} className="flex items-center gap-1">
-                <span className={cn("size-2 rounded-sm", FILL[l])} />
+              <span key={l} style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+                <span
+                  className={cn("dl-histogram__legend-dot", FILL[l])}
+                  style={{ display: "inline-block" }}
+                />
                 {l}
               </span>
             ))}
@@ -98,7 +112,14 @@ export function LogHistogram({
               size="sm"
               variant="outline"
               onClick={() => setZoom(null)}
-              className="border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 h-5 px-1.5 font-mono text-[10px]"
+              className="dl-histogram__badge"
+              style={{
+                height: "1.25rem",
+                padding: "0 0.375rem",
+                borderColor: "color-mix(in oklab, var(--primary) 40%, transparent)",
+                backgroundColor: "color-mix(in oklab, var(--primary) 10%, transparent)",
+                color: "var(--primary)",
+              }}
             >
               reset zoom ✕
             </Button>
@@ -108,7 +129,15 @@ export function LogHistogram({
 
       <div
         ref={ref}
-        className="relative flex h-28 cursor-crosshair items-end gap-px select-none"
+        style={{
+          position: "relative",
+          display: "flex",
+          height: "7rem",
+          cursor: "crosshair",
+          alignItems: "flex-end",
+          gap: "1px",
+          userSelect: "none",
+        }}
         onMouseDown={(e) => {
           const i = toIdx(e.clientX);
           setDrag([i, i]);
@@ -129,7 +158,14 @@ export function LogHistogram({
             <div
               key={i}
               title={`${fmt(start + i * size)} · ${tot} events`}
-              className="flex h-full flex-1 flex-col-reverse transition-opacity hover:opacity-80"
+              style={{
+                display: "flex",
+                height: "100%",
+                flex: "1 1 0%",
+                flexDirection: "column-reverse",
+                transition: "opacity 150ms ease",
+              }}
+              className="hover:opacity-80"
             >
               {ORDER.map((k) =>
                 b[k] ? (
@@ -142,8 +178,14 @@ export function LogHistogram({
 
         {drag && (
           <div
-            className="border-primary bg-primary/15 pointer-events-none absolute inset-y-0 border-x"
             style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              pointerEvents: "none",
+              borderLeft: "1px solid var(--primary)",
+              borderRight: "1px solid var(--primary)",
+              backgroundColor: "color-mix(in oklab, var(--primary) 15%, transparent)",
               left: `${(Math.min(...drag) / BUCKETS) * 100}%`,
               width: `${(Math.abs(drag[1] - drag[0]) / BUCKETS) * 100}%`,
             }}
@@ -151,7 +193,15 @@ export function LogHistogram({
         )}
       </div>
 
-      <div className="text-muted-foreground mt-1 flex justify-between font-mono text-[10px]">
+      <div
+        className="dl-histogram__badge"
+        style={{
+          marginTop: "0.25rem",
+          display: "flex",
+          justifyContent: "space-between",
+          color: "var(--mutedForeground)",
+        }}
+      >
         <span>{fmt(start)}</span>
         <span>{fmt(start + (end - start) / 2)}</span>
         <span>{fmt(end)}</span>

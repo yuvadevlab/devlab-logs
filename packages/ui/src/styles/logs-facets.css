@@ -1,0 +1,142 @@
+/**
+ * @file packages/ui/src/styles/logs-facets.css
+ * @description Facet categories, search filter, and sidebar navigation.
+ * @author yuva.devlab@gmail.com
+ */
+
+.dl-facets {
+  display: flex;
+  width: 15rem;
+  flex-shrink: 0;
+  flex-direction: column;
+  border-right: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  background-color: color-mix(in oklab, var(--card) 30%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  backdrop-filter: blur(4px);
+  user-select: none;
+}
+
+.dl-facets--collapsed {
+  display: flex;
+  width: 2.5rem;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  background-color: color-mix(in oklab, var(--card) 40%, transparent);
+  padding: 0.75rem 0;
+  user-select: none;
+}
+
+.dl-facets__vertical-label {
+  color: var(--mutedForeground);
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+}
+
+.dl-facets__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 50%, transparent);
+  padding: 0.5rem 0.75rem;
+}
+
+.dl-facets__item {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius-sm, 0.25rem);
+  padding: 0.25rem 0.5rem;
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
+  transition: all 150ms ease;
+}
+
+.dl-facets__item:hover {
+  background-color: color-mix(in oklab, var(--accent) 60%, transparent);
+}
+
+.dl-facets__item--active {
+  background-color: var(--accent);
+  color: var(--accentForeground);
+  font-weight: 500;
+}
+
+.dl-facets__toggle-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+}
+
+.dl-facets__collapse-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+}
+
+.dl-facets__toggle-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.dl-facets__filter-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dl-facets__filter-icon--md {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.dl-facets__search-input {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+
+.dl-facets__category-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dl-facets__reset-btn {
+  color: var(--primary);
+  cursor: pointer;
+  text-transform: lowercase;
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: none;
+}
+
+.dl-facets__reset-btn:hover {
+  text-decoration: underline;
+}
+
+.dl-facets__only-btn {
+  color: var(--primary);
+  font-size: 0.625rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  text-decoration: none;
+}
+
+.dl-facets__item:hover .dl-facets__only-btn {
+  opacity: 1;
+}
+
+.dl-facets__only-btn:hover {
+  text-decoration: underline;
+}

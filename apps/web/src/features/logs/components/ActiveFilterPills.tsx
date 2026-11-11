@@ -33,21 +33,38 @@ export function ActiveFilterPills({
   if (!hasFilters) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 pl-1">
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: "0.375rem",
+        paddingLeft: "0.25rem",
+      }}
+    >
       {levels.map((lv) => (
         <Badge
           key={lv}
           variant="outline"
-          className={cn("items-center gap-1 font-mono text-[10px]", LEVEL_CLASS[lv])}
+          className={cn("dl-pills__badge", LEVEL_CLASS[lv])}
+          style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
         >
           {lv}
           <button
             type="button"
             onClick={() => setLevels((prev) => prev.filter((x) => x !== lv))}
-            className="cursor-pointer opacity-60 hover:opacity-100"
+            className="hover:opacity-100"
+            style={{
+              cursor: "pointer",
+              opacity: 0.6,
+              background: "none",
+              border: "none",
+              padding: 0,
+              color: "inherit",
+            }}
             title={`Remove ${lv} filter`}
           >
-            <X className="size-2.5" />
+            <X className="dl-pills__close-icon" />
           </button>
         </Badge>
       ))}
@@ -56,16 +73,31 @@ export function ActiveFilterPills({
         <Badge
           key={s}
           variant="secondary"
-          className="border-primary/30 text-foreground items-center gap-1 font-mono text-[10px]"
+          className="dl-pills__badge"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.25rem",
+            borderColor: "color-mix(in oklab, var(--primary) 30%, transparent)",
+            color: "var(--foreground)",
+          }}
         >
           {s}
           <button
             type="button"
             onClick={() => setServices(services.filter((x) => x !== s))}
-            className="cursor-pointer opacity-60 hover:opacity-100"
+            className="hover:opacity-100"
+            style={{
+              cursor: "pointer",
+              opacity: 0.6,
+              background: "none",
+              border: "none",
+              padding: 0,
+              color: "inherit",
+            }}
             title={`Remove ${s} filter`}
           >
-            <X className="size-2.5" />
+            <X className="dl-pills__close-icon" />
           </button>
         </Badge>
       ))}
@@ -74,10 +106,15 @@ export function ActiveFilterPills({
         size="sm"
         variant="ghost"
         onClick={onClearAll}
-        className="text-muted-foreground hover:text-foreground h-6 px-1.5 text-[10px]"
+        style={{
+          height: "1.5rem",
+          padding: "0 0.375rem",
+          fontSize: "0.625rem",
+          color: "var(--mutedForeground)",
+        }}
         title="Clear all active filters"
       >
-        <FilterX className="mr-1 size-3" />
+        <FilterX className="dl-pills__clear-icon" />
         Clear
       </Button>
     </div>

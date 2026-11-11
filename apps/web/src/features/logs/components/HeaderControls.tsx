@@ -13,22 +13,22 @@ const STREAM_STATE_CONFIG: Record<
   [StreamState.LIVE]: {
     label: "LIVE STREAMING",
     subtext: "Connected",
-    colorClass: "text-primary",
+    colorClass: "dl-badge--info",
   },
   [StreamState.PAUSED]: {
     label: "PAUSED",
     subtext: "Buffering off",
-    colorClass: "text-warn",
+    colorClass: "dl-badge--warn",
   },
   [StreamState.RECONNECTING]: {
     label: "RECONNECTING",
     subtext: "WS retry",
-    colorClass: "text-error",
+    colorClass: "dl-badge--error",
   },
   [StreamState.DISCONNECTED]: {
     label: "DISCONNECTED",
     subtext: "Offline",
-    colorClass: "text-muted-foreground",
+    colorClass: "dl-badge--debug",
   },
 };
 
@@ -38,16 +38,22 @@ export function StreamBadge({ state }: { state: StreamState }) {
   return (
     <Badge
       variant="outline"
-      className={cn("flex items-center gap-2 px-2 py-1 font-mono text-[11px]", config.colorClass)}
+      className={cn("font-mono text-[11px]", config.colorClass)}
+      style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.25rem 0.5rem" }}
     >
       <span
+        style={{
+          width: "0.5rem",
+          height: "0.5rem",
+          borderRadius: "9999px",
+          backgroundColor: "currentColor",
+        }}
         className={cn(
-          "size-2 rounded-full bg-current",
           state !== StreamState.PAUSED && state !== StreamState.DISCONNECTED && "pulse-dot",
         )}
       />
-      <span className="font-semibold">{config.label}</span>
-      <span className="text-muted-foreground">({config.subtext})</span>
+      <span style={{ fontWeight: 600 }}>{config.label}</span>
+      <span style={{ color: "var(--mutedForeground)" }}>({config.subtext})</span>
     </Badge>
   );
 }
@@ -71,18 +77,13 @@ export function TimeRangeControl({
   setCustom: React.Dispatch<React.SetStateAction<TimeWindow>>;
 }) {
   return (
-    <div className="flex items-center rounded-md border p-0.5 font-mono text-xs">
+    <div className="dl-navbar__time-presets" style={{ display: "flex" }}>
       {PRESET_RANGES.map((r) => (
         <button
           key={r}
           type="button"
           onClick={() => setRange(r)}
-          className={cn(
-            "cursor-pointer rounded px-2 py-1",
-            range === r
-              ? "bg-accent text-foreground"
-              : "text-muted-foreground hover:text-foreground",
-          )}
+          className={cn("dl-navbar__time-btn", range === r && "dl-navbar__time-btn--active")}
         >
           {r}
         </button>
@@ -92,32 +93,36 @@ export function TimeRangeControl({
           <button
             type="button"
             className={cn(
-              "cursor-pointer rounded px-2 py-1",
-              range === TimeRangeKey.CUSTOM
-                ? "bg-accent text-foreground"
-                : "text-muted-foreground hover:text-foreground",
+              "dl-navbar__time-btn",
+              range === TimeRangeKey.CUSTOM && "dl-navbar__time-btn--active",
             )}
           >
             {UI_COPY.LOGS.FILTERS.CUSTOM}
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-72 space-y-2 p-3" align="end">
-          <div className="text-xs font-medium">{UI_COPY.LOGS.FILTERS.CUSTOM_RANGE}</div>
+        <PopoverContent
+          className="dl-header-controls__popover"
+          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+          align="end"
+        >
+          <div style={{ fontSize: "0.75rem", fontWeight: 500 }}>
+            {UI_COPY.LOGS.FILTERS.CUSTOM_RANGE}
+          </div>
           <Input
             type="datetime-local"
             value={custom.from}
             onChange={(e) => setCustom((prev) => ({ ...prev, from: e.target.value }))}
-            className="font-mono text-xs"
+            className="dl-header-controls__input"
           />
           <Input
             type="datetime-local"
             value={custom.to}
             onChange={(e) => setCustom((prev) => ({ ...prev, to: e.target.value }))}
-            className="font-mono text-xs"
+            className="dl-header-controls__input"
           />
           <Button
             size="sm"
-            className="w-full"
+            style={{ width: "100%" }}
             disabled={!custom.from || !custom.to}
             onClick={() => setRange(TimeRangeKey.CUSTOM)}
           >

@@ -39,7 +39,7 @@ export default function RootLayout({
       data-theme="logs-dark"
       suppressHydrationWarning
     >
-      <body className="bg-background text-foreground selection:bg-primary selection:text-primary-foreground min-h-screen font-sans antialiased">
+      <body className="dl-root-body">
         <ConfigProvider brand="logs" defaultTheme="dark" storageKey="devlab-logs-theme">
           <AuthProvider>
             <QueryProvider>

@@ -6,6 +6,7 @@
  */
 
 import { NextResponse, type NextRequest } from "next/server";
+import { LogsQueryParamKey, LogsCookieKey } from "./lib/constants/enums";
 import { DEVLAB_PORTAL_ROUTES } from "./lib/constants/routes";
 
 /**
@@ -18,20 +19,21 @@ import { DEVLAB_PORTAL_ROUTES } from "./lib/constants/routes";
 export function middleware(request: NextRequest): NextResponse {
   // 1. If returning from DevLab Portal SSO with token in query params
   const tokenParam =
-    request.nextUrl.searchParams.get("token") || request.nextUrl.searchParams.get("access_token");
+    request.nextUrl.searchParams.get(LogsQueryParamKey.TOKEN) ||
+    request.nextUrl.searchParams.get(LogsQueryParamKey.ACCESS_TOKEN);
 
   if (tokenParam) {
     const cleanUrl = new URL(request.url);
-    cleanUrl.searchParams.delete("token");
-    cleanUrl.searchParams.delete("access_token");
+    cleanUrl.searchParams.delete(LogsQueryParamKey.TOKEN);
+    cleanUrl.searchParams.delete(LogsQueryParamKey.ACCESS_TOKEN);
 
     const response = NextResponse.redirect(cleanUrl);
-    response.cookies.set("token", tokenParam, {
+    response.cookies.set(LogsCookieKey.TOKEN, tokenParam, {
       path: "/",
       maxAge: 604800,
       sameSite: "lax",
     });
-    response.cookies.set("devlab_access_token", tokenParam, {
+    response.cookies.set(LogsCookieKey.ACCESS_TOKEN, tokenParam, {
       path: "/",
       maxAge: 604800,
       sameSite: "lax",
@@ -41,7 +43,8 @@ export function middleware(request: NextRequest): NextResponse {
 
   // 2. Validate token from cookies
   const token =
-    request.cookies.get("token")?.value || request.cookies.get("devlab_access_token")?.value;
+    request.cookies.get(LogsCookieKey.TOKEN)?.value ||
+    request.cookies.get(LogsCookieKey.ACCESS_TOKEN)?.value;
 
   if (!token) {
     return NextResponse.redirect(DEVLAB_PORTAL_ROUTES.LOGIN(request.url));

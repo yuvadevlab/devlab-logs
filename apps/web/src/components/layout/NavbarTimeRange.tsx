@@ -44,20 +44,15 @@ export function NavbarTimeRange({
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   return (
-    <div className="flex shrink-0 items-center">
+    <div style={{ display: "flex", flexShrink: 0, alignItems: "center" }}>
       {/* Full Preset Bar on Wide Displays (>= 1280px) */}
-      <div className="border-border/60 bg-muted/30 hidden shrink-0 items-center rounded-md border p-0.5 font-mono text-xs xl:flex">
+      <div className="dl-navbar__time-presets">
         {PRESET_RANGES.map((r) => (
           <button
             key={r}
             type="button"
             onClick={() => setRange(r)}
-            className={cn(
-              "shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] transition",
-              range === r
-                ? "bg-accent text-accent-foreground font-medium shadow-xs"
-                : "text-muted-foreground hover:text-foreground",
-            )}
+            className={cn("dl-navbar__time-btn", range === r && "dl-navbar__time-btn--active")}
           >
             {r}
           </button>
@@ -67,10 +62,8 @@ export function NavbarTimeRange({
             <button
               type="button"
               className={cn(
-                "shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] transition",
-                range === TimeRangeKey.CUSTOM
-                  ? "bg-accent text-accent-foreground font-medium"
-                  : "text-muted-foreground hover:text-foreground",
+                "dl-navbar__time-btn",
+                range === TimeRangeKey.CUSTOM && "dl-navbar__time-btn--active",
               )}
             >
               {UI_COPY.LOGS.FILTERS.CUSTOM}
@@ -81,24 +74,27 @@ export function NavbarTimeRange({
             side="bottom"
             sideOffset={8}
             avoidCollisions={false}
-            className="w-72 max-w-[calc(100vw-2rem)] space-y-2 p-3 shadow-xl"
+            className="dl-navbar__time-popover-wide"
+            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
           >
-            <div className="text-xs font-medium">{UI_COPY.LOGS.FILTERS.CUSTOM_RANGE}</div>
+            <div style={{ fontSize: "0.75rem", fontWeight: 500 }}>
+              {UI_COPY.LOGS.FILTERS.CUSTOM_RANGE}
+            </div>
             <Input
               type="datetime-local"
               value={custom.from}
               onChange={(e) => setCustom((prev) => ({ ...prev, from: e.target.value }))}
-              className="font-mono text-xs"
+              className="dl-navbar__time-input"
             />
             <Input
               type="datetime-local"
               value={custom.to}
               onChange={(e) => setCustom((prev) => ({ ...prev, to: e.target.value }))}
-              className="font-mono text-xs"
+              className="dl-navbar__time-input"
             />
             <Button
               size="sm"
-              className="w-full"
+              style={{ width: "100%" }}
               disabled={!custom.from || !custom.to}
               onClick={() => {
                 setRange(TimeRangeKey.CUSTOM);
@@ -112,56 +108,76 @@ export function NavbarTimeRange({
       </div>
 
       {/* Compact Dropdown on Laptop / Tablet Displays (< 1280px) */}
-      <div className="flex shrink-0 xl:hidden">
+      <div className="dl-navbar__time-compact">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               size="sm"
-              className="h-7 shrink-0 px-2 font-mono text-xs"
+              className="dl-navbar__time-trigger-btn"
               title="Time window"
             >
-              <Clock className="text-muted-foreground mr-1 size-3" />
+              <Clock
+                className="dl-navbar__time-clock-icon"
+                style={{ color: "var(--mutedForeground)" }}
+              />
               <span>{range}</span>
-              <ChevronDown className="ml-1 size-3 opacity-60" />
+              <ChevronDown className="dl-navbar__time-chevron-icon" style={{ opacity: 0.6 }} />
             </Button>
           </PopoverTrigger>
           <PopoverContent
             align="end"
             side="bottom"
             sideOffset={8}
-            className="w-64 max-w-[calc(100vw-2rem)] space-y-2.5 p-3 shadow-xl"
+            className="dl-navbar__time-popover-compact"
+            style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}
           >
-            <div className="text-xs font-semibold">{UI_COPY.LOGS.FILTERS.CUSTOM_RANGE}</div>
-            <div className="grid grid-cols-4 gap-1 font-mono text-xs">
+            <div style={{ fontSize: "0.75rem", fontWeight: 600 }}>
+              {UI_COPY.LOGS.FILTERS.CUSTOM_RANGE}
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                gap: "0.25rem",
+              }}
+              className="dl-navbar__time-presets-grid"
+            >
               {PRESET_RANGES.map((r) => (
                 <Button
                   key={r}
                   size="sm"
                   variant={range === r ? "default" : "outline"}
                   onClick={() => setRange(r)}
-                  className="h-7 text-[11px]"
+                  style={{ height: "1.75rem", fontSize: "0.6875rem" }}
                 >
                   {r}
                 </Button>
               ))}
             </div>
-            <div className="space-y-1.5 pt-1">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.375rem",
+                paddingTop: "0.25rem",
+              }}
+            >
               <Input
                 type="datetime-local"
                 value={custom.from}
                 onChange={(e) => setCustom((prev) => ({ ...prev, from: e.target.value }))}
-                className="font-mono text-xs"
+                className="dl-navbar__time-input"
               />
               <Input
                 type="datetime-local"
                 value={custom.to}
                 onChange={(e) => setCustom((prev) => ({ ...prev, to: e.target.value }))}
-                className="font-mono text-xs"
+                className="dl-navbar__time-input"
               />
               <Button
                 size="sm"
-                className="w-full"
+                style={{ width: "100%" }}
                 disabled={!custom.from || !custom.to}
                 onClick={() => setRange(TimeRangeKey.CUSTOM)}
               >

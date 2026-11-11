@@ -1,0 +1,80 @@
+/**
+ * @file packages/ui/src/styles/auth.css
+ * @description Central SSO handoff card views and authentication layouts.
+ * @author yuva.devlab@gmail.com
+ */
+
+.dl-auth-layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  text-align: center;
+  user-select: none;
+  background-color: var(--background);
+}
+
+.dl-auth-card {
+  width: 100%;
+  max-width: 28rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  padding: 2rem;
+  box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.5));
+}
+
+.dl-auth-icon-wrap {
+  margin: 0 auto 1.5rem;
+  display: flex;
+  width: 4rem;
+  height: 4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+.dl-auth-title {
+  color: var(--foreground);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.dl-auth-desc {
+  color: var(--mutedForeground);
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.dl-auth-btn {
+  display: inline-flex;
+  width: 100%;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg, 0.5rem);
+  background-color: var(--primary);
+  color: var(--primaryForeground);
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: none;
+  transition: background-color 150ms ease;
+}
+
+.dl-auth-btn:hover {
+  background-color: color-mix(in oklab, var(--primary) 90%, black);
+}
+
+.dl-auth-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--primary) 20%, transparent);
+}
