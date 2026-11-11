@@ -51,22 +51,19 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
   const bufferPct = Math.min(100, Math.round((bufferCount / maxBuffer) * 100));
 
   return (
-    <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+    <div className="dl-navbar__controls">
       {/* Throughput & Buffer Info (Visible on ultra-wide screens to keep laptop header clean) */}
-      <div className="text-muted-foreground hidden items-center gap-3 font-mono text-[11px] 2xl:flex">
+      <div className="dl-navbar__stats">
         <span>
-          <span className="text-foreground font-semibold">{eps.toFixed(1)}</span>{" "}
+          <span style={{ color: "var(--foreground)", fontWeight: 600 }}>{eps.toFixed(1)}</span>{" "}
           {UI_COPY.LOGS.HEADER.EPS}
         </span>
-        <span className="flex items-center gap-1.5">
+        <span style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
           {UI_COPY.LOGS.HEADER.BUFFER_LABEL}
-          <span className="bg-muted h-1.5 w-14 overflow-hidden rounded">
-            <span
-              className="bg-primary block h-full transition-all"
-              style={{ width: `${bufferPct}%` }}
-            />
+          <span className="dl-navbar__progress-track">
+            <span className="dl-navbar__progress-fill" style={{ width: `${bufferPct}%` }} />
           </span>
-          <span className="text-foreground">{bufferCount}</span>
+          <span style={{ color: "var(--foreground)" }}>{bufferCount}</span>
         </span>
       </div>
 
@@ -74,9 +71,13 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
       <NavbarTimeRange range={range} setRange={setRange} custom={custom} setCustom={setCustom} />
 
       {/* Auto-Scroll Toggle (Visible on wide displays >= 1280px) */}
-      <label className="text-muted-foreground hover:text-foreground hidden shrink-0 cursor-pointer items-center gap-1.5 px-1 text-xs xl:flex">
-        <ArrowDownToLine className="size-3" />
-        <Switch checked={autoScroll} onCheckedChange={setAutoScroll} className="scale-75" />
+      <label className="dl-navbar__autoscroll-label">
+        <ArrowDownToLine className="dl-navbar__autoscroll-icon" />
+        <Switch
+          checked={autoScroll}
+          onCheckedChange={setAutoScroll}
+          className="dl-navbar__autoscroll-switch"
+        />
       </label>
 
       {/* Stream Play / Pause */}
@@ -84,7 +85,7 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
         size="sm"
         variant="ghost"
         onClick={onToggleStream}
-        className="h-7 shrink-0 px-2 text-xs"
+        className="dl-navbar__action-btn"
         title={
           stream === StreamState.PAUSED
             ? UI_COPY.COMMON.ACTIONS.RESUME_STREAM
@@ -92,9 +93,9 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
         }
       >
         {stream === StreamState.PAUSED ? (
-          <Play className="size-3.5 text-emerald-500" />
+          <Play className="dl-navbar__action-icon dl-navbar__action-icon--play" />
         ) : (
-          <Pause className="size-3.5" />
+          <Pause className="dl-navbar__action-icon" />
         )}
       </Button>
 
@@ -103,10 +104,10 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
         size="sm"
         variant="ghost"
         onClick={onClearLogs}
-        className="text-muted-foreground hover:text-foreground h-7 shrink-0 px-1.5 text-xs"
+        className="dl-navbar__action-btn"
         title={UI_COPY.COMMON.ACTIONS.CLEAR}
       >
-        <Eraser className="size-3.5" />
+        <Eraser className="dl-navbar__action-icon" />
       </Button>
 
       {/* SQL Workbench */}
@@ -114,14 +115,14 @@ export function NavbarExplorerControls(props?: NavbarExplorerControlsProps) {
         size="sm"
         variant="outline"
         onClick={onOpenSql}
-        className="h-7 shrink-0 px-2 font-sans text-xs"
+        className="dl-navbar__action-btn dl-navbar__action-btn--sql"
         title={UI_COPY.COMMON.ACTIONS.OPEN_SQL}
       >
-        <Database className="size-3.5 xl:mr-1" />
-        <span className="hidden xl:inline">{UI_COPY.COMMON.ACTIONS.SQL}</span>
+        <Database className="dl-navbar__action-icon dl-navbar__action-icon--database" />
+        <span className="dl-navbar__action-sql-text">{UI_COPY.COMMON.ACTIONS.SQL}</span>
       </Button>
 
-      <Separator orientation="vertical" className="hidden h-5 shrink-0 sm:block" />
+      <Separator orientation="vertical" className="dl-navbar__controls-separator" />
     </div>
   );
 }

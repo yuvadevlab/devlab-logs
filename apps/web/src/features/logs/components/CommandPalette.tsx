@@ -54,7 +54,7 @@ export function CommandPalette({
               onOpenAi();
             }}
           >
-            <Bot className="text-ai mr-2 size-4" />
+            <Bot className="dl-cmd__icon" style={{ color: "var(--ai)" }} />
             {UI_COPY.LOGS.COMMAND_PALETTE.ASK_AI}
           </CommandItem>
           <CommandItem
@@ -63,7 +63,7 @@ export function CommandPalette({
               onOpenSql();
             }}
           >
-            <Database className="text-primary mr-2 size-4" />
+            <Database className="dl-cmd__icon" style={{ color: "var(--primary)" }} />
             {UI_COPY.LOGS.COMMAND_PALETTE.OPEN_SQL}
           </CommandItem>
           <CommandItem
@@ -72,7 +72,7 @@ export function CommandPalette({
               onToggleStream();
             }}
           >
-            <Radio className="mr-2 size-4" />
+            <Radio className="dl-cmd__icon" />
             {UI_COPY.LOGS.COMMAND_PALETTE.TOGGLE_STREAM}
           </CommandItem>
           <CommandItem
@@ -81,7 +81,7 @@ export function CommandPalette({
               onFilterErrors();
             }}
           >
-            <AlertTriangle className="text-error mr-2 size-4" />
+            <AlertTriangle className="dl-cmd__icon" style={{ color: "var(--error)" }} />
             {UI_COPY.LOGS.COMMAND_PALETTE.SHOW_ERRORS}
           </CommandItem>
           <CommandItem
@@ -90,7 +90,7 @@ export function CommandPalette({
               onClearFilters();
             }}
           >
-            <X className="mr-2 size-4" />
+            <X className="dl-cmd__icon" />
             {UI_COPY.LOGS.COMMAND_PALETTE.CLEAR_FILTERS}
           </CommandItem>
         </CommandGroup>
@@ -103,7 +103,7 @@ export function CommandPalette({
                 onSelectService(s);
               }}
             >
-              <Server className="mr-2 size-4" />
+              <Server className="dl-cmd__icon" />
               {s}
             </CommandItem>
           ))}

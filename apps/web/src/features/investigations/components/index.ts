@@ -9,4 +9,5 @@ export * from "./ChatEmptyState";
 export * from "./ChatMessageItem";
 export * from "./ChatComposer";
 export * from "./HistoryDrawer";
+export * from "./HistoryThreadItem";
 export * from "./InvestigationWorkspace";

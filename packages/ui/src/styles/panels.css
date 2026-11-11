@@ -1,0 +1,236 @@
+/**
+ * @file packages/ui/src/styles/panels.css
+ * @description Glass panels, telemetry chips, severity badges, and metric cards.
+ * @author yuva.devlab@gmail.com
+ */
+
+.panel {
+  background: color-mix(in oklab, var(--surface) 82%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.glow {
+  box-shadow: var(--glow-primary);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.3rem;
+  padding: 0.05rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1.1rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+/* Severity Badges & Chips */
+.dl-badge--fatal,
+.lvl-fatal {
+  color: var(--fatal);
+  background: color-mix(in oklab, var(--fatal) 16%, transparent);
+  border-color: color-mix(in oklab, var(--fatal) 40%, transparent);
+}
+
+.dl-badge--error,
+.lvl-error {
+  color: var(--error);
+  background: color-mix(in oklab, var(--error) 14%, transparent);
+  border-color: color-mix(in oklab, var(--error) 38%, transparent);
+}
+
+.dl-badge--warn,
+.lvl-warn {
+  color: var(--warn);
+  background: color-mix(in oklab, var(--warn) 12%, transparent);
+  border-color: color-mix(in oklab, var(--warn) 34%, transparent);
+}
+
+.dl-badge--info,
+.lvl-info {
+  color: var(--info);
+  background: color-mix(in oklab, var(--info) 12%, transparent);
+  border-color: color-mix(in oklab, var(--info) 30%, transparent);
+}
+
+.dl-badge--debug,
+.lvl-debug {
+  color: var(--debug);
+  background: color-mix(in oklab, var(--debug) 12%, transparent);
+  border-color: color-mix(in oklab, var(--debug) 30%, transparent);
+}
+
+/* Animations */
+@keyframes dl-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 60%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 7px transparent;
+  }
+}
+
+.pulse-dot {
+  animation: dl-pulse-ring 1.4s ease-out infinite;
+}
+
+@keyframes dl-row-in {
+  from {
+    background: color-mix(in oklab, var(--primary) 12%, transparent);
+  }
+  to {
+    background: transparent;
+  }
+}
+
+.row-new {
+  animation: dl-row-in 1.2s ease-out;
+}
+
+/* KPI Cards */
+.dl-kpi-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.75rem;
+}
+
+.dl-kpi-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--mutedForeground);
+}
+
+.dl-kpi-card__label-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.dl-kpi-card__value-wrap {
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.dl-kpi-card__value {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dl-kpi-card__value--error {
+  color: var(--error);
+}
+
+.dl-kpi-card__unit {
+  color: var(--mutedForeground);
+  font-size: 0.75rem;
+}
+
+.dl-kpi-card__subtext {
+  color: var(--mutedForeground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+
+/* Sparklines & Spinners */
+.dl-sparkline {
+  height: 2rem;
+  width: 100%;
+}
+
+.dl-sparkline--primary {
+  color: var(--primary);
+}
+
+.dl-sparkline--error {
+  color: var(--error);
+}
+
+.dl-spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  animation: dl-spin 1s linear infinite;
+}
+
+.dl-spinner--lg {
+  width: 2rem;
+  height: 2rem;
+}
+
+@keyframes dl-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dl-search-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--mutedForeground);
+}
+
+/* JSON Tree */
+.dl-json-tree {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+
+.dl-json-tree__muted {
+  color: var(--mutedForeground);
+}
+
+.dl-json-tree__btn {
+  text-align: left;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.dl-json-tree__btn:hover {
+  opacity: 0.8;
+}
+
+.dl-json-tree__arrow {
+  margin-right: 0.25rem;
+  display: inline-block;
+  width: 0.75rem;
+  color: var(--mutedForeground);
+}
+
+/* Histogram Severity Bars */
+.dl-histogram__bar--debug {
+  background-color: var(--debug);
+}
+
+.dl-histogram__bar--info {
+  background-color: var(--info);
+}
+
+.dl-histogram__bar--warn {
+  background-color: var(--warn);
+}
+
+.dl-histogram__bar--error {
+  background-color: var(--error);
+}
+
+.dl-histogram__bar--fatal {
+  background-color: var(--fatal);
+}

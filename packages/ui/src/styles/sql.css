@@ -1,0 +1,142 @@
+/**
+ * @file packages/ui/src/styles/sql.css
+ * @description DuckDB SQL Workbench, interactive table, and incident AI modal.
+ * @author yuva.devlab@gmail.com
+ */
+
+.dl-sql__layout {
+  display: grid;
+  min-height: 0;
+  flex: 1 1 0%;
+  gap: 0.75rem;
+  padding: 0 1rem 1rem;
+}
+
+@media (min-width: 1024px) {
+  .dl-sql__layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  }
+}
+
+.dl-sql__editor-pane {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dl-sql__editor-box {
+  position: relative;
+  min-height: 12rem;
+  flex: 1 1 0%;
+  overflow: hidden;
+}
+
+.dl-sql__editor-pre {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  padding: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.dl-sql__editor-textarea {
+  position: absolute;
+  inset: 0;
+  resize: none;
+  background-color: transparent;
+  padding: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  color: transparent;
+  caret-color: var(--primary);
+  border: none;
+  outline: none;
+}
+
+.dl-sql__table-pane {
+  min-height: 0;
+  overflow: auto;
+}
+
+.dl-sql__table {
+  width: max-content;
+  min-width: 100%;
+  table-layout: fixed;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  border-collapse: collapse;
+}
+
+.dl-sql__th {
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-weight: 500;
+  color: var(--mutedForeground);
+}
+
+.dl-sql__resize-handle {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: 0.375rem;
+  cursor: col-resize;
+}
+
+.dl-sql__resize-handle:hover {
+  background-color: color-mix(in oklab, var(--primary) 50%, transparent);
+}
+
+.dl-sql__td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0.375rem 0.75rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
+}
+
+.dl-sql__db-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.dl-sql__badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+}
+
+.dl-sql__editor-input {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.dl-sql__run-icon {
+  margin-right: 0.25rem;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.dl-sql__sort-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dl-sql__sheet-content {
+  background-color: var(--popover);
+  border-top: 1px solid var(--border);
+}
+
+.dl-sql__table-row:hover {
+  background-color: color-mix(in oklab, var(--accent) 50%, transparent);
+}

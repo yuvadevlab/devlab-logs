@@ -21,14 +21,10 @@ export function ForgotPasswordView(): React.JSX.Element {
   }, []);
 
   return (
-    <div className="bg-background flex min-h-screen flex-col items-center justify-center px-4 text-center select-none">
-      <div className="border-border bg-card w-full max-w-md rounded-2xl border p-8 shadow-xl">
-        <h1 className="text-foreground text-xl font-bold tracking-tight">
-          Redirecting to Password Recovery
-        </h1>
-        <p className="text-muted-foreground mt-2 text-sm">
-          Password recovery is handled centrally via DevLab Portal...
-        </p>
+    <div className="dl-auth-layout">
+      <div className="dl-auth-card">
+        <h1 className="dl-auth-title">Redirecting to Password Recovery</h1>
+        <p className="dl-auth-desc">Password recovery is handled centrally via DevLab Portal...</p>
       </div>
     </div>
   );

@@ -8,12 +8,12 @@
 "use client";
 
 import React from "react";
-import { Search, History, GitBranch, X, BarChart3 } from "lucide-react";
-import { Button, Input, Popover, PopoverTrigger, PopoverContent, Badge } from "@devlab-logs/ui";
-import { cn } from "@/lib/utils";
+import { Search, GitBranch, X, BarChart3 } from "lucide-react";
+import { Button, Input, Badge } from "@devlab-logs/ui";
 import { LogLevel, ServiceName, ExportFormat, type LogEvent } from "../types";
 import { ExportButton } from "./ExportButton";
 import { ActiveFilterPills } from "./ActiveFilterPills";
+import { LogSearchHistoryPopover } from "./LogSearchHistoryPopover";
 import { UI_COPY } from "@/lib/ui-copy";
 
 export interface LogToolbarProps {
@@ -67,28 +67,47 @@ export function LogToolbar({
   };
 
   return (
-    <section className="panel flex flex-wrap items-center gap-2 p-2">
+    <section
+      className="panel"
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: "0.5rem",
+        padding: "0.5rem",
+      }}
+    >
       {/* Search Input with Regex and History */}
-      <div className="relative min-w-64 flex-1">
+      <div style={{ position: "relative", minWidth: "16rem", flex: "1 1 0%" }}>
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onCommitSearch()}
           placeholder={regex ? "regex filter, e.g. timeout|OOM" : "Search messages…"}
-          startIcon={<Search className="text-muted-foreground size-4" />}
-          className="h-8 font-mono text-xs"
-          style={{ paddingInlineEnd: "10rem" }}
+          startIcon={<Search className="dl-search-icon" />}
+          className="dl-toolbar__search-input"
+          style={{ height: "2rem", paddingInlineEnd: "10rem" }}
         />
-        <div className="absolute top-1/2 right-1 flex -translate-y-1/2 items-center gap-1">
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "0.25rem",
+            transform: "translateY(-50%)",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.25rem",
+          }}
+        >
           {regex && query && (
             <Badge
               variant="outline"
-              className={cn(
-                "px-1 py-0 font-mono text-[9px]",
-                regexOk
-                  ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-500"
-                  : "border-destructive text-destructive bg-destructive/10",
-              )}
+              className={regexOk ? "dl-badge--info" : "dl-badge--error"}
+              style={{
+                padding: "0 0.25rem",
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.5625rem",
+              }}
             >
               {regexOk ? "✓ valid" : "✗ invalid"}
             </Badge>
@@ -97,63 +116,54 @@ export function LogToolbar({
             size="sm"
             variant={regex ? "secondary" : "ghost"}
             onClick={() => setRegex((r) => !r)}
-            className="h-6 px-1.5 font-mono text-[11px]"
+            className="dl-toolbar__search-badge"
+            style={{ height: "1.5rem", padding: "0 0.375rem" }}
             title="Toggle regular expressions"
           >
             .*
           </Button>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button size="sm" variant="ghost" className="h-6 px-1.5" title="Search history">
-                <History className="size-3" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-64 p-1" align="end">
-              <div className="text-muted-foreground px-2 py-1 text-[10px] tracking-wider uppercase">
-                Recent searches
-              </div>
-              {history.length > 0 ? (
-                history.map((h) => (
-                  <button
-                    key={h}
-                    type="button"
-                    onClick={() => {
-                      setQuery(h);
-                      setRegex(h.includes("|"));
-                    }}
-                    className="hover:bg-accent block w-full rounded px-2 py-1.5 text-left font-mono text-xs"
-                  >
-                    {h}
-                  </button>
-                ))
-              ) : (
-                <div className="text-muted-foreground p-2 text-center text-xs">
-                  No search history
-                </div>
-              )}
-            </PopoverContent>
-          </Popover>
+          <LogSearchHistoryPopover
+            history={history}
+            onSelectHistory={(h) => {
+              setQuery(h);
+              setRegex(h.includes("|"));
+            }}
+          />
         </div>
       </div>
 
       {/* Trace ID Filter Input */}
-      <div className="relative">
+      <div style={{ position: "relative" }}>
         <Input
           value={traceFilter}
           onChange={(e) => setTraceFilter(e.target.value)}
           placeholder={UI_COPY.LOGS.FILTERS.TRACE_ID_PLACEHOLDER}
-          startIcon={<GitBranch className="text-muted-foreground size-3.5" />}
-          className="h-8 w-40 font-mono text-xs"
-          style={traceFilter ? { paddingInlineEnd: "1.75rem" } : undefined}
+          startIcon={<GitBranch className="dl-toolbar__filter-icon" />}
+          className="dl-toolbar__filter-input"
+          style={{
+            height: "2rem",
+            width: "10rem",
+            paddingInlineEnd: traceFilter ? "1.75rem" : undefined,
+          }}
         />
         {traceFilter && (
           <button
             type="button"
             onClick={() => setTraceFilter("")}
-            className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
+            style={{
+              position: "absolute",
+              top: "50%",
+              right: "0.5rem",
+              transform: "translateY(-50%)",
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              color: "var(--mutedForeground)",
+            }}
             title="Clear trace filter"
           >
-            <X className="size-3" />
+            <X className="dl-toolbar__clear-icon" />
           </button>
         )}
       </div>
@@ -168,16 +178,17 @@ export function LogToolbar({
       />
 
       {/* View & Timeline Controls */}
-      <div className="ml-auto flex items-center gap-1.5">
+      <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.375rem" }}>
         {setShowTimeline && (
           <Button
             size="sm"
             variant={showTimeline ? "secondary" : "outline"}
             onClick={() => setShowTimeline((prev) => !prev)}
-            className="h-8 font-mono text-xs"
+            className="dl-toolbar__chart-btn"
+            style={{ height: "2rem" }}
             title={UI_COPY.LOGS.TOOLBAR.TOGGLE_TIMELINE}
           >
-            <BarChart3 className="mr-1 size-3.5" />
+            <BarChart3 className="dl-toolbar__chart-icon" />
             Timeline
           </Button>
         )}

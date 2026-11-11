@@ -90,9 +90,9 @@ export function Console() {
     (filterState.zoom ? 1 : 0);
 
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col gap-2.5 overflow-hidden p-3 select-none">
+    <div className="dl-console">
       {showTimeline && (
-        <section className="animate-in fade-in grid gap-2.5 transition-all duration-200 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+        <section className="dl-console__top-grid">
           <LogKpiCards
             eps={eps}
             errRate={errRate}
@@ -111,7 +111,7 @@ export function Console() {
         </section>
       )}
 
-      <div className="flex min-h-0 flex-1 gap-2.5 overflow-hidden">
+      <div className="dl-console__workspace">
         <FacetSidebar
           logs={logs}
           services={filterState.services}
@@ -124,7 +124,7 @@ export function Console() {
           onToggleCollapse={() => setFacetsCollapsed((c) => !c)}
         />
 
-        <div className="flex min-w-0 flex-1 flex-col gap-2 overflow-hidden">
+        <div className="dl-console__content">
           <LogToolbar
             query={filterState.query}
             setQuery={filterState.setQuery}

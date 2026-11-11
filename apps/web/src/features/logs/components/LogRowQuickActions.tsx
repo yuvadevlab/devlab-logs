@@ -35,7 +35,7 @@ export function LogRowQuickActions({
   };
 
   return (
-    <div className="bg-popover absolute top-1/2 right-10 hidden -translate-y-1/2 items-center gap-0.5 rounded-md border p-0.5 shadow-lg group-hover:flex">
+    <div className="dl-log-row__quick-actions">
       <button
         type="button"
         title={UI_COPY.LOGS.ROW_ACTIONS.COPY_MESSAGE}
@@ -43,9 +43,9 @@ export function LogRowQuickActions({
           e.stopPropagation();
           copyText(log.message, UI_COPY.LOGS.NOTIFICATIONS.MESSAGE);
         }}
-        className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-1"
+        className="dl-log-row__action-btn"
       >
-        <Copy className="size-3.5" />
+        <Copy className="dl-log-row__quick-glyph" />
       </button>
       <button
         type="button"
@@ -54,9 +54,9 @@ export function LogRowQuickActions({
           e.stopPropagation();
           copyText(log.traceId, UI_COPY.LOGS.NOTIFICATIONS.TRACE_ID);
         }}
-        className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-1"
+        className="dl-log-row__action-btn"
       >
-        <GitBranch className="size-3.5" />
+        <GitBranch className="dl-log-row__quick-glyph" />
       </button>
       <button
         type="button"
@@ -65,9 +65,9 @@ export function LogRowQuickActions({
           e.stopPropagation();
           onInspect();
         }}
-        className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-1"
+        className="dl-log-row__action-btn"
       >
-        <Activity className="size-3.5" />
+        <Activity className="dl-log-row__quick-glyph" />
       </button>
       <button
         type="button"
@@ -76,9 +76,9 @@ export function LogRowQuickActions({
           e.stopPropagation();
           onToggle();
         }}
-        className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-1"
+        className="dl-log-row__action-btn"
       >
-        <Eye className="size-3.5" />
+        <Eye className="dl-log-row__quick-glyph" />
       </button>
     </div>
   );

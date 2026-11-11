@@ -6,11 +6,11 @@ import { LogLevel, ServiceName } from "./constants/enums";
 import type { LogEvent } from "@/features/logs/types";
 
 export const LEVEL_CLASS: Record<LogLevel, string> = {
-  [LogLevel.FATAL]: "lvl-fatal",
-  [LogLevel.ERROR]: "lvl-error",
-  [LogLevel.WARN]: "lvl-warn",
-  [LogLevel.INFO]: "lvl-info",
-  [LogLevel.DEBUG]: "lvl-debug",
+  [LogLevel.FATAL]: "dl-badge--fatal",
+  [LogLevel.ERROR]: "dl-badge--error",
+  [LogLevel.WARN]: "dl-badge--warn",
+  [LogLevel.INFO]: "dl-badge--info",
+  [LogLevel.DEBUG]: "dl-badge--debug",
 };
 
 /**

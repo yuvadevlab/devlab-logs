@@ -12,7 +12,7 @@ export interface JsonTreeProps {
  * Interactive collapsible JSON tree with key-based filtering and syntax tokens.
  */
 export function JsonTree({ data, filter = "", depth = 0 }: JsonTreeProps) {
-  if (data === null) return <span className="text-muted-foreground">null</span>;
+  if (data === null) return <span className="dl-json-tree__muted">null</span>;
   if (typeof data === "string") return <span className="text-syn-str">"{data}"</span>;
   if (typeof data === "number" || typeof data === "boolean") {
     return <span className="text-syn-num">{String(data)}</span>;
@@ -31,7 +31,7 @@ export function JsonTree({ data, filter = "", depth = 0 }: JsonTreeProps) {
       Object.entries(value).some(([nestedKey, nestedValue]) => matches(nestedKey, nestedValue)));
 
   return (
-    <div className="font-mono text-xs leading-5">
+    <div className="dl-json-tree">
       {entries
         .filter(([key, value]) => matches(key, value))
         .map(([key, value]) => (
@@ -56,14 +56,10 @@ function JsonNode({ nodeKey, value, filter, depth }: JsonNodeProps) {
     <div style={{ paddingLeft: depth ? 14 : 0 }}>
       {isObject ? (
         <>
-          <button
-            type="button"
-            onClick={() => setOpen(!open)}
-            className="text-left hover:opacity-80"
-          >
-            <span className="text-muted-foreground mr-1 inline-block w-3">{open ? "▾" : "▸"}</span>
+          <button type="button" onClick={() => setOpen(!open)} className="dl-json-tree__btn">
+            <span className="dl-json-tree__arrow">{open ? "▾" : "▸"}</span>
             <span className="text-syn-key">{nodeKey}</span>
-            <span className="text-muted-foreground">
+            <span className="dl-json-tree__muted">
               : {Array.isArray(value) ? `[${value.length}]` : "{…}"}
             </span>
           </button>
@@ -71,9 +67,9 @@ function JsonNode({ nodeKey, value, filter, depth }: JsonNodeProps) {
         </>
       ) : (
         <div>
-          <span className="mr-1 inline-block w-3" />
+          <span className="dl-json-tree__arrow" />
           <span className="text-syn-key">{nodeKey}</span>
-          <span className="text-muted-foreground">: </span>
+          <span className="dl-json-tree__muted">: </span>
           <JsonTree data={value} />
         </div>
       )}

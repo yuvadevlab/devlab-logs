@@ -1,0 +1,57 @@
+/**
+ * @file packages/ui/src/styles/logs.css
+ * @description Telemetry explorer console grid, split views, and histogram.
+ * @author yuva.devlab@gmail.com
+ */
+
+.dl-console {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+  gap: 0.625rem;
+  overflow: hidden;
+  padding: 0.75rem;
+  user-select: none;
+}
+
+.dl-console__top-grid {
+  display: grid;
+  gap: 0.625rem;
+  transition: all 200ms ease;
+}
+
+@media (min-width: 1280px) {
+  .dl-console__top-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  }
+}
+
+.dl-console__workspace {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0%;
+  gap: 0.625rem;
+  overflow: hidden;
+}
+
+.dl-console__content {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+
+.dl-histogram__badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+}
+
+.dl-histogram__legend-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 0.125rem;
+}

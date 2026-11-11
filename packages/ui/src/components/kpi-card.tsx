@@ -28,26 +28,26 @@ export function KpiCard({
   tone,
 }: KpiCardProps) {
   return (
-    <div className="panel flex flex-col justify-between p-3">
-      <div className="text-muted-foreground flex items-center justify-between text-xs">
-        <span className="flex items-center gap-1.5">
-          <Icon className="size-3.5" />
+    <div className="panel dl-kpi-card">
+      <div className="dl-kpi-card__header">
+        <span className="dl-kpi-card__label-wrap">
+          <Icon className="dl-search-icon" />
           {label}
         </span>
         {badge && <span className={`chip ${badge.className}`}>{badge.label}</span>}
       </div>
-      <div className="mt-1 flex items-baseline gap-1">
+      <div className="dl-kpi-card__value-wrap">
         <span
-          className={`font-mono text-2xl font-semibold tabular-nums ${tone === "error" ? "text-error" : ""}`}
+          className={`dl-kpi-card__value ${tone === "error" ? "dl-kpi-card__value--error" : ""}`}
         >
           {value}
         </span>
-        <span className="text-muted-foreground text-xs">{unit}</span>
+        <span className="dl-kpi-card__unit">{unit}</span>
       </div>
       {sparkData ? (
         <Sparkline data={sparkData} tone={tone} />
       ) : (
-        <div className="text-muted-foreground font-mono text-[11px]">{subtext}</div>
+        <div className="dl-kpi-card__subtext">{subtext}</div>
       )}
     </div>
   );

@@ -14,12 +14,24 @@ export interface AiSectionProps {
  */
 export function AiSection({ icon: Icon, title, children }: AiSectionProps) {
   return (
-    <div className="panel p-3">
-      <div className="text-ai mb-1.5 flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
-        <Icon className="size-3.5" />
+    <div className="panel" style={{ padding: "0.75rem" }}>
+      <div
+        style={{
+          color: "var(--ai)",
+          marginBottom: "0.375rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.375rem",
+          fontSize: "0.75rem",
+          fontWeight: 600,
+          letterSpacing: "0.05em",
+          textTransform: "uppercase",
+        }}
+      >
+        <Icon className="dl-ai-modal__section-icon" />
         {title}
       </div>
-      <div className="text-sm leading-relaxed">{children}</div>
+      <div style={{ fontSize: "0.875rem", lineHeight: 1.625 }}>{children}</div>
     </div>
   );
 }

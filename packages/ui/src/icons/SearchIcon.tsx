@@ -15,7 +15,7 @@ export interface SearchIconProps extends React.SVGProps<SVGSVGElement> {
  * Clean SVG search icon.
  */
 export function SearchIcon({
-  className = "size-4 text-muted-foreground",
+  className = "dl-search-icon",
   ...props
 }: SearchIconProps): React.JSX.Element {
   return (

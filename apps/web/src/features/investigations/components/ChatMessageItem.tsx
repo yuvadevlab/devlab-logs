@@ -25,26 +25,27 @@ export function ChatMessageItem({ message }: ChatMessageItemProps) {
   });
 
   return (
-    <div className={cn("flex w-full gap-3 py-3", isUser ? "justify-end" : "justify-start")}>
+    <div className={cn("dl-chat-turn", isUser ? "dl-chat-turn--user" : "dl-chat-turn--assistant")}>
       {!isUser && (
-        <div className="bg-primary/10 text-primary border-primary/20 flex size-8 shrink-0 items-center justify-center rounded-lg border">
-          <Sparkles className="size-4" />
+        <div className="dl-chat-avatar dl-chat-avatar--assistant">
+          <Sparkles className="dl-chat-avatar__icon" />
         </div>
       )}
 
-      <div className={cn("flex max-w-[85%] flex-col gap-2 sm:max-w-[75%]", isUser && "items-end")}>
+      <div
+        style={{ display: "flex", maxWidth: "85%", flexDirection: "column", gap: "0.5rem" }}
+        className={cn(isUser && "dl-chat-turn--align-end")}
+      >
         <div
           className={cn(
-            "rounded-2xl px-4 py-3 text-xs leading-relaxed",
-            isUser
-              ? "bg-primary text-primary-foreground rounded-tr-xs font-medium"
-              : "bg-card border-border/70 text-foreground rounded-tl-xs border shadow-xs",
+            "dl-chat-bubble",
+            isUser ? "dl-chat-bubble--user" : "dl-chat-bubble--assistant",
           )}
         >
           {isUser ? (
-            <p className="whitespace-pre-wrap">{message.content}</p>
+            <p style={{ margin: 0, whiteSpace: "pre-wrap" }}>{message.content}</p>
           ) : (
-            <div className="space-y-2">
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <MarkdownContent content={message.content} />
             </div>
           )}
@@ -52,16 +53,29 @@ export function ChatMessageItem({ message }: ChatMessageItemProps) {
 
         {/* Render Telemetry Citations if Assistant */}
         {!isUser && message.citations && message.citations.length > 0 && (
-          <div className="mt-1 flex w-full flex-col gap-2">
-            <div className="flex items-center gap-2">
+          <div
+            style={{
+              marginTop: "0.25rem",
+              display: "flex",
+              width: "100%",
+              flexDirection: "column",
+              gap: "0.5rem",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <Badge
                 variant="outline"
-                className="border-border/70 text-muted-foreground font-mono text-[9px] tracking-wider uppercase"
+                className="dl-chat-message__status-badge"
+                style={{
+                  borderColor: "color-mix(in oklab, var(--border) 70%, transparent)",
+                  color: "var(--mutedForeground)",
+                  letterSpacing: "0.05em",
+                }}
               >
                 Referenced Telemetry Evidence ({message.citations.length})
               </Badge>
             </div>
-            <div className="grid grid-cols-1 gap-2">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "0.5rem" }}>
               {message.citations.map((c, idx) => (
                 <CitationCard key={c.log_id ?? `${c.service}-${idx}`} citation={c} />
               ))}
@@ -69,12 +83,21 @@ export function ChatMessageItem({ message }: ChatMessageItemProps) {
           </div>
         )}
 
-        <span className="text-muted-foreground px-1 text-[10px] tabular-nums">{formattedTime}</span>
+        <span
+          style={{
+            color: "var(--mutedForeground)",
+            padding: "0 0.25rem",
+            fontSize: "0.625rem",
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {formattedTime}
+        </span>
       </div>
 
       {isUser && (
-        <div className="bg-muted text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-lg border">
-          <User className="size-4" />
+        <div className="dl-chat-avatar dl-chat-avatar--user">
+          <User className="dl-chat-avatar__icon" />
         </div>
       )}
     </div>
@@ -82,37 +105,78 @@ export function ChatMessageItem({ message }: ChatMessageItemProps) {
 }
 
 function MarkdownContent({ content }: { content: string }) {
-  // Clean markdown line-by-line renderer
   const lines = content.split("\n");
   return (
-    <div className="space-y-1.5 font-sans">
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}
+      className="font-sans"
+    >
       {lines.map((line, idx) => {
         if (line.startsWith("### ")) {
           return (
-            <h3 key={idx} className="text-foreground pt-1 text-sm font-semibold">
+            <h3
+              key={idx}
+              style={{
+                color: "var(--foreground)",
+                paddingTop: "0.25rem",
+                fontSize: "0.875rem",
+                fontWeight: 600,
+                margin: 0,
+              }}
+            >
               {line.replace("### ", "")}
             </h3>
           );
         }
         if (line.startsWith("#### ")) {
           return (
-            <h4 key={idx} className="text-foreground pt-1 text-xs font-medium">
+            <h4
+              key={idx}
+              style={{
+                color: "var(--foreground)",
+                paddingTop: "0.25rem",
+                fontSize: "0.75rem",
+                fontWeight: 500,
+                margin: 0,
+              }}
+            >
               {line.replace("#### ", "")}
             </h4>
           );
         }
         if (line.startsWith("- ")) {
           return (
-            <div key={idx} className="flex items-start gap-1.5 pl-2">
-              <span className="text-primary mt-1 size-1 shrink-0 rounded-full bg-current" />
+            <div
+              key={idx}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "0.375rem",
+                paddingLeft: "0.5rem",
+              }}
+            >
+              <span
+                style={{
+                  marginTop: "0.25rem",
+                  width: "0.25rem",
+                  height: "0.25rem",
+                  flexShrink: 0,
+                  borderRadius: "9999px",
+                  backgroundColor: "var(--primary)",
+                }}
+              />
               <span>{line.replace("- ", "")}</span>
             </div>
           );
         }
         if (line.trim() === "") {
-          return <div key={idx} className="h-1" />;
+          return <div key={idx} style={{ height: "0.25rem" }} />;
         }
-        return <p key={idx}>{line}</p>;
+        return (
+          <p key={idx} style={{ margin: 0 }}>
+            {line}
+          </p>
+        );
       })}
     </div>
   );

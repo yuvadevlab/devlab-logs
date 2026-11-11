@@ -23,43 +23,97 @@ export function CitationCard({ citation }: CitationCardProps) {
   const timeFormatted = new Date(citation.timestamp).toLocaleTimeString();
 
   return (
-    <Card className="bg-card/70 border-border/60 hover:border-primary/50 transition">
-      <CardContent className="flex flex-col gap-2 p-3 font-mono text-xs">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5">
+    <Card className="dl-citation-card">
+      <CardContent
+        style={{ display: "flex", flexDirection: "column", gap: "0.5rem", padding: "0.75rem" }}
+        className="dl-citation-card__trigger"
+      >
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "0.5rem",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
             <Badge
               variant="outline"
-              className="border-primary/40 bg-primary/10 text-primary font-mono text-[10px] font-semibold"
+              className="dl-citation-card__level-badge"
+              style={{
+                borderColor: "color-mix(in oklab, var(--primary) 40%, transparent)",
+                backgroundColor: "color-mix(in oklab, var(--primary) 10%, transparent)",
+                color: "var(--primary)",
+              }}
             >
               {matchPct}
               {UI_COPY.INVESTIGATIONS.CITATIONS.MATCH}
             </Badge>
-            <Badge variant="secondary" className="font-mono text-[10px] font-semibold">
+            <Badge variant="secondary" className="dl-citation-card__service-badge">
               {citation.service}
             </Badge>
             {citation.trace_id && (
               <Badge
                 variant="outline"
-                className="border-ai/40 bg-ai/10 text-ai flex items-center gap-1 font-mono text-[10px]"
+                className="dl-citation-card__trace-badge"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.25rem",
+                  borderColor: "color-mix(in oklab, var(--ai) 40%, transparent)",
+                  backgroundColor: "color-mix(in oklab, var(--ai) 10%, transparent)",
+                  color: "var(--ai)",
+                }}
               >
-                <GitBranch className="size-3" />
+                <GitBranch className="dl-citation-card__trace-icon" />
                 {citation.trace_id.slice(0, 10)}
               </Badge>
             )}
           </div>
-          <span className="text-muted-foreground text-[10px] tabular-nums">{timeFormatted}</span>
+          <span
+            style={{
+              color: "var(--mutedForeground)",
+              fontSize: "0.625rem",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {timeFormatted}
+          </span>
         </div>
 
-        <p className="text-foreground/90 font-sans text-xs leading-relaxed">{citation.summary}</p>
+        <p
+          className="dl-citation-card__message"
+          style={{
+            color: "color-mix(in oklab, var(--foreground) 90%, transparent)",
+            margin: 0,
+          }}
+        >
+          {citation.summary}
+        </p>
 
-        <div className="flex items-center justify-end gap-2 pt-1">
-          <Button size="sm" variant="ghost" asChild className="h-6 px-2 font-sans text-[11px]">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: "0.5rem",
+            paddingTop: "0.25rem",
+          }}
+        >
+          <Button
+            size="sm"
+            variant="ghost"
+            asChild
+            className="dl-citation-card__action-btn"
+            style={{ height: "1.5rem", padding: "0 0.5rem" }}
+          >
             <Link
               href={`/?service=${encodeURIComponent(citation.service)}${citation.trace_id ? `&trace=${encodeURIComponent(citation.trace_id)}` : ""}`}
             >
-              <Activity className="mr-1 size-3" />
+              <Activity className="dl-citation-card__action-icon dl-citation-card__action-icon--left" />
               {UI_COPY.INVESTIGATIONS.ACTIONS.VIEW_IN_EXPLORER}
-              <ExternalLink className="ml-1 size-3" />
+              <ExternalLink className="dl-citation-card__action-icon dl-citation-card__action-icon--right" />
             </Link>
           </Button>
         </div>

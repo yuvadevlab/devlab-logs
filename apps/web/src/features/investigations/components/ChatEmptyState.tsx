@@ -22,38 +22,71 @@ export function ChatEmptyState({ onSelectPrompt }: ChatEmptyStateProps) {
   const prompts = UI_COPY.INVESTIGATIONS.EMPTY_STATE.PROMPTS;
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col items-center justify-center px-4 py-8">
+    <div
+      style={{
+        margin: "0 auto",
+        display: "flex",
+        maxWidth: "42rem",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "2rem 1rem",
+      }}
+    >
       <EmptyState
         icon={
-          <div className="bg-primary/10 text-primary border-primary/20 grid size-12 place-items-center rounded-2xl border">
-            <Sparkles className="size-6" />
+          <div
+            style={{
+              display: "grid",
+              width: "3rem",
+              height: "3rem",
+              placeItems: "center",
+              borderRadius: "1rem",
+              border: "1px solid color-mix(in oklab, var(--primary) 20%, transparent)",
+              backgroundColor: "color-mix(in oklab, var(--primary) 10%, transparent)",
+              color: "var(--primary)",
+            }}
+          >
+            <Sparkles className="dl-chat-empty__header-icon" />
           </div>
         }
         title={UI_COPY.INVESTIGATIONS.EMPTY_STATE.HEADING}
         description={UI_COPY.INVESTIGATIONS.EMPTY_STATE.DESCRIPTION}
-        className="w-full border-none bg-transparent p-0"
+        className="dl-chat-empty__accordion"
       >
-        <div className="mt-8 grid w-full grid-cols-1 gap-2.5 text-left sm:grid-cols-2">
+        <div
+          style={{
+            marginTop: "2rem",
+            display: "grid",
+            width: "100%",
+            gap: "0.625rem",
+            textAlign: "left",
+          }}
+          className="dl-chat-empty__prompts-grid"
+        >
           {prompts.map((prompt, idx) => {
             const Icon = PROMPT_ICONS[idx % PROMPT_ICONS.length];
             return (
-              <Card
-                key={prompt}
-                onClick={() => onSelectPrompt(prompt)}
-                className="bg-card/60 hover:bg-accent/40 border-border/60 hover:border-primary/50 group cursor-pointer shadow-none transition"
-              >
-                <CardContent className="flex h-full flex-col justify-between gap-3 p-3.5">
-                  <div className="flex items-start gap-2.5">
-                    <div className="bg-muted text-muted-foreground group-hover:text-primary mt-0.5 rounded-md p-1.5 transition">
-                      <Icon className="size-3.5" />
+              <Card key={prompt} onClick={() => onSelectPrompt(prompt)} className="dl-prompt-card">
+                <CardContent className="dl-prompt-card__content">
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "0.625rem" }}>
+                    <div className="dl-prompt-card__icon">
+                      <Icon className="dl-chat-empty__prompt-glyph" />
                     </div>
-                    <span className="text-foreground/90 text-xs leading-snug font-medium">
+                    <span
+                      style={{
+                        color: "color-mix(in oklab, var(--foreground) 90%, transparent)",
+                        fontSize: "0.75rem",
+                        lineHeight: 1.375,
+                        fontWeight: 500,
+                      }}
+                    >
                       {prompt}
                     </span>
                   </div>
-                  <div className="text-primary flex items-center gap-1 text-[11px] font-semibold opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="dl-prompt-card__action">
                     <span>Investigate</span>
-                    <ArrowRight className="size-3" />
+                    <ArrowRight className="dl-chat-empty__arrow-icon" />
                   </div>
                 </CardContent>
               </Card>

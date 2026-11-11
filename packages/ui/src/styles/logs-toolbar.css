@@ -1,0 +1,77 @@
+/**
+ * @file packages/ui/src/styles/logs-toolbar.css
+ * @description Telemetry search toolbar, filter pills, and query presets.
+ * @author yuva.devlab@gmail.com
+ */
+
+.dl-toolbar__search-input {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.dl-toolbar__search-badge {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+
+.dl-toolbar__history-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dl-toolbar__history-popover {
+  width: 16rem;
+  padding: 0.25rem;
+}
+
+.dl-toolbar__history-item {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.dl-toolbar__history-item:hover {
+  background-color: var(--accent);
+}
+
+.dl-toolbar__filter-input {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.dl-toolbar__filter-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--mutedForeground);
+}
+
+.dl-toolbar__clear-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dl-toolbar__chart-btn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.dl-toolbar__chart-icon {
+  margin-right: 0.25rem;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.dl-pills__badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+}
+
+.dl-pills__close-icon {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
+.dl-pills__clear-icon {
+  margin-right: 0.25rem;
+  width: 0.75rem;
+  height: 0.75rem;
+}

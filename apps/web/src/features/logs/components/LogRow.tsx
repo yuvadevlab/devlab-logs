@@ -75,26 +75,37 @@ export function LogRow({
   return (
     <div
       className={cn(
-        "group border-border/40 border-b transition-colors",
+        "dl-log-row group",
         isNew && "row-new",
-        emph && "bg-error/5",
-        isSelected && "bg-accent/60 ring-primary/50 ring-1",
+        emph && "dl-log-row--emph",
+        isSelected && "dl-log-row--selected",
       )}
     >
-      <div
-        onClick={onInspect}
-        className="hover:bg-accent/50 relative grid cursor-pointer grid-cols-[150px_64px_130px_120px_1fr_24px] items-center gap-3 px-3 py-1 font-mono text-xs transition-colors"
-      >
-        <span className="text-muted-foreground truncate text-[11px] tabular-nums">
+      <div onClick={onInspect} className="dl-log-row__content">
+        <span
+          style={{
+            color: "var(--mutedForeground)",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            fontSize: "0.6875rem",
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
           {iso ? fmtIso(log.ts) : fmtRel(log.ts, now)}
         </span>
         <Badge
           variant="outline"
-          className={cn("justify-center px-1 py-0 font-mono text-[9px]", LEVEL_CLASS[log.level])}
+          className={cn("justify-center font-mono text-[9px]", LEVEL_CLASS[log.level])}
+          style={{ padding: "0 0.25rem" }}
         >
           {log.level}
         </Badge>
-        <Badge variant="secondary" className="truncate px-1 py-0 font-mono text-[9px]">
+        <Badge
+          variant="secondary"
+          className="dl-log-row__service-badge"
+          style={{ padding: "0 0.25rem" }}
+        >
           {log.service}
         </Badge>
         <button
@@ -103,13 +114,33 @@ export function LogRow({
             e.stopPropagation();
             onTrace();
           }}
-          className="border-ai/40 bg-ai/10 text-ai hover:border-ai inline-flex cursor-pointer items-center gap-1 truncate rounded border px-1.5 py-0 font-mono text-[9px] transition"
+          className="dl-log-row__trace-badge"
+          style={{
+            display: "inline-flex",
+            cursor: "pointer",
+            alignItems: "center",
+            gap: "0.25rem",
+            borderRadius: "0.25rem",
+            border: "1px solid color-mix(in oklab, var(--ai) 40%, transparent)",
+            backgroundColor: "color-mix(in oklab, var(--ai) 10%, transparent)",
+            color: "var(--ai)",
+            padding: "0 0.375rem",
+          }}
           title={UI_COPY.LOGS.ROW_ACTIONS.FILTER_BY_TRACE}
         >
-          <GitBranch className="size-2.5 shrink-0" />
+          <GitBranch className="dl-log-row__trace-icon" />
           {log.traceId ? log.traceId.slice(0, 10) : UI_COPY.LOGS.STREAM.NO_TRACE}
         </button>
-        <span className="text-foreground/90 truncate text-[11px] leading-4">
+        <span
+          style={{
+            color: "color-mix(in oklab, var(--foreground) 90%, transparent)",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            fontSize: "0.6875rem",
+            lineHeight: "1rem",
+          }}
+        >
           {highlight(log.message, query, regex)}
         </span>
         <button
@@ -118,16 +149,34 @@ export function LogRow({
             e.stopPropagation();
             onToggle();
           }}
-          className="text-muted-foreground hover:text-foreground"
+          className="hover:text-foreground"
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            color: "var(--mutedForeground)",
+          }}
         >
-          <ChevronRight className={cn("size-4 transition-transform", open && "rotate-90")} />
+          <ChevronRight
+            className="dl-log-row__open-icon"
+            style={{
+              transition: "transform 150ms ease",
+              transform: open ? "rotate(90deg)" : "rotate(0deg)",
+            }}
+          />
         </button>
 
         {/* Hover Quick Action Buttons */}
         <LogRowQuickActions log={log} onToggle={onToggle} onInspect={onInspect} />
       </div>
       {open && (
-        <div className="bg-background/60 px-6 py-2">
+        <div
+          style={{
+            backgroundColor: "color-mix(in oklab, var(--background) 60%, transparent)",
+            padding: "0.5rem 1.5rem",
+          }}
+        >
           <JsonTree data={log.meta} />
         </div>
       )}
