@@ -1,0 +1,241 @@
+/**
+ * @file packages/ui/src/styles/navbar.css
+ * @description Master top navigation bar, brand identity, and workspace tabs.
+ * @author yuva.devlab@gmail.com
+ */
+
+.dl-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  height: 3.5rem;
+  max-width: 100%;
+  min-width: 0;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  background-color: color-mix(in oklab, var(--card) 70%, transparent);
+  padding: 0 0.75rem;
+  backdrop-filter: blur(12px);
+  user-select: none;
+}
+
+@media (min-width: 640px) {
+  .dl-navbar {
+    padding: 0 1rem;
+  }
+}
+
+.dl-navbar__brand-group {
+  display: flex;
+  min-width: 0;
+  flex-shrink: 1;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .dl-navbar__brand-group {
+    gap: 0.75rem;
+  }
+}
+
+.dl-navbar__brand-link {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.625rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.dl-navbar__brand-logo {
+  display: grid;
+  aspect-ratio: 1 / 1;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: var(--radius-lg, 0.5rem);
+  background-color: var(--primary);
+  color: var(--primaryForeground);
+  box-shadow: var(--glow-primary);
+}
+
+.dl-navbar__brand-meta {
+  display: none;
+  flex-shrink: 0;
+  line-height: 1.25;
+}
+
+@media (min-width: 768px) {
+  .dl-navbar__brand-meta {
+    display: block;
+  }
+}
+
+.dl-navbar__brand-title {
+  color: var(--foreground);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.dl-navbar__brand-tagline {
+  display: none;
+  color: var(--mutedForeground);
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+}
+
+@media (min-width: 1280px) {
+  .dl-navbar__brand-tagline {
+    display: block;
+  }
+}
+
+.dl-navbar__tabs {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .dl-navbar__tabs {
+    display: flex;
+  }
+}
+
+.dl-navbar__tab-link {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: var(--radius-lg, 0.5rem);
+  padding: 0.375rem 0.625rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--mutedForeground);
+  transition: all 150ms ease;
+}
+
+.dl-navbar__tab-link:hover {
+  color: var(--foreground);
+  background-color: color-mix(in oklab, var(--accent) 50%, transparent);
+}
+
+.dl-navbar__tab-link--active {
+  background-color: var(--accent);
+  color: var(--accentForeground);
+  font-weight: 600;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dl-navbar__tab-link--investigate {
+  background-color: color-mix(in oklab, var(--primary) 15%, transparent);
+  color: var(--primary);
+  border: 1px solid color-mix(in oklab, var(--primary) 30%, transparent);
+  font-weight: 600;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dl-navbar__indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background-color: var(--mutedForeground);
+}
+
+.dl-navbar__indicator--live {
+  background-color: #10b981;
+  animation: dl-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes dl-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.dl-navbar__rag-badge {
+  border: 1px solid color-mix(in oklab, var(--primary) 40%, transparent);
+  background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+  color: var(--primary);
+  padding: 0 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  line-height: 1;
+}
+
+.dl-navbar__separator {
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+.dl-navbar__separator--desktop {
+  display: none;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .dl-navbar__separator--desktop {
+    display: block;
+  }
+}
+
+.dl-navbar__explorer-wrapper {
+  display: none;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .dl-navbar__explorer-wrapper {
+    display: flex;
+  }
+}
+
+.dl-navbar__cmd-wrapper {
+  display: none;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1280px) {
+  .dl-navbar__cmd-wrapper {
+    display: flex;
+  }
+}
+
+.dl-navbar__user-wrapper {
+  flex-shrink: 0;
+}
+
+.dl-navbar__brand-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.dl-navbar__tab-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}
+
+.dl-navbar__cmd-icon {
+  margin-right: 0.25rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+}

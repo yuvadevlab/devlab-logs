@@ -92,7 +92,7 @@ sequenceDiagram
     participant Ingest as Logs Ingest (:4003 / :4013)
     participant DB as PostgreSQL / pgvector
     participant Web as Log Console (:3003 / :3013)
-    participant IA as IncidentAI (:8085)
+    participant IA as IncidentAI (:8001)
 
     App->>Ingest: POST /logs (Batch of structured logs)
     Ingest->>DB: Ingest into partitioned storage & generate vector embeddings
@@ -101,7 +101,7 @@ sequenceDiagram
     Ingest->>Web: WebSocket broadcast to live console (:3003 / :3013)
 
     alt Log Entry has level == 'FATAL' or 'ERROR' spike
-        Ingest->>IA: Emit Incident Alert to IncidentAI (:8085)
+        Ingest->>IA: Emit Incident Alert to IncidentAI (:8001)
     end
 ```
 
@@ -112,7 +112,7 @@ sequenceDiagram
 | **`orchestrai`**    |  Inbound  | HTTP POST            | `POST http://localhost:4003/logs` (Prod: `:4013`)     | Workers and Gateways stream execution logs, LLM token counts, and tool metrics.             |
 | **`finai`**         |  Inbound  | HTTP POST            | `POST http://localhost:4003/logs` (Prod: `:4013`)     | NestJS backend streams audit logs, bank sync telemetry, and advisory session events.        |
 | **`devlab-portal`** |  Inbound  | HTTP POST            | `POST http://localhost:4003/logs` (Prod: `:4013`)     | Streams API key generation, revocation, and RBAC security audit trails.                     |
-| **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8085/api/v1/incidents/webhook` | Dispatches high-severity error logs to IncidentAI to trigger automated root-cause analysis. |
+| **`incidentai`**    | Outbound  | Webhook HTTP POST    | `POST http://localhost:8001/api/v1/incidents/webhook` | Dispatches high-severity error logs to IncidentAI to trigger automated root-cause analysis. |
 | **`devlab-guard`**  |  Inbound  | CLI Git Pre-commit   | `uv run devlab-guard scan --path .`                   | Validates monorepo architecture and formatting rules before commit.                         |
 
 ---

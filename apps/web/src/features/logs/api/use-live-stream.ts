@@ -13,6 +13,7 @@ import {
   getWebSocketStreamUrl,
   StreamState,
   LogLevel,
+  LogsQueryParamKey,
 } from "@/lib/constants";
 import { normalizeBackendLog } from "@/lib/logs";
 import type { LogEvent } from "../types";
@@ -75,7 +76,7 @@ export function useLiveStream({
         if (isCleanedUp || isPaused) return;
 
         const streamUrl = new URL(getWebSocketStreamUrl());
-        streamUrl.searchParams.set("ticket", ticketData.ticket);
+        streamUrl.searchParams.set(LogsQueryParamKey.TICKET, ticketData.ticket);
         const ws = new WebSocket(streamUrl);
         wsRef.current = ws;
 

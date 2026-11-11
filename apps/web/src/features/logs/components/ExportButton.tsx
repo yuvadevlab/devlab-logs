@@ -61,14 +61,34 @@ export function ExportButton({ format, rows }: ExportButtonProps) {
     <Button
       size="sm"
       variant="outline"
-      className="relative h-8 w-[118px] overflow-hidden text-xs"
+      style={{
+        position: "relative",
+        height: "2rem",
+        width: "118px",
+        overflow: "hidden",
+        fontSize: "0.75rem",
+      }}
       onClick={runExport}
       disabled={progress !== null || !rows.length}
     >
-      {isJsonl ? <FileJson className="mr-1 size-3.5" /> : <Download className="mr-1 size-3.5" />}
+      {isJsonl ? (
+        <FileJson className="dl-export__icon" />
+      ) : (
+        <Download className="dl-export__icon" />
+      )}
       {progress !== null ? `${Math.round(progress)}%` : UI_COPY.LOGS.AI.EXPORT(label)}
       {progress !== null && (
-        <Progress value={progress} className="absolute inset-x-0 bottom-0 h-0.5 rounded-none" />
+        <Progress
+          value={progress}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: "0.125rem",
+            borderRadius: 0,
+          }}
+        />
       )}
     </Button>
   );

@@ -62,3 +62,27 @@ export enum AiAnalysisPhase {
   DONE = "done",
   ERROR = "error",
 }
+
+/** URL query parameter keys */
+export enum LogsQueryParamKey {
+  APP = "app",
+  REDIRECT = "redirect",
+  TOKEN = "token",
+  ACCESS_TOKEN = "access_token",
+  TICKET = "ticket",
+}
+
+/** Local storage keys */
+export enum LogsStorageKey {
+  TOKEN = "devlab_token",
+  USER = "devlab_user",
+  ACCESS_TOKEN = "devlab_access_token",
+  AUTH_TOKEN = "devlab_auth_token",
+  AUTH_USER = "devlab_auth_user",
+}
+
+/** HTTP cookie keys */
+export enum LogsCookieKey {
+  TOKEN = "token",
+  ACCESS_TOKEN = "devlab_access_token",
+}

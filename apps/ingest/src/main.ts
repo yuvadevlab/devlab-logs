@@ -202,8 +202,14 @@ app.post("/api/v1/logs/rag-search", requireLogReadAccess, async (req, res) => {
   }
 });
 
-app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "healthy", timestamp: new Date().toISOString() });
+app.get(["/health", "/api/v1/health"], (_req, res) => {
+  res.status(200).json({
+    status: "ok",
+    service: "devlab-logs-ingest",
+    version: "1.0.0",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
 });
 
 server.listen(port, () => {

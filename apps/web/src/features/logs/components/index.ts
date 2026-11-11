@@ -3,8 +3,10 @@
  */
 
 export * from "./LogDrawer";
+export * from "./LogDrawerTraceTab";
 export * from "./AiModal";
 export * from "./SqlWorkbench";
+export * from "./SqlResultTable";
 export * from "./sql-executor";
 export * from "./LogRow";
 export * from "./LogHistogram";

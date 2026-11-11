@@ -84,7 +84,7 @@ const DEVLAB_APPS: readonly EcosystemAppItem[] = [
     id: "incidentai",
     name: "IncidentAI",
     sub: "Remediation",
-    url: "http://localhost:8085",
+    url: "http://localhost:8001",
     icon: AlertTriangle,
   },
 ] as const;
@@ -105,11 +105,11 @@ export function EcosystemLauncher(): React.JSX.Element {
         <Button
           variant="ghost"
           size="icon"
-          className="size-8 shrink-0"
+          className="dl-launcher__trigger-btn"
           title={UI_COPY.COMMON.ECOSYSTEM.TITLE}
           aria-label={UI_COPY.COMMON.ECOSYSTEM.TITLE}
         >
-          <Grid2X2 className="size-4" />
+          <Grid2X2 className="dl-launcher__trigger-icon" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -117,55 +117,49 @@ export function EcosystemLauncher(): React.JSX.Element {
         side="bottom"
         sideOffset={8}
         avoidCollisions={false}
-        className="max-h-[min(560px,calc(100vh-80px))] w-[min(320px,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] overflow-y-auto p-3 shadow-xl"
+        className="dl-launcher__popover"
       >
         {/* Responsive Workspace Views (Shown on small viewports where topbar tabs collapse) */}
-        <div className="mb-2.5 block md:hidden">
-          <div className="text-muted-foreground mb-1.5 px-1 font-mono text-[10px] font-semibold tracking-wider uppercase">
-            {UI_COPY.COMMON.ECOSYSTEM.SECTION_VIEWS}
-          </div>
-          <div className="grid grid-cols-2 gap-1.5 font-sans">
+        <div className="dl-launcher__views">
+          <div className="dl-launcher__section-title">{UI_COPY.COMMON.ECOSYSTEM.SECTION_VIEWS}</div>
+          <div className="dl-launcher__views-grid">
             <Link
               href={APP_ROUTES.HOME}
               onClick={() => setOpen(false)}
               className={cn(
-                "flex items-center gap-2 rounded-md border p-2 text-xs transition",
-                isExplorer
-                  ? "bg-accent border-primary/40 font-semibold"
-                  : "border-border/60 hover:bg-accent/60",
+                "dl-launcher__view-link",
+                isExplorer && "dl-launcher__view-link--active",
               )}
             >
-              <Layers className="size-3.5 text-emerald-500" />
+              <Layers className="dl-launcher__view-icon dl-launcher__view-icon--explorer" />
               <span>{UI_COPY.COMMON.NAVIGATION.LIVE_EXPLORER}</span>
             </Link>
             <Link
               href={APP_ROUTES.INVESTIGATE()}
               onClick={() => setOpen(false)}
               className={cn(
-                "flex items-center gap-2 rounded-md border p-2 text-xs transition",
-                isInvestigate
-                  ? "bg-accent border-primary/40 font-semibold"
-                  : "border-border/60 hover:bg-accent/60",
+                "dl-launcher__view-link",
+                isInvestigate && "dl-launcher__view-link--active",
               )}
             >
-              <Sparkles className="text-primary size-3.5" />
+              <Sparkles className="dl-launcher__view-icon dl-launcher__view-icon--investigate" />
               <span>{UI_COPY.COMMON.NAVIGATION.AI_INVESTIGATOR}</span>
             </Link>
           </div>
-          <Separator className="mt-2.5" />
+          <Separator className="dl-launcher__separator" />
         </div>
 
         {/* Ecosystem Applications Catalog */}
-        <div className="flex items-center justify-between px-1 pb-1">
-          <span className="text-muted-foreground font-mono text-[10px] font-semibold tracking-wider uppercase">
+        <div className="dl-launcher__header">
+          <span className="dl-launcher__section-title" style={{ marginBottom: 0 }}>
             {UI_COPY.COMMON.ECOSYSTEM.SECTION_APPS}
           </span>
-          <Badge variant="secondary" className="px-1.5 py-0 font-mono text-[10px]">
+          <Badge variant="secondary" className="dl-launcher__badge">
             {DEVLAB_APPS.length}
           </Badge>
         </div>
 
-        <div className="mt-1.5 grid grid-cols-2 gap-2">
+        <div className="dl-launcher__grid">
           {DEVLAB_APPS.map((app) => {
             const Icon = app.icon;
             return (
@@ -179,30 +173,17 @@ export function EcosystemLauncher(): React.JSX.Element {
                   setOpen(false);
                 }}
                 className={cn(
-                  "border-border/60 hover:border-primary/40 hover:bg-accent group relative flex h-20 w-full cursor-pointer flex-col items-center justify-center rounded-lg border p-2 text-center transition-all duration-150",
-                  app.isCurrent && "border-primary/50 bg-primary/5 ring-primary/20 ring-1",
+                  "dl-launcher__app-card",
+                  app.isCurrent && "dl-launcher__app-card--current",
                 )}
                 title={`${app.name} (${app.url})`}
               >
-                {app.isCurrent && (
-                  <span className="bg-primary absolute top-1.5 right-1.5 size-1.5 rounded-full" />
-                )}
-                <div
-                  className={cn(
-                    "mb-1 grid size-7 place-items-center rounded-md transition-transform group-hover:scale-105",
-                    app.isCurrent
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-primary/10 text-primary",
-                  )}
-                >
-                  <Icon className="size-3.5" />
+                {app.isCurrent && <span className="dl-launcher__app-dot" />}
+                <div className="dl-launcher__app-icon">
+                  <Icon className="dl-launcher__app-glyph" />
                 </div>
-                <span className="text-foreground w-full truncate text-[11px] font-medium">
-                  {app.name}
-                </span>
-                <span className="text-muted-foreground w-full truncate font-mono text-[9px]">
-                  {app.sub}
-                </span>
+                <span className="dl-launcher__app-name">{app.name}</span>
+                <span className="dl-launcher__app-sub">{app.sub}</span>
               </button>
             );
           })}

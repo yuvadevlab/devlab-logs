@@ -68,45 +68,54 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[88vh] overflow-y-auto sm:max-w-3xl">
+      <DialogContent
+        className="dl-ai-modal__dialog"
+        style={{ maxHeight: "88vh", overflowY: "auto" }}
+      >
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="text-ai size-4" />
+          <DialogTitle style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <Sparkles className="dl-ai-modal__sparkle-icon" />
             Log-RAG Incident Investigation
           </DialogTitle>
           <DialogDescription>{UI_COPY.LOGS.AI.ASK_DESCRIPTION}</DialogDescription>
         </DialogHeader>
 
-        <div className="flex gap-2">
+        <div style={{ display: "flex", gap: "0.5rem" }}>
           <Input
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleInvestigate()}
             placeholder={UI_COPY.LOGS.AI.PROMPT_PLACEHOLDER}
-            className="font-mono text-xs"
+            className="dl-ai-modal__prompt-input"
           />
           <Button
             onClick={handleInvestigate}
             disabled={phase === AiAnalysisPhase.THINKING || !prompt.trim()}
           >
-            <Bot className="mr-1 size-4" />
+            <Bot className="dl-ai-modal__bot-icon" />
             {UI_COPY.LOGS.AI.INVESTIGATE}
           </Button>
         </div>
 
         {phase === AiAnalysisPhase.THINKING && (
-          <div className="panel space-y-1.5 p-4 font-mono text-xs">
+          <div
+            className="panel dl-ai-modal__code-panel"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.375rem",
+              padding: "1rem",
+            }}
+          >
             {investigationSteps.map((s, i) => (
               <div
                 key={s}
-                className={cn(
-                  "transition-opacity",
-                  i < step
-                    ? "text-primary"
-                    : i === step
-                      ? "text-foreground animate-pulse"
-                      : "opacity-30",
-                )}
+                className={cn(i === step && "animate-pulse")}
+                style={{
+                  color: i < step ? "var(--primary)" : i === step ? "var(--foreground)" : undefined,
+                  opacity: i > step ? 0.3 : 1,
+                  transition: "opacity 150ms ease",
+                }}
               >
                 {i < step ? "✓" : "›"} {s}
               </div>
@@ -115,14 +124,24 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
         )}
 
         {phase === AiAnalysisPhase.ERROR && (
-          <div className="panel text-error flex items-center gap-2 p-4 text-xs">
-            <AlertCircle className="size-4 shrink-0" />
+          <div
+            className="panel"
+            style={{
+              color: "var(--error)",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "1rem",
+              fontSize: "0.75rem",
+            }}
+          >
+            <AlertCircle className="dl-ai-modal__alert-icon" />
             <span>{UI_COPY.LOGS.AI.QUERY_FAILED}</span>
           </div>
         )}
 
         {phase === AiAnalysisPhase.DONE && (
-          <div className="animate-in fade-in slide-in-from-bottom-2 space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <AiSection icon={FileSearch} title={UI_COPY.LOGS.AI.BUFFER_CONTEXT}>
               Analyzed telemetry buffer contains <b>{bufferAnalysis.errorCount}</b>{" "}
               {UI_COPY.LOGS.AI.ERROR_COUNT}{" "}
@@ -133,24 +152,45 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
             {matches.length > 0 ? (
               <>
                 <AiSection icon={Target} title={UI_COPY.LOGS.AI.MATCHED_EPISODES}>
-                  <div className="space-y-1.5">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
                     {matches.map((match) => (
                       <div
                         key={match.id}
-                        className="bg-background/50 flex items-start gap-2 rounded border p-2 font-mono text-[11px]"
+                        className="dl-ai-modal__meta-text"
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "0.5rem",
+                          borderRadius: "0.375rem",
+                          border: "1px solid var(--border)",
+                          backgroundColor:
+                            "color-mix(in oklab, var(--background) 50%, transparent)",
+                          padding: "0.5rem",
+                        }}
                       >
                         <Badge
                           variant="outline"
-                          className="border-primary/40 bg-primary/10 text-primary shrink-0 font-mono text-[10px]"
+                          className="dl-ai-modal__badge"
+                          style={{
+                            borderColor: "color-mix(in oklab, var(--primary) 40%, transparent)",
+                            backgroundColor: "color-mix(in oklab, var(--primary) 10%, transparent)",
+                            color: "var(--primary)",
+                          }}
                         >
                           {(match.similarity * 100).toFixed(1)}
                           {UI_COPY.LOGS.AI.MATCH}
                         </Badge>
-                        <Badge variant="secondary" className="shrink-0 font-mono text-[10px]">
+                        <Badge variant="secondary" className="dl-ai-modal__badge">
                           {match.service}
                         </Badge>
-                        <span className="flex-1">{match.summary}</span>
-                        <span className="text-muted-foreground shrink-0 tabular-nums">
+                        <span style={{ flex: "1 1 0%" }}>{match.summary}</span>
+                        <span
+                          className="dl-ai-modal__badge--mono"
+                          style={{
+                            color: "var(--mutedForeground)",
+                            fontVariantNumeric: "tabular-nums",
+                          }}
+                        >
                           {new Date(match.log_timestamp).toLocaleTimeString()}
                         </span>
                       </div>
@@ -159,7 +199,17 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
                 </AiSection>
 
                 <AiSection icon={Wrench} title={UI_COPY.LOGS.AI.REMEDIATION}>
-                  <ol className="list-decimal space-y-1 pl-4 text-xs">
+                  <ol
+                    className="dl-ai-modal__item-text"
+                    style={{
+                      listStyleType: "decimal",
+                      paddingLeft: "1rem",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.25rem",
+                      margin: 0,
+                    }}
+                  >
                     <li>
                       {UI_COPY.LOGS.AI.INSPECT_UPSTREAM(
                         matches[0]?.service ?? UI_COPY.LOGS.AI.NO_SERVICE,
@@ -172,7 +222,9 @@ export function AiModal({ open, onOpenChange, logs }: AiModalProps) {
               </>
             ) : (
               <AiSection icon={Database} title={UI_COPY.LOGS.AI.VECTOR_RESULTS}>
-                <p className="text-muted-foreground text-xs">{UI_COPY.LOGS.AI.NO_MATCHES}</p>
+                <p style={{ color: "var(--mutedForeground)", fontSize: "0.75rem", margin: 0 }}>
+                  {UI_COPY.LOGS.AI.NO_MATCHES}
+                </p>
               </AiSection>
             )}
           </div>

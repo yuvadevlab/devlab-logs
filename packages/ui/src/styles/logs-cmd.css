@@ -1,0 +1,22 @@
+/**
+ * @file packages/ui/src/styles/logs-cmd.css
+ * @description Command palette dialog and export action buttons.
+ * @author yuva.devlab@gmail.com
+ */
+
+.dl-cmd__icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}
+
+.dl-cmd__shortcut-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.dl-export__icon {
+  margin-right: 0.25rem;
+  width: 0.875rem;
+  height: 0.875rem;
+}

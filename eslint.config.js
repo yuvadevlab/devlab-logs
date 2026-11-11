@@ -1,9 +1,7 @@
 import js from "@eslint/js";
 import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
-import tailwindcss from "eslint-plugin-tailwindcss";
 import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
-import path from "node:path";
 import tseslint from "typescript-eslint";
 
 const rootDir = import.meta.dirname;
@@ -28,22 +26,6 @@ export default tseslint.config(
       "**/postcss.config.*",
       "**/commitlint.config.*",
     ],
-  },
-  {
-    ...tailwindcss.configs.recommended,
-    files: ["apps/web/**/*.{ts,tsx}"],
-    rules: {
-      ...tailwindcss.configs.recommended.rules,
-      "tailwindcss/classnames-order": "off",
-      "tailwindcss/enforces-canonical-classname": "off",
-      "tailwindcss/no-custom-classname": "off",
-    },
-    settings: {
-      tailwindcss: {
-        callees: ["cn", "cva"],
-        cssConfigPath: path.resolve(rootDir, "apps/web/src/app/globals.css"),
-      },
-    },
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],

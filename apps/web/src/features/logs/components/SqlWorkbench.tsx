@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useMemo, useState, useRef, useCallback } from "react";
-import { Database, Play, ArrowUpDown } from "lucide-react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { Database, Play } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -11,9 +11,9 @@ import {
   Button,
   Badge,
 } from "@devlab-logs/ui";
-import { cn } from "@/lib/utils";
 import type { LogEvent } from "../types";
 import { SQL_TEMPLATES, highlightSql, executeQuery } from "./sql-executor";
+import { SqlResultTable } from "./SqlResultTable";
 import { UI_COPY } from "@/lib/ui-copy";
 
 export interface SqlWorkbenchProps {
@@ -30,8 +30,6 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
   const [rows, setRows] = useState<Record<string, string | number>[] | null>(null);
   const [ms, setMs] = useState<number | null>(null);
   const [running, setRunning] = useState(false);
-  const [sort, setSort] = useState<{ k: string; d: 1 | -1 } | null>(null);
-  const [widths, setWidths] = useState<Record<string, number>>({});
   const preRef = useRef<HTMLPreElement>(null);
 
   const run = useCallback(() => {
@@ -40,7 +38,6 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
     setTimeout(() => {
       const r = executeQuery(sql, logs);
       setRows(r);
-      setSort(null);
       setMs(Math.max(3, Math.round(performance.now() - t0)));
       setRunning(false);
     }, 50);
@@ -55,66 +52,44 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
     }
   }, [open, rows, run]);
 
-  const cols = rows?.[0] ? Object.keys(rows[0]) : [];
-  const sorted = useMemo(() => {
-    if (!rows || !sort) return rows;
-    return [...rows].sort(
-      (a, b) => (a[sort.k] > b[sort.k] ? 1 : a[sort.k] < b[sort.k] ? -1 : 0) * sort.d,
-    );
-  }, [rows, sort]);
-
-  const startResize = (k: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const x0 = e.clientX;
-    const w0 = widths[k] ?? 140;
-    const move = (ev: MouseEvent) =>
-      setWidths((w) => ({ ...w, [k]: Math.max(60, w0 + ev.clientX - x0) }));
-    const up = () => {
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseup", up);
-    };
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", up);
-  };
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="bg-popover h-[78vh] border-t">
-        <SheetHeader className="text-left">
-          <SheetTitle className="flex items-center gap-2">
-            <Database className="text-primary size-4" />
+      <SheetContent side="bottom" className="dl-sql__sheet-content" style={{ height: "78vh" }}>
+        <SheetHeader style={{ textAlign: "left" }}>
+          <SheetTitle style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <Database className="dl-sql__db-icon" style={{ color: "var(--primary)" }} />
             {UI_COPY.LOGS.SQL.TITLE}
           </SheetTitle>
           <SheetDescription>
             {UI_COPY.LOGS.SQL.DESCRIPTION_PREFIX}{" "}
-            <Badge variant="outline" className="font-mono text-[10px]">
+            <Badge variant="outline" className="dl-sql__badge">
               logs
             </Badge>{" "}
             {UI_COPY.LOGS.SQL.DESCRIPTION_SUFFIX} ({logs.length.toLocaleString()} rows) with
             vectorized execution.
           </SheetDescription>
         </SheetHeader>
-        <div className="grid min-h-0 flex-1 gap-3 px-4 pb-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
-          <div className="flex min-h-0 flex-col gap-2">
-            <div className="flex flex-wrap gap-1.5">
+        <div className="dl-sql__layout">
+          <div className="dl-sql__editor-pane">
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
               {SQL_TEMPLATES.map((t) => (
                 <Button
                   key={t.id}
                   size="sm"
                   variant={sql === t.sql ? "secondary" : "outline"}
                   onClick={() => setSql(t.sql)}
-                  className="h-6 px-2 font-mono text-xs"
+                  className="dl-sql__editor-input"
+                  style={{ height: "1.5rem", padding: "0 0.5rem" }}
                 >
                   {t.name}
                 </Button>
               ))}
             </div>
-            <div className="panel relative min-h-48 flex-1 overflow-hidden">
+            <div className="panel dl-sql__editor-box">
               <pre
                 ref={preRef}
                 aria-hidden
-                className="pointer-events-none absolute inset-0 m-0 overflow-hidden p-3 font-mono text-xs leading-5 wrap-break-word whitespace-pre-wrap"
+                className="dl-sql__editor-pre"
                 dangerouslySetInnerHTML={{ __html: highlightSql(sql) + "\n" }}
               />
               <textarea
@@ -127,80 +102,44 @@ export function SqlWorkbench({ open, onOpenChange, logs }: SqlWorkbenchProps) {
                 onKeyDown={(e) => {
                   if ((e.metaKey || e.ctrlKey) && e.key === "Enter") run();
                 }}
-                className="caret-primary absolute inset-0 resize-none bg-transparent p-3 font-mono text-xs leading-5 wrap-break-word whitespace-pre-wrap text-transparent outline-none"
+                className="dl-sql__editor-textarea"
               />
             </div>
-            <div className="flex items-center gap-2">
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <Button onClick={run} disabled={running}>
-                <Play className="mr-1 size-3.5" />
+                <Play className="dl-sql__run-icon" />
                 {running ? "Running…" : "Run query"}
               </Button>
-              <kbd className="border-border/80 bg-muted text-muted-foreground rounded border px-1.5 py-0.5 font-mono text-[10px]">
+              <kbd
+                style={{
+                  borderRadius: "0.25rem",
+                  border: "1px solid color-mix(in oklab, var(--border) 80%, transparent)",
+                  backgroundColor: "var(--muted)",
+                  color: "var(--mutedForeground)",
+                  padding: "0.125rem 0.375rem",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.625rem",
+                }}
+              >
                 ⌘↵
               </kbd>
               {ms !== null && !running && (
                 <Badge
                   variant="outline"
-                  className="border-primary/40 bg-primary/10 text-primary ml-auto font-mono text-[10px]"
+                  className="dl-sql__badge"
+                  style={{
+                    marginLeft: "auto",
+                    borderColor: "color-mix(in oklab, var(--primary) 40%, transparent)",
+                    backgroundColor: "color-mix(in oklab, var(--primary) 10%, transparent)",
+                    color: "var(--primary)",
+                  }}
                 >
                   Executed in {ms}ms · {rows?.length} rows
                 </Badge>
               )}
             </div>
           </div>
-          <div className="panel min-h-0 overflow-auto">
-            {sorted && sorted.length ? (
-              <table className="w-max min-w-full table-fixed font-mono text-xs">
-                <thead className="bg-surface-2 sticky top-0">
-                  <tr>
-                    {cols.map((c) => (
-                      <th
-                        key={c}
-                        style={{ width: widths[c] ?? (c === "signature" ? 380 : 120) }}
-                        className="text-muted-foreground relative border-b px-3 py-2 text-left font-medium"
-                      >
-                        <button
-                          type="button"
-                          className="hover:text-foreground flex items-center gap-1"
-                          onClick={() =>
-                            setSort((s) => ({ k: c, d: s?.k === c && s.d === 1 ? -1 : 1 }))
-                          }
-                        >
-                          {c}
-                          <ArrowUpDown className={cn("size-3", sort?.k === c && "text-primary")} />
-                        </button>
-                        <span
-                          onMouseDown={(e) => startResize(c, e)}
-                          className="hover:bg-primary/50 absolute inset-y-0 right-0 w-1.5 cursor-col-resize"
-                        />
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {sorted.map((r, i) => (
-                    <tr key={i} className="border-border/40 hover:bg-accent/50 border-b">
-                      {cols.map((c) => (
-                        <td
-                          key={c}
-                          className={cn(
-                            "truncate px-3 py-1.5",
-                            typeof r[c] === "number" && "text-syn-num tabular-nums",
-                          )}
-                        >
-                          {String(r[c])}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <div className="text-muted-foreground grid h-full place-items-center">
-                {running ? "Executing…" : "No rows returned."}
-              </div>
-            )}
-          </div>
+          <SqlResultTable rows={rows} running={running} />
         </div>
       </SheetContent>
     </Sheet>

@@ -23,16 +23,22 @@ export function LogKpiCards({ eps, errRate, rateHist, errHist, env, p95 }: LogKp
   const isCritical = errRate > 8;
 
   const errBadge = isCritical
-    ? { label: LogLevel.FATAL, className: "lvl-error" }
+    ? { label: LogLevel.FATAL, className: "dl-badge--error" }
     : isHighError
-      ? { label: LogLevel.WARN, className: "lvl-warn" }
-      : { label: LogLevel.INFO, className: "lvl-info" };
+      ? { label: LogLevel.WARN, className: "dl-badge--warn" }
+      : { label: LogLevel.INFO, className: "dl-badge--info" };
 
   const collectors =
     env === Environment.DEVELOPMENT ? "3" : env === Environment.STAGING ? "24" : "128";
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        gap: "0.75rem",
+      }}
+    >
       <KpiCard
         icon={Zap}
         label={UI_COPY.LOGS.METRICS.THROUGHPUT}

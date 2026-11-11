@@ -15,7 +15,7 @@ export interface SpinnerIconProps extends React.SVGProps<SVGSVGElement> {
  * Clean SVG loading spinner icon with accessible presentation.
  */
 export function SpinnerIcon({
-  className = "size-5 animate-spin",
+  className = "dl-spinner",
   ...props
 }: SpinnerIconProps): React.JSX.Element {
   return (
@@ -27,8 +27,21 @@ export function SpinnerIcon({
       aria-hidden="true"
       {...props}
     >
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+      <circle
+        className="dl-spinner__track"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+        style={{ opacity: 0.25 }}
+      />
+      <path
+        className="dl-spinner__head"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v8H4z"
+        style={{ opacity: 0.75 }}
+      />
     </svg>
   );
 }

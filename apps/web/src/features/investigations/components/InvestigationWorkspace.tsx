@@ -58,52 +58,60 @@ export function InvestigationWorkspace({ initialConversationId }: InvestigationW
   const activeThread = conversations.find((c) => c.id === activeId);
 
   return (
-    <div className="bg-background relative flex h-full min-h-0 flex-1 flex-col overflow-hidden">
+    <div className="dl-investigate">
       {/* Workspace Sub-Header / Action Toolbar */}
-      <header className="border-border/60 bg-card/40 flex h-11 shrink-0 items-center justify-between border-b px-4 backdrop-blur-md">
-        <div className="flex min-w-0 items-center gap-2">
-          <Sparkles className="text-primary size-3.5 shrink-0" />
-          <h1 className="text-foreground truncate text-xs font-semibold tracking-tight">
+      <header className="dl-investigate__header">
+        <div style={{ display: "flex", minWidth: 0, alignItems: "center", gap: "0.5rem" }}>
+          <Sparkles className="dl-investigate__header-icon" style={{ color: "var(--primary)" }} />
+          <h1
+            style={{
+              color: "var(--foreground)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              letterSpacing: "-0.025em",
+              margin: 0,
+            }}
+          >
             {activeThread ? activeThread.title : UI_COPY.INVESTIGATIONS.TITLE}
           </h1>
           {activeThread && (
             <Badge
               variant="outline"
-              className="text-muted-foreground hidden text-[10px] sm:inline-flex"
+              className="dl-investigate__thread-badge"
+              style={{ color: "var(--mutedForeground)", fontSize: "0.625rem" }}
             >
               {activeThread.message_count} messages
             </Badge>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <Button
             size="sm"
             variant="outline"
             onClick={() => setHistoryOpen(true)}
-            className="h-7 font-sans text-xs"
+            className="dl-investigate__header-action-btn"
           >
-            <History className="mr-1.5 size-3.5" />
+            <History className="dl-investigate__header-btn-icon dl-investigate__header-btn-icon--left" />
             {UI_COPY.INVESTIGATIONS.ACTIONS.HISTORY}
           </Button>
-          <Button size="sm" onClick={startNewChat} className="h-7 font-sans text-xs">
-            <Plus className="mr-1 size-3.5" />
+          <Button size="sm" onClick={startNewChat} className="dl-investigate__header-action-btn">
+            <Plus className="dl-investigate__header-btn-icon dl-investigate__header-btn-icon--right" />
             {UI_COPY.INVESTIGATIONS.ACTIONS.NEW_CHAT}
           </Button>
         </div>
       </header>
 
       {/* Messages Scroll Area */}
-      <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        className="relative flex-1 overflow-y-auto p-4 sm:px-6"
-      >
-        <div className="mx-auto max-w-3xl">
+      <div ref={scrollRef} onScroll={handleScroll} className="dl-investigate__scroll">
+        <div className="dl-investigate__container">
           {messages.length === 0 ? (
             <ChatEmptyState onSelectPrompt={(p) => handleSendMessage(p)} />
           ) : (
-            <div className="space-y-1">
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {messages.map((m) => (
                 <ChatMessageItem key={m.id} message={m} />
               ))}
@@ -118,16 +126,19 @@ export function InvestigationWorkspace({ initialConversationId }: InvestigationW
           size="sm"
           variant="secondary"
           onClick={scrollToBottom}
-          className="border-border/80 absolute bottom-20 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full border px-3 py-1 text-xs shadow-md backdrop-blur-md"
+          className="dl-investigate__jump-btn"
         >
-          <ArrowDown className={`size-3.5 ${isSubmitting ? "text-primary animate-bounce" : ""}`} />
+          <ArrowDown
+            className={`size-3.5 ${isSubmitting ? "animate-bounce" : ""}`}
+            style={isSubmitting ? { color: "var(--primary)" } : undefined}
+          />
           <span>{UI_COPY.INVESTIGATIONS.ACTIONS.JUMP_TO_LATEST}</span>
         </Button>
       )}
 
       {/* Bottom Input Composer */}
-      <footer className="border-border/60 bg-background/80 p-3 backdrop-blur-md sm:px-6">
-        <div className="mx-auto max-w-3xl">
+      <footer className="dl-investigate__footer">
+        <div className="dl-investigate__container">
           <ChatComposer
             input={input}
             setInput={setInput}

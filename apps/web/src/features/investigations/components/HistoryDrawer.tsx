@@ -8,7 +8,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Plus, Search, Trash2, Edit2, MessageSquare, Check, X } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -18,11 +18,10 @@ import {
   Button,
   Input,
   ScrollArea,
-  toast,
 } from "@devlab-logs/ui";
 import { UI_COPY } from "@/lib/ui-copy";
 import type { InvestigationConversation, GroupedInvestigations } from "../types";
-import { useUpdateInvestigationTitleMutation, useDeleteInvestigationMutation } from "../api";
+import { HistoryThreadItem } from "./HistoryThreadItem";
 
 export interface HistoryDrawerProps {
   open: boolean;
@@ -42,12 +41,7 @@ export function HistoryDrawer({
   onNewChat,
 }: HistoryDrawerProps) {
   const [search, setSearch] = useState("");
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState("");
   const [now] = useState(() => Date.now());
-
-  const updateTitleMutation = useUpdateInvestigationTitleMutation();
-  const deleteMutation = useDeleteInvestigationMutation();
 
   const filtered = useMemo(() => {
     if (!search.trim()) return conversations;
@@ -68,38 +62,22 @@ export function HistoryDrawer({
     return res;
   }, [filtered, now]);
 
-  const handleSaveTitle = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!editTitle.trim()) return;
-    updateTitleMutation.mutate(
-      { id, title: editTitle.trim() },
-      {
-        onSuccess: () => {
-          setEditingId(null);
-          toast.success(UI_COPY.INVESTIGATIONS.NOTIFICATIONS.THREAD_RENAMED);
-        },
-      },
-    );
-  };
-
-  const handleDelete = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    deleteMutation.mutate(id, {
-      onSuccess: () => {
-        toast.success(UI_COPY.INVESTIGATIONS.NOTIFICATIONS.THREAD_DELETED);
-        if (activeId === id) onNewChat();
-      },
-    });
-  };
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="left" className="bg-popover flex w-full max-w-sm flex-col border-r p-4">
-        <SheetHeader className="space-y-1 text-left">
-          <SheetTitle className="text-base font-semibold">
+      <SheetContent
+        side="left"
+        className="dl-history-drawer"
+        style={{ display: "flex", width: "100%", maxWidth: "24rem", flexDirection: "column" }}
+      >
+        <SheetHeader
+          style={{ display: "flex", flexDirection: "column", gap: "0.25rem", textAlign: "left" }}
+        >
+          <SheetTitle style={{ fontSize: "1rem", fontWeight: 600 }}>
             {UI_COPY.INVESTIGATIONS.TITLE}
           </SheetTitle>
-          <SheetDescription className="text-xs">{UI_COPY.INVESTIGATIONS.SUBTITLE}</SheetDescription>
+          <SheetDescription style={{ fontSize: "0.75rem" }}>
+            {UI_COPY.INVESTIGATIONS.SUBTITLE}
+          </SheetDescription>
         </SheetHeader>
 
         <Button
@@ -108,24 +86,32 @@ export function HistoryDrawer({
             onNewChat();
             onOpenChange(false);
           }}
-          className="mt-4 w-full"
+          style={{ marginTop: "1rem", width: "100%" }}
         >
-          <Plus className="mr-1.5 size-4" />
+          <Plus className="dl-history-drawer__new-icon" />
           {UI_COPY.INVESTIGATIONS.NEW_INVESTIGATION}
         </Button>
 
-        <div className="mt-3">
+        <div style={{ marginTop: "0.75rem" }}>
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={UI_COPY.INVESTIGATIONS.SEARCH_THREADS}
-            startIcon={<Search className="text-muted-foreground size-3.5" />}
-            className="h-8 font-sans text-xs"
+            startIcon={<Search className="dl-history-drawer__search-icon" />}
+            className="dl-history-drawer__search-input"
+            style={{ height: "2rem" }}
           />
         </div>
 
-        <ScrollArea className="mt-4 flex-1 pr-1 text-xs">
-          <div className="space-y-4 pr-2">
+        <ScrollArea className="dl-history-drawer__scroll">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              paddingRight: "0.5rem",
+            }}
+          >
             {(Object.keys(groups) as (keyof GroupedInvestigations)[]).map((groupKey) => {
               const items = groups[groupKey];
               if (items.length === 0) return null;
@@ -139,89 +125,32 @@ export function HistoryDrawer({
                       : UI_COPY.INVESTIGATIONS.GROUPS.OLDER;
 
               return (
-                <div key={groupKey} className="space-y-1">
-                  <div className="text-muted-foreground px-2 text-[10px] font-semibold tracking-wider uppercase">
+                <div
+                  key={groupKey}
+                  style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}
+                >
+                  <div
+                    style={{
+                      color: "var(--mutedForeground)",
+                      padding: "0 0.5rem",
+                      fontSize: "0.625rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.05em",
+                      textTransform: "uppercase",
+                    }}
+                  >
                     {groupTitle}
                   </div>
-                  {items.map((thread) => {
-                    const isActive = thread.id === activeId;
-                    const isEditing = thread.id === editingId;
-
-                    return (
-                      <div
-                        key={thread.id}
-                        onClick={() => {
-                          onSelect(thread.id);
-                          onOpenChange(false);
-                        }}
-                        className={`group hover:bg-accent/60 flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 transition ${isActive ? "bg-accent text-accent-foreground font-medium" : "text-foreground/80"}`}
-                      >
-                        <div className="flex min-w-0 flex-1 items-center gap-2">
-                          <MessageSquare className="text-primary size-3.5 shrink-0" />
-                          {isEditing ? (
-                            <Input
-                              value={editTitle}
-                              onChange={(e) => setEditTitle(e.target.value)}
-                              onClick={(e) => e.stopPropagation()}
-                              className="h-6 font-sans text-xs"
-                              autoFocus
-                            />
-                          ) : (
-                            <span className="truncate text-xs">{thread.title}</span>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                          {isEditing ? (
-                            <>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={(e) => handleSaveTitle(thread.id, e)}
-                                className="text-primary hover:bg-primary/10 size-6 p-0"
-                              >
-                                <Check className="size-3" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setEditingId(null);
-                                }}
-                                className="text-muted-foreground hover:bg-accent size-6 p-0"
-                              >
-                                <X className="size-3" />
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setEditingId(thread.id);
-                                  setEditTitle(thread.title);
-                                }}
-                                className="text-muted-foreground hover:text-foreground size-6 p-0"
-                              >
-                                <Edit2 className="size-3" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={(e) => handleDelete(thread.id, e)}
-                                className="text-muted-foreground hover:text-destructive size-6 p-0"
-                              >
-                                <Trash2 className="size-3" />
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
+                  {items.map((thread) => (
+                    <HistoryThreadItem
+                      key={thread.id}
+                      thread={thread}
+                      isActive={thread.id === activeId}
+                      onSelect={onSelect}
+                      onClose={() => onOpenChange(false)}
+                      onNewChat={onNewChat}
+                    />
+                  ))}
                 </div>
               );
             })}
