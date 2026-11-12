@@ -13,8 +13,8 @@ export type LogsPrincipal =
   | { kind: "service"; userId: string }
   | { kind: "user"; userId: string; tenantId: string; isSuperAdmin: boolean };
 
-const portalApiUrl = process.env.DEVLAB_PORTAL_API_URL || "http://localhost:3015";
-const issuer = process.env.OIDC_ISSUER || "http://localhost:3015";
+const portalApiUrl = process.env.DEVLAB_PORTAL_API_URL || "http://localhost:4000";
+const issuer = process.env.OIDC_ISSUER || "http://localhost:4000";
 
 const jwksValidator = new JwksValidator({
   jwksUri: process.env.JWKS_URI || `${portalApiUrl}/.well-known/jwks.json`,
