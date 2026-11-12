@@ -16,7 +16,6 @@ import {
   TrendingUp,
   Workflow,
   Terminal,
-  HeartPulse,
   ShieldCheck,
   AlertTriangle,
   Sparkles,
@@ -67,11 +66,11 @@ const DEVLAB_APPS: readonly EcosystemAppItem[] = [
     isCurrent: true,
   },
   {
-    id: "vitalai",
-    name: "VitalAI",
-    sub: "Health AI",
+    id: "knowledg-ai",
+    name: "KnowledgeAI",
+    sub: "Knowledge RAG",
     url: "http://localhost:3004",
-    icon: HeartPulse,
+    icon: Sparkles,
   },
   {
     id: "devlab-guard",
