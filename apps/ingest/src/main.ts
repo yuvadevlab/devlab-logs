@@ -13,6 +13,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { IngestLogEventSchema } from "./types";
 import { SqlBatcher } from "./batcher/sql_batcher";
+import { PartitionManager } from "./batcher/partition_manager";
 import { OllamaEmbedder } from "./embedder/ollama_embedder";
 import { TelemetryKafkaConsumer } from "./consumers/kafka_consumer";
 import { TelemetryWsServer } from "./stream/ws_server";
@@ -22,6 +23,7 @@ import {
   createInvestigationRouter,
 } from "./investigations";
 import { getLogsPrincipal, requireLogIngestKey, requireLogReadAccess } from "./auth";
+import { INGEST_VERSION, BUILD_METADATA } from "./version";
 import { Logger } from "@yuva-devlab/logger";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -82,6 +84,8 @@ app.use((req, res, next) => {
 });
 
 const sqlBatcher = new SqlBatcher();
+const partitionManager = new PartitionManager(sqlBatcher.pool);
+partitionManager.start(3);
 const embedder = new OllamaEmbedder(sqlBatcher.pool);
 const wsServer = new TelemetryWsServer(allowedOrigins);
 server.on("upgrade", (req, sock, head) => wsServer.handleUpgrade(req, sock, head));
@@ -206,7 +210,8 @@ app.get(["/health", "/api/v1/health"], (_req, res) => {
   res.status(200).json({
     status: "ok",
     service: "devlab-logs-ingest",
-    version: "1.0.0",
+    version: INGEST_VERSION,
+    build: BUILD_METADATA,
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
   });
@@ -218,6 +223,7 @@ server.listen(port, () => {
 
 const shutdown = async () => {
   console.log("[IngestServer] Gracefully shutting down...");
+  partitionManager.stop();
   await kafkaConsumer.stop();
   wsServer.close();
   server.close();

@@ -8,6 +8,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { LogsQueryParamKey, LogsCookieKey } from "./lib/constants/enums";
 import { DEVLAB_PORTAL_ROUTES } from "./lib/constants/routes";
+import { isJwtExpired } from "./lib/jwt";
 
 /**
  * Edge middleware intercepting requests to enforce active session cookies.
@@ -26,6 +27,10 @@ export function middleware(request: NextRequest): NextResponse {
     const cleanUrl = new URL(request.url);
     cleanUrl.searchParams.delete(LogsQueryParamKey.TOKEN);
     cleanUrl.searchParams.delete(LogsQueryParamKey.ACCESS_TOKEN);
+
+    if (isJwtExpired(tokenParam)) {
+      return NextResponse.redirect(DEVLAB_PORTAL_ROUTES.LOGIN(cleanUrl.toString()));
+    }
 
     const response = NextResponse.redirect(cleanUrl);
     response.cookies.set(LogsCookieKey.TOKEN, tokenParam, {
@@ -46,7 +51,7 @@ export function middleware(request: NextRequest): NextResponse {
     request.cookies.get(LogsCookieKey.TOKEN)?.value ||
     request.cookies.get(LogsCookieKey.ACCESS_TOKEN)?.value;
 
-  if (!token) {
+  if (!token || isJwtExpired(token)) {
     return NextResponse.redirect(DEVLAB_PORTAL_ROUTES.LOGIN(request.url));
   }
 
