@@ -8,8 +8,8 @@
     "./styles.css": "./src/styles.css"
   },
   "dependencies": {
-    "@yuva-devlab/tokens": "^2.0.0",
-    "@yuva-devlab/ui": "^2.2.1"
+    "@yuva-devlab/tokens": "^2.1.0",
+    "@yuva-devlab/ui": "^3.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.8"
