@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@yuva-devlab/auth-server": "^1.0.3",
+    "@yuva-devlab/auth-server": "^1.1.0",
     "@yuva-devlab/logger": "^1.3.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
