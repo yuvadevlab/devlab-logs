@@ -7,17 +7,19 @@
 
 import { timingSafeEqual } from "node:crypto";
 import type { RequestHandler } from "express";
-import { JwksValidator, M2mApiKeyValidator } from "@yuva-devlab/auth-server";
+import { JwksValidator, M2mApiKeyValidator, DEFAULT_JWKS_PATH } from "@yuva-devlab/auth-server";
 
 export type LogsPrincipal =
   | { kind: "service"; userId: string }
   | { kind: "user"; userId: string; tenantId: string; isSuperAdmin: boolean };
 
+export { DEFAULT_JWKS_PATH };
+
 const portalApiUrl = process.env.DEVLAB_PORTAL_API_URL || "http://localhost:4000";
 const issuer = process.env.OIDC_ISSUER || "http://localhost:4000";
 
 const jwksValidator = new JwksValidator({
-  jwksUri: process.env.JWKS_URI || `${portalApiUrl}/.well-known/jwks.json`,
+  jwksUri: process.env.JWKS_URI || `${portalApiUrl}${DEFAULT_JWKS_PATH}`,
   issuer,
 });
 
