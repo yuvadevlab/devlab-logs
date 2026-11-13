@@ -215,8 +215,8 @@ importers:
   apps/ingest:
     dependencies:
       '@yuva-devlab/auth-server':
-        specifier: ^1.0.3
-        version: 1.0.3
+        specifier: ^1.1.0
+        version: 1.1.0
       '@yuva-devlab/logger':
         specifier: ^1.3.1
         version: 1.3.1
@@ -276,8 +276,8 @@ importers:
         specifier: ^5.67.2
         version: 5.104.1(react@19.3.0)
       '@yuva-devlab/auth-client':
-        specifier: ^1.2.1
-        version: 1.2.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^1.3.0
+        version: 1.3.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -2053,14 +2053,14 @@ packages:
     resolution: {integrity: sha512-0GxiUGqMU0qXJt58cBsiG3DP8lUmBaFo2vChtUX+CT7PnR3v/VGLLrzVP4K9r1lNiZXjHYefMBbPunplr09v6w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@yuva-devlab/auth-client@1.2.1':
-    resolution: {integrity: sha512-7Ewseyr1Ai6RHP/SngK842m6pOS+0zzicAtZ9CkD7zQ5cuPoktUNrqB/jJhmS1qm4KEHzOc5HZgW0hJN4seknA==}
+  '@yuva-devlab/auth-client@1.3.0':
+    resolution: {integrity: sha512-XCaYq9kQydfESy+JBz+TLOW8MLcYpJZAWH0d6ebcpnxsJd+1yGMlDdWWwoVNAlpXjMBOk824xkJukjHJ3CbPlg==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
-  '@yuva-devlab/auth-server@1.0.3':
-    resolution: {integrity: sha512-bVE3XNsmdb01PyIGIdf+UbtSQmRUaarPT3c5JInAYuN28F8iJDqZvsFdDT4lFQI2dXoRp55+jWKFZwa/OD3sLQ==}
+  '@yuva-devlab/auth-server@1.1.0':
+    resolution: {integrity: sha512-LNxYxDVnPwlpZfl91WWnBwunUXTkCuAGKYbwC6Ac9vVJz7cUAb6TawcfXiehcWUwHHQgIndHVzA2zMqC8D8uPw==}
 
   '@yuva-devlab/errors@0.2.0':
     resolution: {integrity: sha512-eGunJ1eDbkGfEida3MJx9gaWRTeWjx/UPFUHUs+r7m++hkbShw4VKekaH5MMb7gIIc5sUmb4mESgir0TYnE30w==}
@@ -5347,7 +5347,7 @@ snapshots:
       '@typescript-eslint/types': 8.71.1
       eslint-visitor-keys: 5.0.1
 
-  '@yuva-devlab/auth-client@1.2.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@yuva-devlab/auth-client@1.3.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@yuva-devlab/errors': 0.2.0
       '@yuva-devlab/logger': 1.3.1
@@ -5355,7 +5355,7 @@ snapshots:
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 
-  '@yuva-devlab/auth-server@1.0.3':
+  '@yuva-devlab/auth-server@1.1.0':
     dependencies:
       '@yuva-devlab/errors': 0.2.0
       '@yuva-devlab/logger': 1.3.1

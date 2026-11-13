@@ -7,14 +7,13 @@
 
 import { timingSafeEqual } from "node:crypto";
 import type { RequestHandler } from "express";
-import { JwksValidator, M2mApiKeyValidator } from "@yuva-devlab/auth-server";
+import { JwksValidator, M2mApiKeyValidator, DEFAULT_JWKS_PATH } from "@yuva-devlab/auth-server";
 
 export type LogsPrincipal =
   | { kind: "service"; userId: string }
   | { kind: "user"; userId: string; tenantId: string; isSuperAdmin: boolean };
 
-/** Canonical RFC 7517 JWKS discovery endpoint path */
-export const DEFAULT_JWKS_PATH = "/.well-known/jwks.json";
+export { DEFAULT_JWKS_PATH };
 
 const portalApiUrl = process.env.DEVLAB_PORTAL_API_URL || "http://localhost:4000";
 const issuer = process.env.OIDC_ISSUER || "http://localhost:4000";
